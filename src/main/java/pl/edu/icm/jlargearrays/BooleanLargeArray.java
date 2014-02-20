@@ -89,10 +89,10 @@ public class BooleanLargeArray extends LargeArray {
     @Override
     public boolean getBoolean(long i) {
         if(isLarge()) {
-            return (Utilities.UNSAFE.getByte(ptr + sizeof * i)) == 0 ? false : true;
+            return (Utilities.UNSAFE.getByte(ptr + sizeof * i)) != 0;
         }
         else {
-            return data[(int)i] == 0 ? false : true;
+            return data[(int)i] != 0;
         }
     }
     
@@ -157,14 +157,14 @@ public class BooleanLargeArray extends LargeArray {
     }
     
     @Override
-    public boolean[] getBoolData() {
+    public boolean[] getBooleanData() {
         if(isLarge()) {
             return null;
         }
         else {
             boolean[] res = new boolean[(int)length];
             for (int i = 0; i < length; i++) {
-                res[i] = data[i] == 0 ? false : true;
+                res[i] = data[i] != 0;
                 
             }
             return res;
@@ -172,7 +172,7 @@ public class BooleanLargeArray extends LargeArray {
     }
     
     @Override
-    public byte[] getBData() {
+    public byte[] getByteData() {
         if(isLarge()) {
             return null;
         }
@@ -184,7 +184,7 @@ public class BooleanLargeArray extends LargeArray {
     
 
     @Override
-    public short[] getSData() {
+    public short[] getShortData() {
         if(isLarge()) {
             return null;
         }
@@ -199,7 +199,7 @@ public class BooleanLargeArray extends LargeArray {
     }
 
     @Override
-    public int[] getIData() {
+    public int[] getIntegerData() {
         if(isLarge()) {
             return null;
         }
@@ -214,7 +214,7 @@ public class BooleanLargeArray extends LargeArray {
     }
 
     @Override
-    public long[] getLData() {
+    public long[] getLongData() {
         if(isLarge()) {
             return null;
         }
@@ -229,7 +229,7 @@ public class BooleanLargeArray extends LargeArray {
     }
 
     @Override
-    public float[] getFData() {
+    public float[] getFloatData() {
         if(isLarge()) {
             return null;
         }
@@ -244,7 +244,7 @@ public class BooleanLargeArray extends LargeArray {
     }
 
     @Override
-    public double[] getDData() {
+    public double[] getDoubleData() {
         if(isLarge()) {
             return null;
         }

@@ -48,6 +48,7 @@ package pl.edu.icm.jlargearrays;
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
 public enum LargeArrayType {
+   BIT,
    BOOLEAN,
    BYTE,
    SHORT,

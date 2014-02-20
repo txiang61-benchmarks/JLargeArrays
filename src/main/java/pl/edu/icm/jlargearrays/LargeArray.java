@@ -59,7 +59,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * Largest array size for which a regular 1D Java array is used to store the
      * data.
      */
-    public static final long LARGEST_32BIT_INDEX = 1073741824; //2^30;
+    protected static int LARGEST_32BIT_INDEX = 1073741824; //2^30;
 
     /**
      * Returns the length of an array.
@@ -140,49 +140,49 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * 
      * @return boolean data or null.
      */
-    public abstract boolean[] getBoolData();
+    public abstract boolean[] getBooleanData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns byte data. Otherwise, it returns null.
      * 
      * @return byte data or null.
      */
-    public abstract byte[] getBData();
+    public abstract byte[] getByteData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns short data. Otherwise, it returns null.
      * 
      * @return short data or null.
      */
-    public abstract short[] getSData();
+    public abstract short[] getShortData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns int data. Otherwise, it returns null.
      * 
      * @return int data or null.
      */
-    public abstract int[] getIData();
+    public abstract int[] getIntegerData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns long data. Otherwise, it returns null.
      * 
      * @return long data or null.
      */
-    public abstract long[] getLData();
+    public abstract long[] getLongData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns float data. Otherwise, it returns null.
      * 
      * @return float data or null.
      */
-    public abstract float[] getFData();
+    public abstract float[] getFloatData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns double data. Otherwise, it returns null.
      * 
      * @return double data or null.
      */
-    public abstract double[] getDData();
+    public abstract double[] getDoubleData();
 
     /**
      * Sets a boolean value at index i.
@@ -245,11 +245,26 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * @return true if the size od an array is larger than LARGEST_32BIT_INDEX, false otherwise.
      */
     public boolean isLarge() {
-        if (length > LARGEST_32BIT_INDEX && ptr != 0) {
-            return true;
-        } else {
-            return false;
+        return length > LARGEST_32BIT_INDEX && ptr != 0;
+    }
+    
+    /**
+     * Sets the maximal size of a 32-bit array. For arrays of the size larger than index, the data is stored in the memory allocated by sun.misc.Unsafe.allocateMemory().
+     * @param index the maximal size of a 32-bit array.
+     */
+    public static void setMaximalSizeOf32bitArray(int index) {
+        if(index < 0) {
+            throw new IllegalArgumentException("index cannot be negative");
         }
+        LARGEST_32BIT_INDEX = index;
+    }
+
+    /**
+     * Returns the maximal size of a 32-bit array. 
+     * @return the maximal size of a 32-bit array.
+     */
+    public static int getMaximalSizeOf32bitArray() {
+        return LARGEST_32BIT_INDEX;
     }
 
     @Override
@@ -267,8 +282,8 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
     protected static class Deallocator implements Runnable {
 
         private long ptr;
-        private long length;
-        private long sizeof;
+        private final long length;
+        private final long sizeof;
 
         public Deallocator(long ptr, long length, long sizeof) {
             this.ptr = ptr;
@@ -316,7 +331,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
                     threads[j].join();
                     threads[j] = null;
                   }
-                } catch (Exception ex) {
+                } catch (InterruptedException ex) {
                     Utilities.UNSAFE.setMemory(ptr, length * sizeof, (byte) 0);
                 }
             }

@@ -65,7 +65,15 @@ public class Utilities {
             Field f = uc.getDeclaredField("theUnsafe");
             f.setAccessible(true);
             theUnsafe = f.get(uc);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            exception = e;
+        } catch (IllegalAccessException e) {
+            exception = e;
+        } catch (IllegalArgumentException e) {
+            exception = e;
+        } catch (NoSuchFieldException e) {
+            exception = e;
+        } catch (SecurityException e) {
             exception = e;
         }
         UNSAFE = (sun.misc.Unsafe) theUnsafe;
