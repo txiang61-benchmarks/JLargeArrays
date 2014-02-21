@@ -161,7 +161,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * 
      * @return int data or null.
      */
-    public abstract int[] getIntegerData();
+    public abstract int[] getIntData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns long data. Otherwise, it returns null.
@@ -252,7 +252,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * Sets the maximal size of a 32-bit array. For arrays of the size larger than index, the data is stored in the memory allocated by sun.misc.Unsafe.allocateMemory().
      * @param index the maximal size of a 32-bit array.
      */
-    public static void setMaximalSizeOf32bitArray(int index) {
+    public static void setMaxSizeOf32bitArray(int index) {
         if(index < 0) {
             throw new IllegalArgumentException("index cannot be negative");
         }
@@ -263,7 +263,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * Returns the maximal size of a 32-bit array. 
      * @return the maximal size of a 32-bit array.
      */
-    public static int getMaximalSizeOf32bitArray() {
+    public static int getMaxSizeOf32bitArray() {
         return LARGEST_32BIT_INDEX;
     }
 

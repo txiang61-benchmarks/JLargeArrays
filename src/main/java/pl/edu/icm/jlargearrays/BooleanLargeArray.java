@@ -199,7 +199,7 @@ public class BooleanLargeArray extends LargeArray {
     }
 
     @Override
-    public int[] getIntegerData() {
+    public int[] getIntData() {
         if(isLarge()) {
             return null;
         }
