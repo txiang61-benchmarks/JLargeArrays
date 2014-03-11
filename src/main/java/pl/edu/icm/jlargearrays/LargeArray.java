@@ -296,7 +296,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
             if (length > LARGEST_32BIT_INDEX && ptr != 0) {
                 Utilities.UNSAFE.freeMemory(ptr);
                 ptr = 0;
-                MemoryCounter.decreaseCoutner(length * sizeof);
+                MemoryCounter.decreaseCounter(length * sizeof);
             }
         }
     }

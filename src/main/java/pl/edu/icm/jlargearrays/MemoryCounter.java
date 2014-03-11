@@ -56,11 +56,11 @@ public class MemoryCounter {
         return counter;
     }
     
-    public static void increaseCoutner(long x) {
+    public static void increaseCounter(long x) {
         counter += x;
     }
     
-    public static void decreaseCoutner(long x) {
+    public static void decreaseCounter(long x) {
         counter -= x;
         if(counter < 0) counter = 0;
     }

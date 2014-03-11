@@ -66,7 +66,7 @@ public class ByteLargeArray extends LargeArray {
                 this.ptr = Utilities.UNSAFE.allocateMemory(this.length * this.sizeof);
                 zeroMemory();
                 Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
-                MemoryCounter.increaseCoutner(this.length * this.sizeof);
+                MemoryCounter.increaseCounter(this.length * this.sizeof);
             } else {
                 data = new byte[(int) length];
             }

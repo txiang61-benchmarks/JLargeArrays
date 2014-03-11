@@ -66,7 +66,7 @@ public class BitLargeArray extends LargeArray {
             this.ptr = Utilities.UNSAFE.allocateMemory(dataSize * this.sizeof);
             zeroMemory();
             Cleaner.create(this, new LargeArray.Deallocator(this.ptr, dataSize, this.sizeof));
-            MemoryCounter.increaseCoutner(dataSize * this.sizeof);
+            MemoryCounter.increaseCounter(dataSize * this.sizeof);
         } else {
             data = new byte[(int) dataSize];
         }
