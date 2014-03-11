@@ -94,9 +94,9 @@ public class Utilities {
      * @param      destPos  starting position in the destination data.
      * @param      length   the number of array elements to be copied.
      */
-    public static void arraycopy(BooleanLargeArray src, long srcPos, BooleanLargeArray dest, long destPos, long length) {
+    public static void arraycopy(BitLargeArray src, long srcPos, BitLargeArray dest, long destPos, long length) {
         for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-            dest.setBoolean(j, src.getBoolean(i));
+            dest.setByte(j, src.getByte(i));
         }
     }
 

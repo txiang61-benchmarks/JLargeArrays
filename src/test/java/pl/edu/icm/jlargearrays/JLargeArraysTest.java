@@ -79,14 +79,6 @@ public class JLargeArraysTest extends TestCase
         assertEquals(val, a.getBoolean(idx));
     }
     
-    public void testBooleanLargeArrayGetSet()
-    {
-        BooleanLargeArray a = new BooleanLargeArray(10);
-        long idx = 5;
-        boolean val = true;
-        a.setBoolean(idx, val);
-        assertEquals(val, a.getBoolean(idx));
-    }
     
     public void testByteLargeArrayGetSet()
     {
