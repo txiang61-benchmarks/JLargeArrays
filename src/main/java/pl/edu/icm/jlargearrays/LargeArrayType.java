@@ -49,7 +49,6 @@ package pl.edu.icm.jlargearrays;
  */
 public enum LargeArrayType {
    BIT,
-   BOOLEAN,
    BYTE,
    SHORT,
    INT,
