@@ -38,22 +38,20 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 import sun.misc.Cleaner;
 
 /**
-*
-* An array of longs that can store up to 2^63 elements.
-*
+ *
+ * An array of longs that can store up to 2^63 elements.
+ * 
 * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
-*/
+ */
 public class LongLargeArray extends LargeArray {
 
     private static final long serialVersionUID = -2579271120060523901L;
-	private long[] data;
+    private long[] data;
 
     public LongLargeArray(long length) {
         this.type = LargeArrayType.LONG;
@@ -72,7 +70,7 @@ public class LongLargeArray extends LargeArray {
             data = new long[(int) length];
         }
     }
-    
+
     public LongLargeArray(long[] data) {
         this.type = LargeArrayType.LONG;
         this.sizeof = 8;
@@ -81,12 +79,16 @@ public class LongLargeArray extends LargeArray {
     }
 
     @Override
+    public Long get(long i) {
+        return getLong(i);
+    }
+
+    @Override
     public boolean getBoolean(long i) {
-        if(isLarge()) {
+        if (isLarge()) {
             return (Utilities.UNSAFE.getLong(ptr + sizeof * i)) != 0;
-        }
-        else {
-            return data[(int)i] != 0;
+        } else {
+            return data[(int) i] != 0;
         }
     }
 
@@ -145,15 +147,23 @@ public class LongLargeArray extends LargeArray {
     }
     
     @Override
-    public boolean[] getBooleanData() {
-        if(isLarge()) {
+    public long[] getData() {
+        if (isLarge()) {
             return null;
+        } else {
+            return data;
         }
-        else {
-            boolean[] res = new boolean[(int)length];
+    }
+
+    @Override
+    public boolean[] getBooleanData() {
+        if (isLarge()) {
+            return null;
+        } else {
+            boolean[] res = new boolean[(int) length];
             for (int i = 0; i < length; i++) {
                 res[i] = data[i] == 0 ? false : true;
-                
+
             }
             return res;
         }
@@ -206,7 +216,7 @@ public class LongLargeArray extends LargeArray {
         if (isLarge()) {
             return null;
         } else {
-            return data;
+            return data.clone();
         }
     }
 
@@ -237,14 +247,13 @@ public class LongLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
     public void setBoolean(long i, boolean value) {
-        if(isLarge()) { 
+        if (isLarge()) {
             Utilities.UNSAFE.putLong(ptr + sizeof * i, value == true ? 1 : 0);
-        }
-        else {
-            data[(int)i] = value == true ? 1 : 0;
+        } else {
+            data[(int) i] = value == true ? 1 : 0;
         }
     }
 

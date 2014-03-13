@@ -38,22 +38,20 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 import sun.misc.Cleaner;
 
 /**
-*
-* An array of shorts that can store up to 2^63 elements.
-*
+ *
+ * An array of shorts that can store up to 2^63 elements.
+ * 
 * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
-*/
+ */
 public class ShortLargeArray extends LargeArray {
 
-   	private static final long serialVersionUID = 8813991144303908703L;
-	private short[] data;
+    private static final long serialVersionUID = 8813991144303908703L;
+    private short[] data;
 
     public ShortLargeArray(long length) {
         this.type = LargeArrayType.SHORT;
@@ -72,7 +70,7 @@ public class ShortLargeArray extends LargeArray {
             data = new short[(int) length];
         }
     }
-    
+
     public ShortLargeArray(short[] data) {
         this.type = LargeArrayType.SHORT;
         this.sizeof = 2;
@@ -81,12 +79,16 @@ public class ShortLargeArray extends LargeArray {
     }
 
     @Override
+    public Short get(long i) {
+        return getShort(i);
+    }
+
+    @Override
     public boolean getBoolean(long i) {
-        if(isLarge()) {
+        if (isLarge()) {
             return (Utilities.UNSAFE.getShort(ptr + sizeof * i)) != 0;
-        }
-        else {
-            return data[(int)i] != 0;
+        } else {
+            return data[(int) i] != 0;
         }
     }
 
@@ -145,15 +147,24 @@ public class ShortLargeArray extends LargeArray {
     }
     
     @Override
-    public boolean[] getBooleanData() {
-        if(isLarge()) {
+    public short[] getData() {
+        if (isLarge()) {
             return null;
+        } else {
+            return data;
         }
-        else {
-            boolean[] res = new boolean[(int)length];
+    }
+
+
+    @Override
+    public boolean[] getBooleanData() {
+        if (isLarge()) {
+            return null;
+        } else {
+            boolean[] res = new boolean[(int) length];
             for (int i = 0; i < length; i++) {
                 res[i] = data[i] != 0;
-                
+
             }
             return res;
         }
@@ -178,7 +189,7 @@ public class ShortLargeArray extends LargeArray {
         if (isLarge()) {
             return null;
         } else {
-            return data;
+            return data.clone();
         }
     }
 
@@ -237,14 +248,13 @@ public class ShortLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
     public void setBoolean(long i, boolean value) {
-        if(isLarge()) { 
-            Utilities.UNSAFE.putShort(ptr + sizeof * i, value == true ? (short)1 : (short)0);
-        }
-        else {
-            data[(int)i] = value == true ? (short)1 : (short)0;
+        if (isLarge()) {
+            Utilities.UNSAFE.putShort(ptr + sizeof * i, value == true ? (short) 1 : (short) 0);
+        } else {
+            data[(int) i] = value == true ? (short) 1 : (short) 0;
         }
     }
 

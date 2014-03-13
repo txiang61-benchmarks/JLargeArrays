@@ -38,22 +38,20 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 import sun.misc.Cleaner;
 
 /**
-*
-* An array of ints that can store up to 2^63 elements.
-*
+ *
+ * An array of ints that can store up to 2^63 elements.
+ * 
 * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
-*/
+ */
 public class IntLargeArray extends LargeArray {
 
-	private static final long serialVersionUID = 86623276977976615L;
-	private int[] data;
+    private static final long serialVersionUID = 86623276977976615L;
+    private int[] data;
 
     public IntLargeArray(long length) {
         this.type = LargeArrayType.INT;
@@ -72,12 +70,17 @@ public class IntLargeArray extends LargeArray {
             data = new int[(int) length];
         }
     }
-    
+
     public IntLargeArray(int[] data) {
         this.type = LargeArrayType.INT;
         this.sizeof = 4;
         this.length = data.length;
         this.data = data;
+    }
+
+    @Override
+    public Integer get(long i) {
+        return getInt(i);
     }
 
     @Override
@@ -142,6 +145,15 @@ public class IntLargeArray extends LargeArray {
             return (double) data[(int) i];
         }
     }
+    
+    @Override
+    public int[] getData() {
+        if (isLarge()) {
+            return null;
+        } else {
+            return data;
+        }
+    }
 
     @Override
     public boolean[] getBooleanData() {
@@ -190,7 +202,7 @@ public class IntLargeArray extends LargeArray {
         if (isLarge()) {
             return null;
         } else {
-            return data;
+            return data.clone();
         }
     }
 

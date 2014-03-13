@@ -80,6 +80,14 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
     }
 
     /**
+     * Returns a value at index i.
+     * 
+     * @param i an index
+     * @return a value at index i.
+     */
+    public abstract Object get(long i);
+    
+    /**
      * Returns a boolean value at index i.
      * 
      * @param i an index
@@ -131,10 +139,17 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * Returns a double value at index i.
      * 
      * @param i an index
-     * @return a value at index i.
+     * @re/turn a value at index i.
      */
     public abstract double getDouble(long i);
 
+    
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns a reference to the internal data array. Otherwise, it returns null.
+     * @return reference to the internal data array
+     */
+    public abstract Object getData();
+    
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns boolean data. Otherwise, it returns null.
      * 
@@ -184,6 +199,40 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      */
     public abstract double[] getDoubleData();
 
+    
+    /**
+     * Sets a value at index i.
+     * 
+     * @param i index 
+     * @param value value to set
+     */
+     public void set(long i, Object value) {
+        if(value instanceof Boolean) {
+            setBoolean(i, (Boolean)value);
+        }
+        else if(value instanceof Byte) {
+            setByte(i, (Byte)value);
+        }
+        else if(value instanceof Short) {
+            setShort(i, (Short)value);
+        }
+        else if(value instanceof Integer) {
+            setInt(i, (Integer)value);
+        }
+        else if(value instanceof Long) {
+            setLong(i, (Long)value);
+        }
+        else if(value instanceof Float) {
+            setFloat(i, (Float)value);
+        }
+        else if(value instanceof Double) {
+            setDouble(i, (Double)value);
+        }
+        else {
+            throw new IllegalArgumentException("Unsupported type.");
+        }
+    }
+    
     /**
      * Sets a boolean value at index i.
      * 

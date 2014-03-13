@@ -102,6 +102,11 @@ public class BitLargeArray extends LargeArray {
             }
         }
     }
+    
+    @Override
+    public Boolean get(long i) {
+        return getBoolean(i);
+    }
 
     @Override
     public boolean getBoolean(long i) {
@@ -219,6 +224,16 @@ public class BitLargeArray extends LargeArray {
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return (double) value;
+        }
+    }
+    
+    
+    @Override
+    public byte[] getData() {
+        if (isLarge()) {
+            return null;
+        } else {
+           return data;
         }
     }
 
@@ -341,6 +356,7 @@ public class BitLargeArray extends LargeArray {
             return out;
         }
     }
+    
 
     @Override
     public void setBoolean(long i, boolean value) {

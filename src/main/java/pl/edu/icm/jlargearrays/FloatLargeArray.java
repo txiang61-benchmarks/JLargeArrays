@@ -38,22 +38,20 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 import sun.misc.Cleaner;
 
 /**
-*
-* An array of floats that can store up to 2^63 elements.
-*
+ *
+ * An array of floats that can store up to 2^63 elements.
+ * 
 * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
-*/
+ */
 public class FloatLargeArray extends LargeArray {
 
-  	private static final long serialVersionUID = -8342458159338079576L;
-	private float[] data;
+    private static final long serialVersionUID = -8342458159338079576L;
+    private float[] data;
 
     public FloatLargeArray(long length) {
         this.type = LargeArrayType.FLOAT;
@@ -72,12 +70,17 @@ public class FloatLargeArray extends LargeArray {
             data = new float[(int) length];
         }
     }
-    
+
     public FloatLargeArray(float[] data) {
         this.type = LargeArrayType.FLOAT;
         this.sizeof = 4;
         this.length = data.length;
         this.data = data;
+    }
+
+    @Override
+    public Float get(long i) {
+        return getFloat(i);
     }
 
     @Override
@@ -140,6 +143,15 @@ public class FloatLargeArray extends LargeArray {
             return (double) Utilities.UNSAFE.getFloat(ptr + sizeof * i);
         } else {
             return (double) data[(int) i];
+        }
+    }
+    
+    @Override
+    public float[] getData() {
+        if (isLarge()) {
+            return null;
+        } else {
+            return data;
         }
     }
 
@@ -218,7 +230,7 @@ public class FloatLargeArray extends LargeArray {
         if (isLarge()) {
             return null;
         } else {
-            return data;
+            return data.clone();
         }
     }
 

@@ -77,6 +77,9 @@ public class JLargeArraysTest extends TestCase
         boolean val = true;
         a.setBoolean(idx, val);
         assertEquals(val, a.getBoolean(idx));
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Boolean)a.get(idx)).booleanValue());
     }
     
     
@@ -87,6 +90,9 @@ public class JLargeArraysTest extends TestCase
         byte val = -100;
         a.setByte(idx, val);
         assertEquals(val, a.getByte(idx));
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Byte)a.get(idx)).byteValue());
     }
     
     public void testShortLargeArrayGetSet()
@@ -96,6 +102,9 @@ public class JLargeArraysTest extends TestCase
         short val = -100;
         a.setShort(idx, val);
         assertEquals(val, a.getShort(idx));
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Short)a.get(idx)).shortValue());
     }
     
     public void testIntLargeArrayGetSet()
@@ -105,6 +114,9 @@ public class JLargeArraysTest extends TestCase
         int val = -100;
         a.setInt(idx, val);
         assertEquals(val, a.getInt(idx));
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Integer)a.get(idx)).intValue());
     }
     
     public void testLongLargeArrayGetSet()
@@ -114,6 +126,9 @@ public class JLargeArraysTest extends TestCase
         int val = -100;
         a.setLong(idx, val);
         assertEquals(val, a.getLong(idx));
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Long)a.get(idx)).longValue());
     }
     
     public void testFloatLargeArrayGetSet()
@@ -123,6 +138,9 @@ public class JLargeArraysTest extends TestCase
         float val = 3.4f;
         a.setFloat(idx, val);
         assertEquals(val, a.getFloat(idx), 0.0);
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Float)a.get(idx)).floatValue());
     }
     
     public void testDoubleLargeArrayGetSet()
@@ -132,6 +150,8 @@ public class JLargeArraysTest extends TestCase
         double val = 3.4;
         a.setDouble(idx, val);
         assertEquals(val, a.getDouble(idx), 0.0);
+        idx = 6;
+        a.set(idx, val);
+        assertEquals(val, ((Double)a.get(idx)).doubleValue());
     }
-    
 }
