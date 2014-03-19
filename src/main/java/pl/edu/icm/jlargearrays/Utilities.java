@@ -87,6 +87,58 @@ public class Utilities {
     
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Both arrays need to be of the same type. It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(LargeArray src, long srcPos, LargeArray dest, long destPos, long length) {
+        if(src.getType() != dest.getType()) {
+            throw new IllegalArgumentException("The type of source array is different than the type of destimation array.");
+        }
+        switch(src.getType()) {
+            case BIT:
+            case BYTE:
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setByte(j, src.getByte(i));
+                }
+                break;
+            case SHORT:
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setShort(j, src.getShort(i));
+                }
+                break;
+            case INT:
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setInt(j, src.getInt(i));
+                }
+                break;
+            case LONG:
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setLong(j, src.getLong(i));
+                }
+                break;
+            case FLOAT:
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setFloat(j, src.getFloat(i));
+                }
+                break;
+            case DOUBLE:
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setDouble(j, src.getDouble(i));
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid array type.");
+        }
+    }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -100,8 +152,26 @@ public class Utilities {
         }
     }
 
+     /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(boolean[] src, int srcPos, BitLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setBoolean(j, src[i++]);
+        }
+    }
+    
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -117,6 +187,24 @@ public class Utilities {
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(byte[] src, int srcPos, ByteLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setByte(j, src[i++]);
+        }
+    }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -129,9 +217,27 @@ public class Utilities {
             dest.setShort(j, src.getShort(i));
         }
     }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(short[] src, int srcPos, ShortLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setShort(j, src[i++]);
+        }
+    }
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -144,9 +250,27 @@ public class Utilities {
             dest.setInt(j, src.getInt(i));
         }
     }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(int[] src, int srcPos, IntLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setInt(j, src[i++]);
+        }
+    }
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -159,9 +283,27 @@ public class Utilities {
             dest.setLong(j, src.getLong(i));
         }
     }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(long[] src, int srcPos, LongLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setLong(j, src[i++]);
+        }
+    }
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -174,9 +316,27 @@ public class Utilities {
             dest.setFloat(j, src.getFloat(i));
         }
     }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(float[] src, int srcPos, FloatLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setFloat(j, src[i++]);
+        }
+    }
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
      * 
      * @param      src      the source array.
      * @param      srcPos   starting position in the source array.
@@ -187,6 +347,23 @@ public class Utilities {
     public static void arraycopy(DoubleLargeArray src, long srcPos, DoubleLargeArray dest, long destPos, long length) {
         for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
             dest.setDouble(j, src.getDouble(i));
+        }
+    }
+    
+    /**
+     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * It does not check array bounds.
+     * 
+     * @param      src      the source array.
+     * @param      srcPos   starting position in the source array.
+     * @param      dest     the destination array.
+     * @param      destPos  starting position in the destination data.
+     * @param      length   the number of array elements to be copied.
+     */
+    public static void arraycopy(double[] src, int srcPos, DoubleLargeArray dest, long destPos, long length) {
+        int i = srcPos;
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setDouble(j, src[i++]);
         }
     }
  }

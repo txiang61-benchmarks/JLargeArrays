@@ -38,13 +38,11 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 /**
- * The base class for all large arrays. 
- * All implementations of this abstract class can store up to 2^63 elements of primitive data types.
+ * The base class for all large arrays. All implementations of this abstract
+ * class can store up to 2^63 elements of primitive data types.
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
@@ -81,15 +79,15 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
 
     /**
      * Returns a value at index i.
-     * 
+     *
      * @param i an index
      * @return a value at index i.
      */
     public abstract Object get(long i);
-    
+
     /**
      * Returns a boolean value at index i.
-     * 
+     *
      * @param i an index
      * @return a boolean value at index i.
      */
@@ -97,7 +95,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
 
     /**
      * Returns a byte value at index i.
-     * 
+     *
      * @param i an index
      * @return a value at index i.
      */
@@ -105,7 +103,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
 
     /**
      * Returns a short value at index i.
-     * 
+     *
      * @param i an index
      * @return a value at index i.
      */
@@ -113,15 +111,15 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
 
     /**
      * Returns an int value at index i.
-     * 
+     *
      * @param i an index
      * @return a value at index i.
      */
     public abstract int getInt(long i);
 
-   /**
+    /**
      * Returns a long value at index i.
-     * 
+     *
      * @param i an index
      * @return a value at index i.
      */
@@ -129,7 +127,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
 
     /**
      * Returns a float value at index i.
-     * 
+     *
      * @param i an index
      * @return a value at index i.
      */
@@ -137,179 +135,292 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
 
     /**
      * Returns a double value at index i.
-     * 
+     *
      * @param i an index
      * @re/turn a value at index i.
      */
     public abstract double getDouble(long i);
 
-    
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns a reference to the internal data array. Otherwise, it returns null.
-     * @return reference to the internal data array
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns a reference to the internal data array. Otherwise, it
+     * returns null.
+     *
+     * @return reference to the internal data array or null
      */
     public abstract Object getData();
-    
+
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns boolean data. Otherwise, it returns null.
-     * 
-     * @return boolean data or null.
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns boolean data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract boolean[] getBooleanData();
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns byte data. Otherwise, it returns null.
-     * 
-     * @return byte data or null.
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step);
+
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns byte data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract byte[] getByteData();
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns short data. Otherwise, it returns null.
-     * 
-     * @return short data or null.
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract byte[] getByteData(byte[] a, long startPos, long endPos, long step);
+
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns short data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract short[] getShortData();
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns int data. Otherwise, it returns null.
-     * 
-     * @return int data or null.
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract short[] getShortData(short[] a, long startPos, long endPos, long step);
+
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns int data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract int[] getIntData();
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns long data. Otherwise, it returns null.
-     * 
-     * @return long data or null.
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract int[] getIntData(int[] a, long startPos, long endPos, long step);
+
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns long data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract long[] getLongData();
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns float data. Otherwise, it returns null.
-     * 
-     * @return float data or null.
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract long[] getLongData(long[] a, long startPos, long endPos, long step);
+
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns float data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract float[] getFloatData();
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this method returns double data. Otherwise, it returns null.
-     * 
-     * @return double data or null.
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract float[] getFloatData(float[] a, long startPos, long endPos, long step);
+
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns double data. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
      */
     public abstract double[] getDoubleData();
-
     
     /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elments of an array. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     *
+     * @param a the array into which the elements are to be stored, if it is big
+     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
+     * @return an array containing the elements of the list or null
+     */
+    public abstract double[] getDoubleData(double[] a, long startPos, long endPos, long step);
+
+
+    /**
      * Sets a value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
-     public void set(long i, Object value) {
-        if(value instanceof Boolean) {
-            setBoolean(i, (Boolean)value);
-        }
-        else if(value instanceof Byte) {
-            setByte(i, (Byte)value);
-        }
-        else if(value instanceof Short) {
-            setShort(i, (Short)value);
-        }
-        else if(value instanceof Integer) {
-            setInt(i, (Integer)value);
-        }
-        else if(value instanceof Long) {
-            setLong(i, (Long)value);
-        }
-        else if(value instanceof Float) {
-            setFloat(i, (Float)value);
-        }
-        else if(value instanceof Double) {
-            setDouble(i, (Double)value);
-        }
-        else {
+    public void set(long i, Object value) {
+        if (value instanceof Boolean) {
+            setBoolean(i, (Boolean) value);
+        } else if (value instanceof Byte) {
+            setByte(i, (Byte) value);
+        } else if (value instanceof Short) {
+            setShort(i, (Short) value);
+        } else if (value instanceof Integer) {
+            setInt(i, (Integer) value);
+        } else if (value instanceof Long) {
+            setLong(i, (Long) value);
+        } else if (value instanceof Float) {
+            setFloat(i, (Float) value);
+        } else if (value instanceof Double) {
+            setDouble(i, (Double) value);
+        } else {
             throw new IllegalArgumentException("Unsupported type.");
         }
     }
-    
+
     /**
      * Sets a boolean value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setBoolean(long i, boolean value);
 
     /**
      * Sets a byte value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setByte(long i, byte value);
 
     /**
      * Sets a short value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setShort(long i, short value);
 
     /**
      * Sets an int value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setInt(long i, int value);
 
     /**
      * Sets a long value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setLong(long i, long value);
 
     /**
      * Sets a float value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setFloat(long i, float value);
 
     /**
      * Sets a double value at index i.
-     * 
-     * @param i index 
+     *
+     * @param i index
      * @param value value to set
      */
     public abstract void setDouble(long i, double value);
 
     /**
      * Returns true if the size od an array is larger than LARGEST_32BIT_INDEX.
-     * @return true if the size od an array is larger than LARGEST_32BIT_INDEX, false otherwise.
+     *
+     * @return true if the size od an array is larger than LARGEST_32BIT_INDEX,
+     * false otherwise.
      */
     public boolean isLarge() {
         return length > LARGEST_32BIT_INDEX && ptr != 0;
     }
-    
+
     /**
-     * Sets the maximal size of a 32-bit array. For arrays of the size larger than index, the data is stored in the memory allocated by sun.misc.Unsafe.allocateMemory().
+     * Sets the maximal size of a 32-bit array. For arrays of the size larger
+     * than index, the data is stored in the memory allocated by
+     * sun.misc.Unsafe.allocateMemory().
+     *
      * @param index the maximal size of a 32-bit array.
      */
     public static void setMaxSizeOf32bitArray(int index) {
-        if(index < 0) {
+        if (index < 0) {
             throw new IllegalArgumentException("index cannot be negative");
         }
         LARGEST_32BIT_INDEX = index;
     }
 
     /**
-     * Returns the maximal size of a 32-bit array. 
+     * Returns the maximal size of a 32-bit array.
+     *
      * @return the maximal size of a 32-bit array.
      */
     public static int getMaxSizeOf32bitArray() {
@@ -324,7 +435,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
             throw new InternalError(); // should never happen
         }
     }
-    
+
     /**
      * Memory deallocator.
      */
@@ -376,10 +487,10 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
                     threads[j].start();
                 }
                 try {
-                  for (int j = 0; j < nthreads; j++) {  
-                    threads[j].join();
-                    threads[j] = null;
-                  }
+                    for (int j = 0; j < nthreads; j++) {
+                        threads[j].join();
+                        threads[j] = null;
+                    }
                 } catch (InterruptedException ex) {
                     Utilities.UNSAFE.setMemory(ptr, length * sizeof, (byte) 0);
                 }
