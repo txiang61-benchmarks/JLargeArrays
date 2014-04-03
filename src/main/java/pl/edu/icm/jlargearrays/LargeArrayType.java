@@ -54,5 +54,6 @@ public enum LargeArrayType {
    INT,
    LONG,
    FLOAT,
-   DOUBLE
+   DOUBLE,
+   STRING
 }

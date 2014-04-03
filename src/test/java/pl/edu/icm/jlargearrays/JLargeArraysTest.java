@@ -344,6 +344,27 @@ public class JLargeArraysTest extends TestCase
         assertEquals(val, a.get(idx));
     }
 
+
+    public void testStringLargeArrayGetSet()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        StringLargeArray a = new StringLargeArray(10, 14);
+        long idx = 5;
+        String val1 = "test0123ąęćńżź";
+        String val2= "test";
+        a.set(idx, val1);
+        assertEquals(val1, a.get(idx));
+        a.set(idx, val2);
+        assertEquals(val2, a.get(idx));
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new StringLargeArray(10, 14);
+        a.set(idx, val1);
+        assertEquals(val1, a.get(idx));
+        a.set(idx, val2);
+        assertEquals(val2, a.get(idx));
+    }
+
+    
     public void testDoubleLargeArrayGetData()
     {
         double[] data = new double[]{1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10};
@@ -384,6 +405,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getBoolean(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new BitLargeArray(data);
         b = new BitLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -414,6 +436,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getByte(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new ByteLargeArray(data);
         b = new ByteLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -444,6 +467,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getShort(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new ShortLargeArray(data);
         b = new ShortLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -474,6 +498,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getInt(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new IntLargeArray(data);
         b = new IntLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -504,6 +529,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getLong(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new LongLargeArray(data);
         b = new LongLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -534,6 +560,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getFloat(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new FloatLargeArray(data);
         b = new FloatLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -564,6 +591,7 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getDouble(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new DoubleLargeArray(data);
         b = new DoubleLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
@@ -575,4 +603,36 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.getDouble(i));
         }
     }
+    
+    public void testStringArraycopy()
+    {
+        String[] data = new String[]{"a", "ab", "abc", "ąęć", "1234", "test string", "ANOTHER TEST STRING", "", "\n", "\r"};
+        int startPos = 2;
+        int length = 8;
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        StringLargeArray a = new StringLargeArray(data);
+        StringLargeArray b = new StringLargeArray(2 * data.length, 20);
+        Utilities.arraycopy(a, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+        b = new StringLargeArray(2 * data.length, 20);
+        Utilities.arraycopy(data, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+        LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new StringLargeArray(data);
+        b = new StringLargeArray(2 * data.length, 20);
+        Utilities.arraycopy(a, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+        b = new StringLargeArray(2 * data.length, 20);
+        Utilities.arraycopy(data, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+    }
+    
 }
