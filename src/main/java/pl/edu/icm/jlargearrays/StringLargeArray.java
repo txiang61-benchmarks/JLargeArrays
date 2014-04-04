@@ -131,7 +131,7 @@ public class StringLargeArray extends LargeArray
     }
 
     @Override
-    public Object getData()
+    public String[] getData()
     {
         if (isLarge()) {
             return null;
