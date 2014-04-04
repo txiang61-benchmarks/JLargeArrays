@@ -42,11 +42,11 @@
   <distributionManagement>
     <repository>
       <id>libs-releases-local</id>
-      <url>http://maven.ceon.pl/artifactory/libs-releases-local</url>
+      <url>http://maven.icm.edu.pl/artifactory/libs-releases-local</url>
     </repository>
     <snapshotRepository>
       <id>libs-snapshots-local</id>
-      <url>http://maven.ceon.pl/artifactory/libs-snapshots-local</url>
+      <url>http://maven.icm.edu.pl/artifactory/libs-snapshots-local</url>
     </snapshotRepository>
   </distributionManagement>
 
