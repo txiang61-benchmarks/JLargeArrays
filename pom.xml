@@ -3,7 +3,7 @@
 
   <groupId>pl.edu.icm</groupId>
   <artifactId>JLargeArrays</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>JLargeArrays</name>
@@ -35,7 +35,7 @@
     <connection>scm:git:ssh://git@github.com/IcmVis/JLargeArrays.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/IcmVis/JLargeArrays.git</developerConnection>
     <url>https://github.com/IcmVis/JLargeArrays</url>
-    <tag>JLargeArrays-1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
