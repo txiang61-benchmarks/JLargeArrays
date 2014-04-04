@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * 
  * JLargeArrays
- * Copyright (C) 2013 University of Warsaw, ICM
+ * Copyright (C) 2013 onward University of Warsaw, ICM
  *
  * This file is part of GNU Classpath.
  *
@@ -44,7 +44,7 @@ import sun.misc.Cleaner;
 
 /**
  *
- * An array of ints that can store up to 2^63 elements.
+ * An array of ints that can store up to 2<SUP>63</SUP> elements.
  * 
 * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
@@ -53,6 +53,11 @@ public class IntLargeArray extends LargeArray {
     private static final long serialVersionUID = 86623276977976615L;
     private int[] data;
 
+     /**
+     * Creates new instance of this class.
+     * 
+     * @param length number of elements
+     */
     public IntLargeArray(long length) {
         this.type = LargeArrayType.INT;
         this.sizeof = 4;
@@ -71,6 +76,11 @@ public class IntLargeArray extends LargeArray {
         }
     }
 
+    /**
+     * Creates new instance of this class.
+     * 
+     * @param data data array, this reference is used internally.
+     */
     public IntLargeArray(int[] data) {
         this.type = LargeArrayType.INT;
         this.sizeof = 4;

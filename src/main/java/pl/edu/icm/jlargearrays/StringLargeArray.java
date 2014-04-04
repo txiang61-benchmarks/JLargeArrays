@@ -12,19 +12,26 @@ import sun.misc.Cleaner;
 
 /**
  *
- * @author piotrw
+ * An array of strings that can store up to 2<SUP>63</SUP> elements. 
+ * 
+* @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
 public class StringLargeArray extends LargeArray
 {
-    
+    private static final long serialVersionUID = -4096759496772248522L;
     private String[] data;
-    private IntLargeArray stringLengths;
+    private ShortLargeArray stringLengths;
     private int maxStringLength;
     private byte[] byteArray;
     private static final String CHARSET = "UTF-8";
     private static final int CHARSET_SIZE = 4; //UTF-8 uses between 1 and 4 bytes to encode a single character 
 
-    
+    /**
+     * Creates new instance of this class.
+     * 
+     * @param length number of elements
+     * @param maxStringLength maximal length of the string, it is ignored when number of elements is smaller than LARGEST_32BIT_INDEX
+     */
     public StringLargeArray(long length, int maxStringLength) {
         this.type = LargeArrayType.STRING;
         this.sizeof = 1;
@@ -42,13 +49,18 @@ public class StringLargeArray extends LargeArray
             zeroMemory();
             Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
             MemoryCounter.increaseCounter(this.length * this.sizeof);
-            stringLengths = new IntLargeArray(length);
+            stringLengths = new ShortLargeArray(length);
             byteArray = new byte[maxStringLength*CHARSET_SIZE];
         } else {
             data = new String[(int) length];
         }
     }
 
+    /**
+     * Creates new instance of this class.
+     * 
+     * @param data data array, this reference is used internally.
+     */
     public StringLargeArray(String[] data) {
         this.type = LargeArrayType.STRING;
         this.sizeof = 1;
@@ -60,7 +72,7 @@ public class StringLargeArray extends LargeArray
     public String get(long i)
     {
         if (isLarge()) {
-            int strLen = stringLengths.getInt(i);
+            short strLen = stringLengths.getShort(i);
             long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
             for(int j = 0; j < strLen; j++) {
                 byteArray[j] = Utilities.UNSAFE.getByte(ptr + offset + sizeof * j);
@@ -230,7 +242,10 @@ public class StringLargeArray extends LargeArray
                 return;
             }
             int strLen = tmp.length;
-            stringLengths.setInt(i, strLen);
+            if(strLen > Short.MAX_VALUE) {
+                throw new IllegalArgumentException("String  " + s + " is too long.");
+            }
+            stringLengths.setShort(i, (short)strLen);
             long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
             for(int j = 0; j < strLen; j++) {
                 Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);

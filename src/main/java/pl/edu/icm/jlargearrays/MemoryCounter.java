@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * 
  * JLargeArrays
- * Copyright (C) 2013 University of Warsaw, ICM
+ * Copyright (C) 2013 onward University of Warsaw, ICM
  *
  * This file is part of GNU Classpath.
  *

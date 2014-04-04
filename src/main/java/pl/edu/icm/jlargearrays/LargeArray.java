@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * 
  * JLargeArrays
- * Copyright (C) 2013 University of Warsaw, ICM
+ * Copyright (C) 2013 onward University of Warsaw, ICM
  *
  * This file is part of GNU Classpath.
  *
@@ -42,7 +42,7 @@ package pl.edu.icm.jlargearrays;
 
 /**
  * The base class for all large arrays. All implementations of this abstract
- * class can store up to 2^63 elements of primitive data types.
+ * class can store up to 2<SUP>63</SUP> elements of primitive data types.
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
@@ -137,7 +137,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable {
      * Returns a double value at index i.
      *
      * @param i an index
-     * @re/turn a value at index i.
+     * @return a value at index i.
      */
     public abstract double getDouble(long i);
 

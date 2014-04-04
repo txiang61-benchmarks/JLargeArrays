@@ -1,7 +1,7 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * 
  * JLargeArrays
- * Copyright (C) 2013 University of Warsaw, ICM
+ * Copyright (C) 2013 onward University of Warsaw, ICM
  *
  * This file is part of GNU Classpath.
  *
@@ -44,7 +44,7 @@ import sun.misc.Cleaner;
 
 /**
  *
- * An array of bits (0 and 1) that can store up to 2^63 elements.
+ * An array of bits (0 and 1) that can store up to 2<SUP>63</SUP> elements.
  * 
 * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
@@ -52,6 +52,11 @@ public class BitLargeArray extends LargeArray {
     private static final long serialVersionUID = -3499412355469845345L;
     private byte[] data;
 
+    /**
+     * Creates new instance of this class.
+     * 
+     * @param length number of elements
+     */
     public BitLargeArray(long length) {
         this.type = LargeArrayType.BIT;
         this.sizeof = 1;
@@ -72,6 +77,11 @@ public class BitLargeArray extends LargeArray {
         }
     }
 
+    /**
+     * Creates new instance of this class.
+     * 
+     * @param data data array, this reference is not used internally.
+     */
     public BitLargeArray(boolean[] data) {
         this(data.length);
         if (isLarge()) {
