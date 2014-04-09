@@ -51,7 +51,7 @@ import java.util.Random;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class JLargeArraysBenchmark 
+public class Benchmark 
 {
 
     public static void writeToFile(long[] sizes, int[] nthreads, double[][] results, String file) {
