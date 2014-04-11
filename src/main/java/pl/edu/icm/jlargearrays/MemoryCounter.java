@@ -38,8 +38,6 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 /**
@@ -47,21 +45,28 @@ package pl.edu.icm.jlargearrays;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class MemoryCounter {
+public class MemoryCounter
+{
+
     private static long counter = 0;
-    
-    private MemoryCounter() {}
-    
-    public static long getCounter() {
+
+    private MemoryCounter()
+    {
+    }
+
+    public static long getCounter()
+    {
         return counter;
     }
-    
-    public static void increaseCounter(long x) {
+
+    public static void increaseCounter(long x)
+    {
         counter += x;
     }
-    
-    public static void decreaseCounter(long x) {
+
+    public static void decreaseCounter(long x)
+    {
         counter -= x;
-        if(counter < 0) counter = 0;
+        if (counter < 0) counter = 0;
     }
 }

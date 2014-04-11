@@ -87,7 +87,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * Both arrays need to be of the same type. It does not check array bounds.
+     * Both arrays need to be of the same type. Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -132,7 +132,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -142,6 +142,16 @@ public class Utilities
      */
     public static void arraycopy(final BitLargeArray src, final long srcPos, final BitLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -180,7 +190,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -190,6 +200,16 @@ public class Utilities
      */
     public static void arraycopy(final boolean[] src, final int srcPos, final BitLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -229,7 +249,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -239,6 +259,16 @@ public class Utilities
      */
     public static void arraycopy(final ByteLargeArray src, final long srcPos, final ByteLargeArray dest, final long destPos, final long length)
     {
+
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -277,7 +307,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -287,6 +317,15 @@ public class Utilities
      */
     public static void arraycopy(final byte[] src, final int srcPos, final ByteLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -326,7 +365,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -336,6 +375,15 @@ public class Utilities
      */
     public static void arraycopy(final ShortLargeArray src, final long srcPos, final ShortLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -374,7 +422,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -384,6 +432,15 @@ public class Utilities
      */
     public static void arraycopy(final short[] src, final int srcPos, final ShortLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -423,7 +480,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -433,6 +490,15 @@ public class Utilities
      */
     public static void arraycopy(final IntLargeArray src, final long srcPos, final IntLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -471,7 +537,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -481,6 +547,15 @@ public class Utilities
      */
     public static void arraycopy(final int[] src, final int srcPos, final IntLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -520,7 +595,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -530,6 +605,15 @@ public class Utilities
      */
     public static void arraycopy(final LongLargeArray src, final long srcPos, final LongLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -568,7 +652,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -578,6 +662,15 @@ public class Utilities
      */
     public static void arraycopy(final long[] src, final int srcPos, final LongLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -617,7 +710,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -627,6 +720,15 @@ public class Utilities
      */
     public static void arraycopy(final FloatLargeArray src, final long srcPos, final FloatLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -665,7 +767,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -675,6 +777,15 @@ public class Utilities
      */
     public static void arraycopy(final float[] src, final int srcPos, final FloatLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -714,7 +825,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -724,6 +835,15 @@ public class Utilities
      */
     public static void arraycopy(final DoubleLargeArray src, final long srcPos, final DoubleLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -762,7 +882,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -772,6 +892,15 @@ public class Utilities
      */
     public static void arraycopy(final double[] src, final int srcPos, final DoubleLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
@@ -808,10 +937,10 @@ public class Utilities
             }
         }
     }
-        
+
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -821,6 +950,15 @@ public class Utilities
      */
     public static void arraycopy(final StringLargeArray src, final long srcPos, final StringLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
@@ -859,7 +997,7 @@ public class Utilities
 
     /**
      * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
-     * It does not check array bounds.
+     * Array bounds are checked.
      *
      * @param src the source array.
      * @param srcPos starting position in the source array.
@@ -869,6 +1007,15 @@ public class Utilities
      */
     public static void arraycopy(final String[] src, final int srcPos, final StringLargeArray dest, final long destPos, final long length)
     {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2) {

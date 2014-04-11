@@ -53,12 +53,22 @@ public class ShortLargeArray extends LargeArray {
     private static final long serialVersionUID = 8813991144303908703L;
     private short[] data;
 
-    /**
+     /**
      * Creates new instance of this class.
      * 
      * @param length number of elements
      */
     public ShortLargeArray(long length) {
+        this(length, true);
+    }
+    
+    /**
+     * Creates new instance of this class.
+     * 
+     * @param length number of elements
+     * @param zeroNativeMemory if true, then the native memory is zeroed.
+     */
+    public ShortLargeArray(long length, boolean zeroNativeMemory) {
         this.type = LargeArrayType.SHORT;
         this.sizeof = 2;
         if (length <= 0) {
@@ -68,7 +78,9 @@ public class ShortLargeArray extends LargeArray {
         if (length > LARGEST_32BIT_INDEX) {
             System.gc();
             this.ptr = Utilities.UNSAFE.allocateMemory(this.length * this.sizeof);
-            zeroMemory();
+            if(zeroNativeMemory) {
+                zeroNativeMemory();
+            }
             Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
             MemoryCounter.increaseCounter(this.length * this.sizeof);
         } else {
@@ -92,10 +104,16 @@ public class ShortLargeArray extends LargeArray {
     public Short get(long i) {
         return getShort(i);
     }
+    
+    @Override
+    public Short getFromNative(long i)
+    {
+        return Utilities.UNSAFE.getShort(ptr + sizeof * i);
+    }
 
     @Override
     public boolean getBoolean(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return (Utilities.UNSAFE.getShort(ptr + sizeof * i)) != 0;
         } else {
             return data[(int) i] != 0;
@@ -104,7 +122,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public byte getByte(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return (byte) (Utilities.UNSAFE.getShort(ptr + sizeof * i));
         } else {
             return (byte) data[(int) i];
@@ -113,7 +131,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public short getShort(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return Utilities.UNSAFE.getShort(ptr + sizeof * i);
         } else {
             return data[(int) i];
@@ -122,7 +140,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public int getInt(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return (int) (Utilities.UNSAFE.getShort(ptr + sizeof * i));
         } else {
             return (int) data[(int) i];
@@ -131,7 +149,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public long getLong(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return (long) (Utilities.UNSAFE.getShort(ptr + sizeof * i));
         } else {
             return (long) data[(int) i];
@@ -140,7 +158,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public float getFloat(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return (float) (Utilities.UNSAFE.getShort(ptr + sizeof * i));
         } else {
             return (float) data[(int) i];
@@ -149,7 +167,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public double getDouble(long i) {
-        if (isLarge()) {
+        if (ptr != 0) {
             return (double) (Utilities.UNSAFE.getShort(ptr + sizeof * i));
         } else {
             return (double) data[(int) i];
@@ -158,7 +176,7 @@ public class ShortLargeArray extends LargeArray {
     
     @Override
     public short[] getData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             return data;
@@ -168,7 +186,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public boolean[] getBooleanData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             boolean[] res = new boolean[(int) length];
@@ -183,10 +201,10 @@ public class ShortLargeArray extends LargeArray {
     @Override
     public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -204,7 +222,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new boolean[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     short v = Utilities.UNSAFE.getShort(ptr + sizeof * i);
                     out[idx++] = v != 0;
@@ -221,7 +239,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public byte[] getByteData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             byte[] res = new byte[(int) length];
@@ -236,10 +254,10 @@ public class ShortLargeArray extends LargeArray {
     @Override
     public byte[] getByteData(byte[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -257,7 +275,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new byte[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     out[idx++] = (byte)Utilities.UNSAFE.getShort(ptr + sizeof * i);
                 }
@@ -272,7 +290,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public short[] getShortData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             return data.clone();
@@ -282,10 +300,10 @@ public class ShortLargeArray extends LargeArray {
        @Override
     public short[] getShortData(short[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -303,7 +321,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new short[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     out[idx++] = Utilities.UNSAFE.getShort(ptr + sizeof * i);
                 }
@@ -318,7 +336,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public int[] getIntData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             int[] res = new int[(int) length];
@@ -333,10 +351,10 @@ public class ShortLargeArray extends LargeArray {
     @Override
     public int[] getIntData(int[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -354,7 +372,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new int[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     out[idx++] = (int)Utilities.UNSAFE.getShort(ptr + sizeof * i);
                 }
@@ -369,7 +387,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public long[] getLongData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             long[] res = new long[(int) length];
@@ -384,10 +402,10 @@ public class ShortLargeArray extends LargeArray {
      @Override
     public long[] getLongData(long[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -405,7 +423,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new long[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     out[idx++] = (long)Utilities.UNSAFE.getShort(ptr + sizeof * i);
                 }
@@ -420,7 +438,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public float[] getFloatData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             float[] res = new float[(int) length];
@@ -435,10 +453,10 @@ public class ShortLargeArray extends LargeArray {
     @Override
     public float[] getFloatData(float[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -456,7 +474,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new float[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     out[idx++] = (float)Utilities.UNSAFE.getShort(ptr + sizeof * i);
                 }
@@ -472,7 +490,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public double[] getDoubleData() {
-        if (isLarge()) {
+        if (ptr != 0) {
             return null;
         } else {
             double[] res = new double[(int) length];
@@ -487,10 +505,10 @@ public class ShortLargeArray extends LargeArray {
        @Override
     public double[] getDoubleData(double[] a, long startPos, long endPos, long step) {
         if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
         if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
         if(step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -508,7 +526,7 @@ public class ShortLargeArray extends LargeArray {
                 out = new double[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
+            if (ptr != 0) {
                 for (long i = startPos; i < endPos; i+=step) {
                     out[idx++] = (double)Utilities.UNSAFE.getShort(ptr + sizeof * i);
                 }
@@ -520,10 +538,16 @@ public class ShortLargeArray extends LargeArray {
             return out;
         }
     }
+    
+    @Override
+    public void setToNative(long i, Object value)
+    {
+        Utilities.UNSAFE.putShort(ptr + sizeof * i, (Short)value);
+    }
 
     @Override
     public void setBoolean(long i, boolean value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, value == true ? (short) 1 : (short) 0);
         } else {
             data[(int) i] = value == true ? (short) 1 : (short) 0;
@@ -532,7 +556,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public void setByte(long i, byte value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, (short) value);
         } else {
             data[(int) i] = (short) value;
@@ -541,7 +565,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public void setShort(long i, short value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, value);
         } else {
             data[(int) i] = value;
@@ -550,7 +574,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public void setInt(long i, int value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, (short) value);
         } else {
             data[(int) i] = (short) value;
@@ -559,7 +583,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public void setLong(long i, long value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, (short) value);
         } else {
             data[(int) i] = (short) value;
@@ -568,7 +592,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public void setFloat(long i, float value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, (short) value);
         } else {
             data[(int) i] = (short) value;
@@ -577,7 +601,7 @@ public class ShortLargeArray extends LargeArray {
 
     @Override
     public void setDouble(long i, double value) {
-        if (isLarge()) {
+        if (ptr != 0) {
             Utilities.UNSAFE.putShort(ptr + sizeof * i, (short) value);
         } else {
             data[(int) i] = (short) value;

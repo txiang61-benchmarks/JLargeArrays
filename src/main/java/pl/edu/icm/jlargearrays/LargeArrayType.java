@@ -38,8 +38,6 @@
  * exception statement from your version. 
  * 
  * ***** END LICENSE BLOCK ***** */
-
-
 package pl.edu.icm.jlargearrays;
 
 /**
@@ -47,13 +45,15 @@ package pl.edu.icm.jlargearrays;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public enum LargeArrayType {
-   BIT,
-   BYTE,
-   SHORT,
-   INT,
-   LONG,
-   FLOAT,
-   DOUBLE,
-   STRING
+public enum LargeArrayType
+{
+
+    BIT,
+    BYTE,
+    SHORT,
+    INT,
+    LONG,
+    FLOAT,
+    DOUBLE,
+    STRING
 }

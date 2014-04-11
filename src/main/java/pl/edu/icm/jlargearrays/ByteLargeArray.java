@@ -48,17 +48,30 @@ import sun.misc.Cleaner;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class ByteLargeArray extends LargeArray {
+public class ByteLargeArray extends LargeArray
+{
 
     private static final long serialVersionUID = 3135411647668758832L;
     private byte[] data;
-    
+
     /**
      * Creates new instance of this class.
-     * 
+     *
      * @param length number of elements
      */
-    public ByteLargeArray(long length) {
+    public ByteLargeArray(long length)
+    {
+        this(length, true);
+    }
+
+    /**
+     * Creates new instance of this class.
+     *
+     * @param length number of elements
+     * @param zeroNativeMemory if true, then the native memory is zeroed.
+     */
+    public ByteLargeArray(long length, boolean zeroNativeMemory)
+    {
         this.type = LargeArrayType.BYTE;
         this.sizeof = 1;
         if (length <= 0) {
@@ -68,21 +81,23 @@ public class ByteLargeArray extends LargeArray {
         if (length > LARGEST_32BIT_INDEX) {
             System.gc();
             this.ptr = Utilities.UNSAFE.allocateMemory(this.length * this.sizeof);
-            zeroMemory();
+            if (zeroNativeMemory) {
+                zeroNativeMemory();
+            }
             Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
             MemoryCounter.increaseCounter(this.length * this.sizeof);
         } else {
             data = new byte[(int) length];
         }
     }
-    
-    
+
     /**
      * Creates new instance of this class.
-     * 
+     *
      * @param data data array, this reference is used internally.
      */
-    public ByteLargeArray(byte[] data) {
+    public ByteLargeArray(byte[] data)
+    {
         this.type = LargeArrayType.BYTE;
         this.sizeof = 1;
         this.length = data.length;
@@ -90,115 +105,131 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public Byte get(long i) {
+    public Byte get(long i)
+    {
         return getByte(i);
     }
-
+    
     @Override
-    public boolean getBoolean(long i) {
-        if (isLarge()) {
-            return (Utilities.UNSAFE.getByte(ptr + sizeof * i)) != 0;
+    public Byte getFromNative(long i)
+    {
+        return Utilities.UNSAFE.getByte(ptr + i);
+    }
+    
+    @Override
+    public boolean getBoolean(long i)
+    {
+        if (ptr != 0) {
+            return (Utilities.UNSAFE.getByte(ptr + i)) != 0;
         } else {
             return data[(int) i] != 0;
         }
     }
 
     @Override
-    public byte getByte(long i) {
+    public byte getByte(long i)
+    {
         if (isLarge()) {
-            return (Utilities.UNSAFE.getByte(ptr + sizeof * i));
-        } else {
+            return Utilities.UNSAFE.getByte(ptr + i);
+        }
+        else {
             return data[(int) i];
         }
     }
 
     @Override
-    public short getShort(long i) {
-        if (isLarge()) {
-            return (short) (Utilities.UNSAFE.getByte(ptr + sizeof * i));
+    public short getShort(long i)
+    {
+        if (ptr != 0) {
+            return (short) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             return (short) data[(int) i];
         }
     }
 
     @Override
-    public int getInt(long i) {
-        if (isLarge()) {
-            return (int) (Utilities.UNSAFE.getByte(ptr + sizeof * i));
+    public int getInt(long i)
+    {
+        if (ptr != 0) {
+            return (int) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             return (int) data[(int) i];
         }
     }
 
     @Override
-    public long getLong(long i) {
-        if (isLarge()) {
-            return (long) (Utilities.UNSAFE.getByte(ptr + sizeof * i));
+    public long getLong(long i)
+    {
+        if (ptr != 0) {
+            return (long) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             return (long) data[(int) i];
         }
     }
 
     @Override
-    public float getFloat(long i) {
-        if (isLarge()) {
-            return (float) (Utilities.UNSAFE.getByte(ptr + sizeof * i));
+    public float getFloat(long i)
+    {
+        if (ptr != 0) {
+            return (float) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             return (float) data[(int) i];
         }
     }
 
     @Override
-    public double getDouble(long i) {
-        if (isLarge()) {
-            return (double) Utilities.UNSAFE.getByte(ptr + sizeof * i);
+    public double getDouble(long i)
+    {
+        if (ptr != 0) {
+            return (double) Utilities.UNSAFE.getByte(ptr + i);
         } else {
             return (double) data[(int) i];
         }
     }
 
     @Override
-    public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             boolean[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new boolean[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    byte v = Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    byte v = Utilities.UNSAFE.getByte(ptr + i);
                     out[idx++] = v == 1;
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    byte v = data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    byte v = data[(int) i];
                     out[idx++] = v == 1;
                 }
             }
             return out;
         }
     }
-    
+
     @Override
-    public boolean[] getBooleanData() {
-        if (isLarge()) {
+    public boolean[] getBooleanData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             boolean[] res = new boolean[(int) length];
@@ -211,54 +242,56 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public byte[] getData() {
-        if (isLarge()) {
+    public byte[] getData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             return data;
         }
     }
-    
+
     @Override
-    public byte[] getByteData() {
-        if (isLarge()) {
+    public byte[] getByteData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             return data.clone();
         }
     }
-    
+
     @Override
-    public byte[] getByteData(byte[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public byte[] getByteData(byte[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             byte[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new byte[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = data[(int) i];
                 }
             }
             return out;
@@ -266,8 +299,9 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public short[] getShortData() {
-        if (isLarge()) {
+    public short[] getShortData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             short[] res = new short[(int) length];
@@ -278,38 +312,38 @@ public class ByteLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
-    public short[] getShortData(short[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public short[] getShortData(short[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             short[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new short[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (short)Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (short) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (short)data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (short) data[(int) i];
                 }
             }
             return out;
@@ -317,8 +351,9 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public int[] getIntData() {
-        if (isLarge()) {
+    public int[] getIntData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             int[] res = new int[(int) length];
@@ -329,38 +364,38 @@ public class ByteLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
-    public int[] getIntData(int[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public int[] getIntData(int[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             int[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new int[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (int)Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (int) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (int)data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (int) data[(int) i];
                 }
             }
             return out;
@@ -368,8 +403,9 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public long[] getLongData() {
-        if (isLarge()) {
+    public long[] getLongData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             long[] res = new long[(int) length];
@@ -380,38 +416,38 @@ public class ByteLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
-    public long[] getLongData(long[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public long[] getLongData(long[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             long[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new long[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (long)Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (long) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (long)data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (long) data[(int) i];
                 }
             }
             return out;
@@ -419,8 +455,9 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public float[] getFloatData() {
-        if (isLarge()) {
+    public float[] getFloatData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             float[] res = new float[(int) length];
@@ -431,38 +468,38 @@ public class ByteLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
-    public float[] getFloatData(float[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public float[] getFloatData(float[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             float[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new float[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (float)Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (float) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (float)data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (float) data[(int) i];
                 }
             }
             return out;
@@ -470,8 +507,9 @@ public class ByteLargeArray extends LargeArray {
     }
 
     @Override
-    public double[] getDoubleData() {
-        if (isLarge()) {
+    public double[] getDoubleData()
+    {
+        if (ptr != 0) {
             return null;
         } else {
             double[] res = new double[(int) length];
@@ -482,103 +520,115 @@ public class ByteLargeArray extends LargeArray {
             return res;
         }
     }
-    
+
     @Override
-    public double[] getDoubleData(double[] a, long startPos, long endPos, long step) {
-        if(startPos < 0 || startPos >= length) {
-            throw new IllegalArgumentException("startPos < 0 || startPos >= length");
+    public double[] getDoubleData(double[] a, long startPos, long endPos, long step)
+    {
+        if (startPos < 0 || startPos >= length) {
+            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if(endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new IllegalArgumentException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos >= length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
         }
-        if(step < 1) {
+        if (step < 1) {
             throw new IllegalArgumentException("step < 1");
         }
 
-        long len = (long)Math.ceil((endPos - startPos) / (double)step);
+        long len = (long) Math.ceil((endPos - startPos) / (double) step);
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
             double[] out;
-            if(a != null && a.length >= len) {
+            if (a != null && a.length >= len) {
                 out = a;
-            }
-            else {
+            } else {
                 out = new double[(int) len];
             }
             int idx = 0;
-            if (isLarge()) {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (double)Utilities.UNSAFE.getByte(ptr + sizeof * i);
+            if (ptr != 0) {
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (double) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i+=step) {
-                    out[idx++] = (double)data[(int)i];
+                for (long i = startPos; i < endPos; i += step) {
+                    out[idx++] = (double) data[(int) i];
                 }
             }
             return out;
         }
     }
-
+    
+    @Override
+    public void setToNative(long i, Object value)
+    {
+        Utilities.UNSAFE.putByte(ptr + i, (Byte)value);
+    }
 
     @Override
-    public void setBoolean(long i, boolean value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, value == true ? (byte) 1 : (byte) 0);
+    public void setBoolean(long i, boolean value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, value == true ? (byte) 1 : (byte) 0);
         } else {
             data[(int) i] = value == true ? (byte) 1 : (byte) 0;
         }
     }
 
     @Override
-    public void setByte(long i, byte value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, value);
+    public void setByte(long i, byte value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, value);
         } else {
             data[(int) i] = value;
         }
     }
 
     @Override
-    public void setShort(long i, short value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, (byte) value);
+    public void setShort(long i, short value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             data[(int) i] = (byte) value;
         }
     }
 
     @Override
-    public void setInt(long i, int value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, (byte) value);
+    public void setInt(long i, int value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             data[(int) i] = (byte) value;
         }
     }
 
     @Override
-    public void setLong(long i, long value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, (byte) value);
+    public void setLong(long i, long value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             data[(int) i] = (byte) value;
         }
     }
 
     @Override
-    public void setFloat(long i, float value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, (byte) value);
+    public void setFloat(long i, float value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             data[(int) i] = (byte) value;
         }
     }
 
     @Override
-    public void setDouble(long i, double value) {
-        if (isLarge()) {
-            Utilities.UNSAFE.putByte(ptr + sizeof * i, (byte) value);
+    public void setDouble(long i, double value)
+    {
+        if (ptr != 0) {
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             data[(int) i] = (byte) value;
         }
