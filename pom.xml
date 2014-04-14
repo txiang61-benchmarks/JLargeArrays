@@ -7,9 +7,10 @@
   <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <url>http://maven.apache.org</url> 
-    <build>
-        <plugins>
+  <url>https://github.com/IcmVis/JLargeArrays</url> 
+
+  <build>
+    <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -25,10 +26,28 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5</version>
             </plugin>
-        </plugins>
-    </build>
-    <properties>
+            <plugin>
+              <groupId>com.github.github</groupId>
+              <artifactId>site-maven-plugin</artifactId>
+              <version>0.9</version>
+              <configuration>
+                <message>Creating site for ${project.version}</message>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>site</goal>
+                  </goals>
+                  <phase>site</phase>
+                </execution>
+              </executions>
+            </plugin>
+    </plugins>
+  </build>
+
+  <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <github.global.server>github</github.global.server>
   </properties>
 
   <scm>
