@@ -129,6 +129,19 @@ public class BitLargeArray extends LargeArray
             }
         }
     }
+    
+    /**
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     *
+     * @return a clone of this instance
+     */
+    @Override
+    public BitLargeArray clone()
+    {
+        BitLargeArray v = new BitLargeArray(length, false);
+        Utilities.arraycopy(this, 0, v, 0, length);
+        return v;
+    }
 
     @Override
     public Boolean get(long i)

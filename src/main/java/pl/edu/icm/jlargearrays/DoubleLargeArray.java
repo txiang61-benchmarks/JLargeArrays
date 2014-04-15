@@ -67,7 +67,7 @@ public class DoubleLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param length number of elements
+     * @param length           number of elements
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
     public DoubleLargeArray(long length, boolean zeroNativeMemory)
@@ -102,6 +102,19 @@ public class DoubleLargeArray extends LargeArray
         this.sizeof = 8;
         this.length = data.length;
         this.data = data;
+    }
+
+    /**
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     *
+     * @return a clone of this instance
+     */
+    @Override
+    public DoubleLargeArray clone()
+    {
+        DoubleLargeArray v = new DoubleLargeArray(length, false);
+        Utilities.arraycopy(this, 0, v, 0, length);
+        return v;
     }
 
     @Override
@@ -560,9 +573,9 @@ public class DoubleLargeArray extends LargeArray
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putDouble(ptr + sizeof * i, (Double)value);
+        Utilities.UNSAFE.putDouble(ptr + sizeof * i, (Double) value);
     }
-    
+
     @Override
     public void setBoolean(long i, boolean value)
     {

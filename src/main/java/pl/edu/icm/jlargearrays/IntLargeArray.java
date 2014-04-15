@@ -103,6 +103,19 @@ public class IntLargeArray extends LargeArray
         this.length = data.length;
         this.data = data;
     }
+    
+    /**
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     *
+     * @return a clone of this instance
+     */
+    @Override
+    public IntLargeArray clone()
+    {
+        IntLargeArray v = new IntLargeArray(length, false);
+        Utilities.arraycopy(this, 0, v, 0, length);
+        return v;
+    }
 
     @Override
     public Integer get(long i)

@@ -67,7 +67,7 @@ public class ByteLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param length number of elements
+     * @param length           number of elements
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
     public ByteLargeArray(long length, boolean zeroNativeMemory)
@@ -104,18 +104,31 @@ public class ByteLargeArray extends LargeArray
         this.data = data;
     }
 
+    /**
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     *
+     * @return a clone of this instance
+     */
+    @Override
+    public ByteLargeArray clone()
+    {
+        ByteLargeArray v = new ByteLargeArray(length, false);
+        Utilities.arraycopy(this, 0, v, 0, length);
+        return v;
+    }
+
     @Override
     public Byte get(long i)
     {
         return getByte(i);
     }
-    
+
     @Override
     public Byte getFromNative(long i)
     {
         return Utilities.UNSAFE.getByte(ptr + i);
     }
-    
+
     @Override
     public boolean getBoolean(long i)
     {
@@ -131,8 +144,7 @@ public class ByteLargeArray extends LargeArray
     {
         if (isLarge()) {
             return Utilities.UNSAFE.getByte(ptr + i);
-        }
-        else {
+        } else {
             return data[(int) i];
         }
     }
@@ -557,11 +569,11 @@ public class ByteLargeArray extends LargeArray
             return out;
         }
     }
-    
+
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putByte(ptr + i, (Byte)value);
+        Utilities.UNSAFE.putByte(ptr + i, (Byte) value);
     }
 
     @Override

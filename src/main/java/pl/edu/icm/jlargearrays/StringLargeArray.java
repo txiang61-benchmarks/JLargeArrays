@@ -93,6 +93,19 @@ public class StringLargeArray extends LargeArray
         this.length = data.length;
         this.data = data;
     }
+    
+    /**
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     *
+     * @return a clone of this instance
+     */
+    @Override
+    public StringLargeArray clone()
+    {
+        StringLargeArray v = new StringLargeArray(length, false, maxStringLength);
+        Utilities.arraycopy(this, 0, v, 0, length);
+        return v;
+    }
 
     @Override
     public String get(long i)

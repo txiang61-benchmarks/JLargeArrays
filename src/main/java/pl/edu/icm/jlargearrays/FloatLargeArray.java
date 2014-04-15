@@ -67,7 +67,7 @@ public class FloatLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param length number of elements
+     * @param length           number of elements
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
     public FloatLargeArray(long length, boolean zeroNativeMemory)
@@ -104,12 +104,25 @@ public class FloatLargeArray extends LargeArray
         this.data = data;
     }
 
+    /**
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     *
+     * @return a clone of this instance
+     */
+    @Override
+    public FloatLargeArray clone()
+    {
+        FloatLargeArray v = new FloatLargeArray(length, false);
+        Utilities.arraycopy(this, 0, v, 0, length);
+        return v;
+    }
+
     @Override
     public Float get(long i)
     {
         return getFloat(i);
     }
-    
+
     @Override
     public Float getFromNative(long i)
     {
@@ -556,11 +569,11 @@ public class FloatLargeArray extends LargeArray
             return out;
         }
     }
-    
+
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putFloat(ptr + sizeof * i, (Float)value);
+        Utilities.UNSAFE.putFloat(ptr + sizeof * i, (Float) value);
     }
 
     @Override

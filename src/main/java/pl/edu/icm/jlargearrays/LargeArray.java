@@ -54,6 +54,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     protected long length;
     protected long sizeof;
     protected long ptr = 0;
+    
     /**
      * Largest array size for which a regular 1D Java array is used to store the
      * data.
