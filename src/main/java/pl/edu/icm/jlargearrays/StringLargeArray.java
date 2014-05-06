@@ -22,6 +22,7 @@ public class StringLargeArray extends LargeArray
     private String[] data;
     private ShortLargeArray stringLengths;
     private int maxStringLength;
+    private long size;
     private byte[] byteArray;
     private static final String CHARSET = "UTF-8";
     private static final int CHARSET_SIZE = 4; //UTF-8 uses between 1 and 4 bytes to encode a single character 
@@ -64,16 +65,17 @@ public class StringLargeArray extends LargeArray
         if (maxStringLength <= 0) {
             throw new IllegalArgumentException(maxStringLength + " is not a positive int value.");
         }
-        this.length = length * (long) maxStringLength * (long) CHARSET_SIZE;
+        this.length = length;
+        this.size = length * (long) maxStringLength * (long) CHARSET_SIZE;
         this.maxStringLength = maxStringLength;
         if (length > LARGEST_32BIT_INDEX) {
             System.gc();
-            this.ptr = Utilities.UNSAFE.allocateMemory(this.length * this.sizeof);
+            this.ptr = Utilities.UNSAFE.allocateMemory(this.size * this.sizeof);
             if (zeroNativeMemory) {
                 zeroNativeMemory();
             }
-            Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
-            MemoryCounter.increaseCounter(this.length * this.sizeof);
+            Cleaner.create(this, new Deallocator(this.ptr, this.size, this.sizeof));
+            MemoryCounter.increaseCounter(this.size * this.sizeof);
             stringLengths = new ShortLargeArray(length);
             byteArray = new byte[maxStringLength * CHARSET_SIZE];
         } else {
@@ -102,8 +104,8 @@ public class StringLargeArray extends LargeArray
     @Override
     public StringLargeArray clone()
     {
-        StringLargeArray v = new StringLargeArray(length, false, maxStringLength);
-        Utilities.arraycopy(this, 0, v, 0, length);
+        StringLargeArray v = new StringLargeArray(size, false, maxStringLength);
+        Utilities.arraycopy(this, 0, v, 0, size);
         return v;
     }
 
