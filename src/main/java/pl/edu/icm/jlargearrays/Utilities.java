@@ -1007,7 +1007,7 @@ public class Utilities {
      *
      * @param src the source array
      * @param type the type of LargeArray
-     * @return
+     * @return LargeArray of a specified type
      */
     public static LargeArray convert(final LargeArray src, final LargeArrayType type) {
         if (src.getType() == type) {
