@@ -960,10 +960,25 @@ public class Utilities {
         }
     }
 
+    /**
+     * Creates a new instance of LargeArray. The native memory is zeroed.
+     *
+     * @param type the type of LargeArray
+     * @param length number of elements
+     * @return new instance of LargeArray
+     */
     public static LargeArray create(LargeArrayType type, long length) {
         return create(type, length, true);
     }
 
+    /**
+     * Creates a new instance of LargeArray
+     *
+     * @param type the type of LargeArray
+     * @param length number of elements
+     * @param zeroNativeMemory if true, then the native memory is zeroed
+     * @return new instance of LargeArray
+     */
     public static LargeArray create(LargeArrayType type, long length, boolean zeroNativeMemory) {
         switch (type) {
             case BIT:
@@ -987,6 +1002,13 @@ public class Utilities {
         }
     }
 
+    /**
+     * Converts LargeArray to a given type.
+     *
+     * @param src the source array
+     * @param type the type of LargeArray
+     * @return
+     */
     public static LargeArray convert(final LargeArray src, final LargeArrayType type) {
         if (src.getType() == type) {
             return src;
