@@ -34,7 +34,7 @@ public class StringLargeArray extends LargeArray
      */
     public StringLargeArray(long length)
     {
-        this(length, true, 100);
+        this(length, 100);
     }
 
     /**
@@ -45,17 +45,17 @@ public class StringLargeArray extends LargeArray
      */
     public StringLargeArray(long length, int maxStringLength)
     {
-        this(length, true, maxStringLength);
+        this(length, maxStringLength, true);
     }
 
     /**
      * Creates new instance of this class.
      *
      * @param length number of elements
-     * @param zeroNativeMemory if true, then the native memory is zeroed.
      * @param maxStringLength maximal length of the string, it is ignored when number of elements is smaller than LARGEST_32BIT_INDEX
+     * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
-    public StringLargeArray(long length, boolean zeroNativeMemory, int maxStringLength)
+    public StringLargeArray(long length, int maxStringLength, boolean zeroNativeMemory)
     {
         this.type = LargeArrayType.STRING;
         this.sizeof = 1;
@@ -104,7 +104,7 @@ public class StringLargeArray extends LargeArray
     @Override
     public StringLargeArray clone()
     {
-        StringLargeArray v = new StringLargeArray(size, false, maxStringLength);
+        StringLargeArray v = new StringLargeArray(size, maxStringLength, false);
         Utilities.arraycopy(this, 0, v, 0, size);
         return v;
     }

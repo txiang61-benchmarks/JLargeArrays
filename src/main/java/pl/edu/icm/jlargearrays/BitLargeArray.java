@@ -107,11 +107,11 @@ public class BitLargeArray extends LargeArray
                 if (data[i]) {
                     v = 1;
                 }
-                long index = i / 8;
-                long ii = i % 8;
+                long index = i / 8l;
+                long ii = i % 8l;
                 byte oldV = Utilities.UNSAFE.getByte(ptr + index);
                 oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-                byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+                byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
                 Utilities.UNSAFE.putByte(ptr + index, newV);
             }
         } else {
@@ -152,10 +152,10 @@ public class BitLargeArray extends LargeArray
     @Override
     public Boolean getFromNative(long i)
     {
-        long index = i / 8;
+        long index = i / 8l;
         byte v = Utilities.UNSAFE.getByte(ptr + index);
-        long ii = i % 8;
-        int value = v >> (8 - (ii + 1)) & 0x0001;
+        long ii = i % 8l;
+        int value = v >> (8l - (ii + 1l)) & 0x0001;
         return value == 1;
     }
 
@@ -163,10 +163,10 @@ public class BitLargeArray extends LargeArray
     public boolean getBoolean(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return value == 1;
         } else {
             int index = (int) i / 8;
@@ -181,10 +181,10 @@ public class BitLargeArray extends LargeArray
     public byte getByte(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (byte) value;
         } else {
             int index = (int) i / 8;
@@ -199,10 +199,10 @@ public class BitLargeArray extends LargeArray
     public short getShort(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (short) value;
         } else {
             int index = (int) i / 8;
@@ -217,10 +217,10 @@ public class BitLargeArray extends LargeArray
     public int getInt(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return value;
         } else {
             int index = (int) i / 8;
@@ -235,10 +235,10 @@ public class BitLargeArray extends LargeArray
     public long getLong(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (long) value;
         } else {
             int index = (int) i / 8;
@@ -253,10 +253,10 @@ public class BitLargeArray extends LargeArray
     public float getFloat(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (float) value;
         } else {
             int index = (int) i / 8;
@@ -271,10 +271,10 @@ public class BitLargeArray extends LargeArray
     public double getDouble(long i)
     {
         if (ptr != 0) {
-            long index = i / 8;
+            long index = i / 8l;
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8;
-            int value = v >> (8 - (ii + 1)) & 0x0001;
+            long ii = i % 8l;
+            int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (double) value;
         } else {
             int index = (int) i / 8;
@@ -340,10 +340,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    int value = v >> (8 - (ii + 1)) & 0x0001;
+                    long ii = i % 8l;
+                    int value = v >> (8l - (ii + 1l)) & 0x0001;
                     out[idx++] = value == 1;
                 }
             } else {
@@ -403,10 +403,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    out[idx++] = (byte) (v >> (8 - (ii + 1)) & 0x0001);
+                    long ii = i % 8l;
+                    out[idx++] = (byte) (v >> (8l - (ii + 1l)) & 0x0001);
                 }
             } else {
                 for (long i = startPos; i < endPos; i += step) {
@@ -464,10 +464,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    out[idx++] = (short) (v >> (8 - (ii + 1)) & 0x0001);
+                    long ii = i % 8l;
+                    out[idx++] = (short) (v >> (8l - (ii + 1l)) & 0x0001);
                 }
             } else {
                 for (long i = startPos; i < endPos; i += step) {
@@ -525,10 +525,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    out[idx++] = (int) (v >> (8 - (ii + 1)) & 0x0001);
+                    long ii = i % 8l;
+                    out[idx++] = (int) (v >> (8l - (ii + 1l)) & 0x0001);
                 }
             } else {
                 for (long i = startPos; i < endPos; i += step) {
@@ -586,10 +586,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    out[idx++] = (long) (v >> (8 - (ii + 1)) & 0x0001);
+                    long ii = i % 8l;
+                    out[idx++] = (long) (v >> (8l - (ii + 1l)) & 0x0001);
                 }
             } else {
                 for (long i = startPos; i < endPos; i += step) {
@@ -647,10 +647,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    out[idx++] = (float) (v >> (8 - (ii + 1)) & 0x0001);
+                    long ii = i % 8l;
+                    out[idx++] = (float) (v >> (8l - (ii + 1l)) & 0x0001);
                 }
             } else {
                 for (long i = startPos; i < endPos; i += step) {
@@ -708,10 +708,10 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8;
+                    long index = i / 8l;
                     byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8;
-                    out[idx++] = (double) (v >> (8 - (ii + 1)) & 0x0001);
+                    long ii = i % 8l;
+                    out[idx++] = (double) (v >> (8l - (ii + 1l)) & 0x0001);
                 }
             } else {
                 for (long i = startPos; i < endPos; i += step) {
@@ -732,11 +732,11 @@ public class BitLargeArray extends LargeArray
         if ((Boolean)value) {
             v = 1;
         }
-        long index = i / 8;
-        long ii = i % 8;
+        long index = i / 8l;
+        long ii = i % 8l;
         byte oldV = Utilities.UNSAFE.getByte(ptr + index);
         oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-        byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+        byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
         Utilities.UNSAFE.putByte(ptr + index, newV);
     }
 
@@ -748,11 +748,11 @@ public class BitLargeArray extends LargeArray
             if (value) {
                 v = 1;
             }
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int v = 0;
@@ -775,11 +775,11 @@ public class BitLargeArray extends LargeArray
             throw new IllegalArgumentException("value has to be 0 or 1");
         if (ptr != 0) {
             int v = (int) (value & 0xFF);
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int v = (int) (value & 0xFF);
@@ -799,11 +799,11 @@ public class BitLargeArray extends LargeArray
             throw new IllegalArgumentException("value has to be 0 or 1");
         if (ptr != 0) {
             int v = (int) ((byte) value & 0xFF);
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int v = (int) ((byte) value & 0xFF);
@@ -822,11 +822,11 @@ public class BitLargeArray extends LargeArray
         if (value < 0 || value > 1)
             throw new IllegalArgumentException("value has to ne 0 or 1");
         if (ptr != 0) {
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((value << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((value << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int index = (int) i / 8;
@@ -845,11 +845,11 @@ public class BitLargeArray extends LargeArray
             throw new IllegalArgumentException("value has to be 0 or 1");
         int v = (int) value;
         if (ptr != 0) {
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int index = (int) i / 8;
@@ -868,11 +868,11 @@ public class BitLargeArray extends LargeArray
             throw new IllegalArgumentException("value has to be 0 or 1");
         int v = (int) value;
         if (ptr != 0) {
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int index = (int) i / 8;
@@ -891,11 +891,11 @@ public class BitLargeArray extends LargeArray
             throw new IllegalArgumentException("value has to be 0 or 1");
         int v = (int) value;
         if (ptr != 0) {
-            long index = i / 8;
-            long ii = i % 8;
+            long index = i / 8l;
+            long ii = i % 8l;
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
+            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
         } else {
             int index = (int) i / 8;

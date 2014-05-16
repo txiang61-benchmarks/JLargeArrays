@@ -48,8 +48,7 @@ import java.lang.reflect.Field;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class Utilities
-{
+public class Utilities {
 
     /**
      * An object for performing low-level, unsafe operations.
@@ -81,12 +80,12 @@ public class Utilities
         }
     }
 
-    private Utilities()
-    {
+    private Utilities() {
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Both arrays need to be of the same type. Array bounds are checked.
      *
      * @param src the source array.
@@ -95,8 +94,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final LargeArray src, final long srcPos, final LargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final LargeArray src, final long srcPos, final LargeArray dest, final long destPos, final long length) {
         if (src.getType() != dest.getType()) {
             throw new IllegalArgumentException("The type of source array is different than the type of destimation array.");
         }
@@ -131,7 +129,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -140,8 +139,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final BitLargeArray src, final long srcPos, final BitLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final BitLargeArray src, final long srcPos, final BitLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -151,45 +149,14 @@ public class Utilities
         if (length < 0) {
             throw new IllegalArgumentException("length < 0");
         }
-
-        int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
-            for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-                dest.setByte(j, src.getByte(i));
-            }
-        } else {
-            long k = length / nthreads;
-            Thread[] threads = new Thread[nthreads];
-            for (int j = 0; j < nthreads; j++) {
-                final long firstIdx = j * k;
-                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        for (long k = firstIdx; k < lastIdx; k++) {
-                            dest.setByte(destPos + k, src.getByte(srcPos + k));
-                        }
-                    }
-                });
-                threads[j].start();
-            }
-            try {
-                for (int j = 0; j < nthreads; j++) {
-                    threads[j].join();
-                    threads[j] = null;
-                }
-            } catch (InterruptedException ex) {
-                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-                    dest.setByte(j, src.getByte(i));
-                }
-            }
+        for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+            dest.setByte(j, src.getByte(i));
         }
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -198,8 +165,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final boolean[] src, final int srcPos, final BitLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final boolean[] src, final int srcPos, final BitLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -211,44 +177,14 @@ public class Utilities
         }
 
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
-            for (long j = destPos; j < destPos + length; j++) {
-                dest.setBoolean(j, src[i++]);
-            }
-        } else {
-            long k = length / nthreads;
-            Thread[] threads = new Thread[nthreads];
-            for (int j = 0; j < nthreads; j++) {
-                final long firstIdx = j * k;
-                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        for (long k = firstIdx; k < lastIdx; k++) {
-                            dest.setBoolean(destPos + k, src[srcPos + (int) k]);
-                        }
-                    }
-                });
-                threads[j].start();
-            }
-            try {
-                for (int j = 0; j < nthreads; j++) {
-                    threads[j].join();
-                    threads[j] = null;
-                }
-            } catch (InterruptedException ex) {
-                for (long j = destPos; j < destPos + length; j++) {
-                    dest.setBoolean(j, src[i++]);
-                }
-            }
+        for (long j = destPos; j < destPos + length; j++) {
+            dest.setBoolean(j, src[i++]);
         }
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -257,8 +193,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final ByteLargeArray src, final long srcPos, final ByteLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final ByteLargeArray src, final long srcPos, final ByteLargeArray dest, final long destPos, final long length) {
 
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
@@ -280,11 +215,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setByte(destPos + k, src.getByte(srcPos + k));
                         }
@@ -306,7 +239,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -315,8 +249,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final byte[] src, final int srcPos, final ByteLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final byte[] src, final int srcPos, final ByteLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -338,11 +271,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setByte(destPos + k, src[srcPos + (int) k]);
                         }
@@ -364,7 +295,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -373,8 +305,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final ShortLargeArray src, final long srcPos, final ShortLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final ShortLargeArray src, final long srcPos, final ShortLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -395,11 +326,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setShort(destPos + k, src.getShort(srcPos + k));
                         }
@@ -421,7 +350,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -430,8 +360,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final short[] src, final int srcPos, final ShortLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final short[] src, final int srcPos, final ShortLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -453,11 +382,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setShort(destPos + k, src[srcPos + (int) k]);
                         }
@@ -479,7 +406,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -488,8 +416,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final IntLargeArray src, final long srcPos, final IntLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final IntLargeArray src, final long srcPos, final IntLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -510,11 +437,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setInt(destPos + k, src.getInt(srcPos + k));
                         }
@@ -536,7 +461,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -545,8 +471,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final int[] src, final int srcPos, final IntLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final int[] src, final int srcPos, final IntLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -568,11 +493,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setInt(destPos + k, src[srcPos + (int) k]);
                         }
@@ -594,7 +517,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -603,8 +527,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final LongLargeArray src, final long srcPos, final LongLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final LongLargeArray src, final long srcPos, final LongLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -625,11 +548,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setLong(destPos + k, src.getLong(srcPos + k));
                         }
@@ -651,7 +572,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -660,8 +582,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final long[] src, final int srcPos, final LongLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final long[] src, final int srcPos, final LongLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -683,11 +604,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setLong(destPos + k, src[srcPos + (int) k]);
                         }
@@ -709,7 +628,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -718,8 +638,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final FloatLargeArray src, final long srcPos, final FloatLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final FloatLargeArray src, final long srcPos, final FloatLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -740,11 +659,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setFloat(destPos + k, src.getFloat(srcPos + k));
                         }
@@ -766,7 +683,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -775,8 +693,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final float[] src, final int srcPos, final FloatLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final float[] src, final int srcPos, final FloatLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -798,11 +715,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setFloat(destPos + k, src[srcPos + (int) k]);
                         }
@@ -824,7 +739,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -833,8 +749,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final DoubleLargeArray src, final long srcPos, final DoubleLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final DoubleLargeArray src, final long srcPos, final DoubleLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -855,11 +770,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setDouble(destPos + k, src.getDouble(srcPos + k));
                         }
@@ -881,7 +794,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -890,8 +804,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final double[] src, final int srcPos, final DoubleLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final double[] src, final int srcPos, final DoubleLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -913,11 +826,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.setDouble(destPos + k, src[srcPos + (int) k]);
                         }
@@ -939,7 +850,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -948,8 +860,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final StringLargeArray src, final long srcPos, final StringLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final StringLargeArray src, final long srcPos, final StringLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
         }
@@ -970,11 +881,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.set(destPos + k, src.get(srcPos + k));
                         }
@@ -996,7 +905,8 @@ public class Utilities
     }
 
     /**
-     * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
      * Array bounds are checked.
      *
      * @param src the source array.
@@ -1005,8 +915,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length the number of array elements to be copied.
      */
-    public static void arraycopy(final String[] src, final int srcPos, final StringLargeArray dest, final long destPos, final long length)
-    {
+    public static void arraycopy(final String[] src, final int srcPos, final StringLargeArray dest, final long destPos, final long length) {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
         }
@@ -1028,11 +937,9 @@ public class Utilities
             for (int j = 0; j < nthreads; j++) {
                 final long firstIdx = j * k;
                 final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-                threads[j] = new Thread(new Runnable()
-                {
+                threads[j] = new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (long k = firstIdx; k < lastIdx; k++) {
                             dest.set(destPos + k, src[srcPos + (int) k]);
                         }
@@ -1051,5 +958,168 @@ public class Utilities
                 }
             }
         }
+    }
+
+    public static LargeArray create(LargeArrayType type, long length) {
+        return create(type, length, true);
+    }
+
+    public static LargeArray create(LargeArrayType type, long length, boolean zeroNativeMemory) {
+        switch (type) {
+            case BIT:
+                return new BitLargeArray(length, zeroNativeMemory);
+            case BYTE:
+                return new ByteLargeArray(length, zeroNativeMemory);
+            case SHORT:
+                return new ShortLargeArray(length, zeroNativeMemory);
+            case INT:
+                return new IntLargeArray(length, zeroNativeMemory);
+            case LONG:
+                return new LongLargeArray(length, zeroNativeMemory);
+            case FLOAT:
+                return new FloatLargeArray(length, zeroNativeMemory);
+            case DOUBLE:
+                return new DoubleLargeArray(length, zeroNativeMemory);
+            case STRING:
+                return new StringLargeArray(length, 100, zeroNativeMemory);
+            default:
+                throw new IllegalArgumentException("Invalid array type.");
+        }
+    }
+
+    public static LargeArray convert(final LargeArray src, final LargeArrayType type) {
+        if (src.getType() == type) {
+            return src;
+        }
+        long length = src.length;
+        final LargeArray out = create(type, length, false);
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || type == LargeArrayType.BIT) {
+            switch (type) {
+                case BIT:
+                case BYTE:
+                    for (long i = 0; i < length; i++) {
+                        out.setByte(i, src.getByte(i));
+                    }
+                    break;
+                case SHORT:
+                    for (long i = 0; i < length; i++) {
+                        out.setShort(i, src.getShort(i));
+                    }
+                    break;
+                case INT:
+                    for (long i = 0; i < length; i++) {
+                        out.setInt(i, src.getInt(i));
+                    }
+                    break;
+                case LONG:
+                    for (long i = 0; i < length; i++) {
+                        out.setLong(i, src.getLong(i));
+                    }
+                    break;
+                case FLOAT:
+                    for (long i = 0; i < length; i++) {
+                        out.setFloat(i, src.getFloat(i));
+                    }
+                    break;
+                case DOUBLE:
+                    for (long i = 0; i < length; i++) {
+                        out.setDouble(i, src.getDouble(i));
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid array type.");
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (type) {
+                            case BYTE:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setByte(i, src.getByte(i));
+                                }
+                                break;
+                            case SHORT:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setShort(i, src.getShort(i));
+                                }
+                                break;
+                            case INT:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setInt(i, src.getInt(i));
+                                }
+                                break;
+                            case LONG:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setLong(i, src.getLong(i));
+                                }
+                                break;
+                            case FLOAT:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setFloat(i, src.getFloat(i));
+                                }
+                                break;
+                            case DOUBLE:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setDouble(i, src.getDouble(i));
+                                }
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Invalid array type.");
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                switch (type) {
+                    case BIT:
+                    case BYTE:
+                        for (long i = 0; i < length; i++) {
+                            out.setByte(i, src.getByte(i));
+                        }
+                        break;
+                    case SHORT:
+                        for (long i = 0; i < length; i++) {
+                            out.setShort(i, src.getShort(i));
+                        }
+                        break;
+                    case INT:
+                        for (long i = 0; i < length; i++) {
+                            out.setInt(i, src.getInt(i));
+                        }
+                        break;
+                    case LONG:
+                        for (long i = 0; i < length; i++) {
+                            out.setLong(i, src.getLong(i));
+                        }
+                        break;
+                    case FLOAT:
+                        for (long i = 0; i < length; i++) {
+                            out.setFloat(i, src.getFloat(i));
+                        }
+                        break;
+                    case DOUBLE:
+                        for (long i = 0; i < length; i++) {
+                            out.setDouble(i, src.getDouble(i));
+                        }
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid array type.");
+                }
+            }
+        }
+        return out;
     }
 }
