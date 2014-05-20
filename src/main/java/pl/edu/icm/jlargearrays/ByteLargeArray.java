@@ -205,8 +205,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -279,8 +279,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -331,8 +331,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -383,8 +383,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -435,8 +435,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -487,8 +487,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
@@ -539,8 +539,8 @@ public class ByteLargeArray extends LargeArray
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
-        if (endPos < 0 || endPos >= length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos >= length || endPos < startPos");
+        if (endPos < 0 || endPos > length || endPos < startPos) {
+            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
         }
         if (step < 1) {
             throw new IllegalArgumentException("step < 1");
