@@ -738,19 +738,19 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Initializes allocated native memory to zero.
      */
-    protected void zeroNativeMemory()
+    protected void zeroNativeMemory(long size)
     {
         if (ptr != 0) {
             int nthreads = Runtime.getRuntime().availableProcessors();
             if (nthreads <= 2) {
-                Utilities.UNSAFE.setMemory(ptr, length * sizeof, (byte) 0);
+                Utilities.UNSAFE.setMemory(ptr, size * sizeof, (byte) 0);
             } else {
-                long k = length / nthreads;
+                long k = size / nthreads;
                 Thread[] threads = new Thread[nthreads];
                 final long ptrf = ptr;
                 for (int j = 0; j < nthreads; j++) {
                     final long firstIdx = j * k;
-                    final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                    final long lastIdx = (j == nthreads - 1) ? size : firstIdx + k;
                     threads[j] = new Thread(new Runnable()
                     {
                         @Override
@@ -769,7 +769,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
                         threads[j] = null;
                     }
                 } catch (InterruptedException ex) {
-                    Utilities.UNSAFE.setMemory(ptr, length * sizeof, (byte) 0);
+                    Utilities.UNSAFE.setMemory(ptr, size * sizeof, (byte) 0);
                 }
             }
         }

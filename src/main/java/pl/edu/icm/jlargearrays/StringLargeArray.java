@@ -72,7 +72,7 @@ public class StringLargeArray extends LargeArray
             System.gc();
             this.ptr = Utilities.UNSAFE.allocateMemory(this.size * this.sizeof);
             if (zeroNativeMemory) {
-                zeroNativeMemory();
+                zeroNativeMemory(this.size);
             }
             Cleaner.create(this, new Deallocator(this.ptr, this.size, this.sizeof));
             MemoryCounter.increaseCounter(this.size * this.sizeof);

@@ -149,8 +149,37 @@ public class Utilities {
         if (length < 0) {
             throw new IllegalArgumentException("length < 0");
         }
-        for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-            dest.setByte(j, src.getByte(i));
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2) {
+            for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                dest.setByte(j, src.getByte(i));
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            dest.setByte(destPos + k, src.getByte(srcPos + k));
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setByte(j, src.getByte(i));
+                }
+            }
         }
     }
 
@@ -177,8 +206,37 @@ public class Utilities {
         }
 
         int i = srcPos;
-        for (long j = destPos; j < destPos + length; j++) {
-            dest.setBoolean(j, src[i++]);
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2) {
+            for (long j = destPos; j < destPos + length; j++) {
+                dest.setBoolean(j, src[i++]);
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            dest.setBoolean(destPos + k, src[srcPos + (int) k]);
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                for (long j = destPos; j < destPos + length; j++) {
+                    dest.setBoolean(j, src[i++]);
+                }
+            }
         }
     }
 

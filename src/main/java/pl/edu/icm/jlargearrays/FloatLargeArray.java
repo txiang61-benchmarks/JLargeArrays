@@ -82,7 +82,7 @@ public class FloatLargeArray extends LargeArray
             System.gc();
             this.ptr = Utilities.UNSAFE.allocateMemory(this.length * this.sizeof);
             if (zeroNativeMemory) {
-                zeroNativeMemory();
+                zeroNativeMemory(length);
             }
             Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
             MemoryCounter.increaseCounter(this.length * this.sizeof);

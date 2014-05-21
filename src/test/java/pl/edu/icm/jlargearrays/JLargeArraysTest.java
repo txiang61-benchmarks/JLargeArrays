@@ -118,9 +118,12 @@ public class JLargeArraysTest extends TestCase {
     }
 
     public void testBitArraycopy() {
-        boolean[] data = new boolean[]{true, false, false, false, true, true, true, false, true, true};
+        boolean[] data = new boolean[1000000];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = i % 5 == 0;
+        }
         int startPos = 2;
-        int length = 8;
+        int length = data.length - 2;
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         BitLargeArray a = new BitLargeArray(data);
         BitLargeArray b = new BitLargeArray(2 * data.length);
@@ -504,7 +507,7 @@ public class JLargeArraysTest extends TestCase {
         LongLargeArray a = new LongLargeArray(data);
         FloatLargeArray b = (FloatLargeArray) Utilities.convert(a, LargeArrayType.FLOAT);
         for (int i = 0; i < data.length; i++) {
-            assertEquals((float)data[i], b.getFloat(i));
+            assertEquals((float) data[i], b.getFloat(i));
         }
     }
 

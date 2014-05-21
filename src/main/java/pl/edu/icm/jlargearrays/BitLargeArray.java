@@ -48,19 +48,19 @@ import sun.misc.Cleaner;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class BitLargeArray extends LargeArray
-{
+public class BitLargeArray extends LargeArray {
 
     private static final long serialVersionUID = -3499412355469845345L;
     private byte[] data;
+    private long size;
+    private final Object LOCK = new Object();
 
     /**
      * Creates new instance of this class.
      *
      * @param length number of elements
      */
-    public BitLargeArray(long length)
-    {
+    public BitLargeArray(long length) {
         this(length, true);
     }
 
@@ -70,26 +70,25 @@ public class BitLargeArray extends LargeArray
      * @param length number of elements
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
-    public BitLargeArray(long length, boolean zeroNativeMemory)
-    {
+    public BitLargeArray(long length, boolean zeroNativeMemory) {
         this.type = LargeArrayType.BIT;
         this.sizeof = 1;
         if (length <= 0) {
             throw new IllegalArgumentException(length + " is not a positive long value");
         }
         this.length = length;
-        long tmp = (length - 1) / 8;
-        long nativeMemorySize = tmp + 1;
+        long tmp = (length-1l) / 8l;
+        this.size = tmp + 1;
         if (length > LARGEST_32BIT_INDEX) {
             System.gc();
-            this.ptr = Utilities.UNSAFE.allocateMemory(nativeMemorySize * this.sizeof);
+            this.ptr = Utilities.UNSAFE.allocateMemory(this.size * this.sizeof);
             if (zeroNativeMemory) {
-                zeroNativeMemory();
+                zeroNativeMemory(this.size);
             }
-            Cleaner.create(this, new LargeArray.Deallocator(this.ptr, nativeMemorySize, this.sizeof));
-            MemoryCounter.increaseCounter(nativeMemorySize * this.sizeof);
+            Cleaner.create(this, new LargeArray.Deallocator(this.ptr, this.size, this.sizeof));
+            MemoryCounter.increaseCounter(this.size * this.sizeof);
         } else {
-            data = new byte[(int) nativeMemorySize];
+            data = new byte[(int) this.size];
         }
     }
 
@@ -98,8 +97,7 @@ public class BitLargeArray extends LargeArray
      *
      * @param data data array, this reference is not used internally.
      */
-    public BitLargeArray(boolean[] data)
-    {
+    public BitLargeArray(boolean[] data) {
         this(data.length);
         if (ptr != 0) {
             for (int i = 0; i < data.length; i++) {
@@ -129,48 +127,51 @@ public class BitLargeArray extends LargeArray
             }
         }
     }
-    
+
     /**
-     * Returns a deep copy of this instance. (The elements themselves are copied.)
+     * Returns a deep copy of this instance. (The elements themselves are
+     * copied.)
      *
      * @return a clone of this instance
      */
     @Override
-    public BitLargeArray clone()
-    {
+    public BitLargeArray clone() {
         BitLargeArray v = new BitLargeArray(length, false);
         Utilities.arraycopy(this, 0, v, 0, length);
         return v;
     }
 
     @Override
-    public Boolean get(long i)
-    {
+    public Boolean get(long i) {
         return getBoolean(i);
     }
 
     @Override
-    public Boolean getFromNative(long i)
-    {
+    public Boolean getFromNative(long i) {
         long index = i / 8l;
+        Utilities.UNSAFE.monitorEnter(LOCK);
         byte v = Utilities.UNSAFE.getByte(ptr + index);
+        Utilities.UNSAFE.monitorExit(LOCK);
         long ii = i % 8l;
         int value = v >> (8l - (ii + 1l)) & 0x0001;
         return value == 1;
     }
 
     @Override
-    public boolean getBoolean(long i)
-    {
+    public boolean getBoolean(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
+            Utilities.UNSAFE.monitorExit(LOCK);
             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return value == 1;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return value == 1;
@@ -178,17 +179,20 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public byte getByte(long i)
-    {
+    public byte getByte(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
+            Utilities.UNSAFE.monitorExit(LOCK);
             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (byte) value;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return (byte) value;
@@ -196,17 +200,20 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public short getShort(long i)
-    {
+    public short getShort(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
+            Utilities.UNSAFE.monitorEnter(LOCK);
             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (short) value;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return (short) value;
@@ -214,17 +221,20 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public int getInt(long i)
-    {
+    public int getInt(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
+            Utilities.UNSAFE.monitorExit(LOCK);
             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return value;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return value;
@@ -232,17 +242,20 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public long getLong(long i)
-    {
+    public long getLong(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
+            Utilities.UNSAFE.monitorExit(LOCK);
             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (long) value;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return (long) value;
@@ -250,17 +263,20 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public float getFloat(long i)
-    {
+    public float getFloat(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
-            long ii = i % 8l;
+            Utilities.UNSAFE.monitorExit(LOCK);
+             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (float) value;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return (float) value;
@@ -268,17 +284,20 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public double getDouble(long i)
-    {
+    public double getDouble(long i) {
         if (ptr != 0) {
             long index = i / 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = Utilities.UNSAFE.getByte(ptr + index);
+            Utilities.UNSAFE.monitorExit(LOCK);
             long ii = i % 8l;
             int value = v >> (8l - (ii + 1l)) & 0x0001;
             return (double) value;
         } else {
             int index = (int) i / 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte v = data[index];
+            Utilities.UNSAFE.monitorExit(LOCK);
             int ii = (int) i % 8;
             int value = v >> (8 - (ii + 1)) & 0x0001;
             return (double) value;
@@ -286,8 +305,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public byte[] getData()
-    {
+    public byte[] getData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -296,8 +314,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public boolean[] getBooleanData()
-    {
+    public boolean[] getBooleanData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -315,8 +332,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step)
-    {
+    public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -360,8 +376,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public byte[] getByteData()
-    {
+    public byte[] getByteData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -378,8 +393,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public byte[] getByteData(byte[] a, long startPos, long endPos, long step)
-    {
+    public byte[] getByteData(byte[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -421,8 +435,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public short[] getShortData()
-    {
+    public short[] getShortData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -439,8 +452,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public short[] getShortData(short[] a, long startPos, long endPos, long step)
-    {
+    public short[] getShortData(short[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -482,8 +494,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public int[] getIntData()
-    {
+    public int[] getIntData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -500,8 +511,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public int[] getIntData(int[] a, long startPos, long endPos, long step)
-    {
+    public int[] getIntData(int[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -543,8 +553,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public long[] getLongData()
-    {
+    public long[] getLongData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -561,8 +570,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public long[] getLongData(long[] a, long startPos, long endPos, long step)
-    {
+    public long[] getLongData(long[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -604,8 +612,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public float[] getFloatData()
-    {
+    public float[] getFloatData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -622,8 +629,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public float[] getFloatData(float[] a, long startPos, long endPos, long step)
-    {
+    public float[] getFloatData(float[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -665,8 +671,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public double[] getDoubleData()
-    {
+    public double[] getDoubleData() {
         if (ptr != 0) {
             return null;
         } else {
@@ -683,8 +688,7 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public double[] getDoubleData(double[] a, long startPos, long endPos, long step)
-    {
+    public double[] getDoubleData(double[] a, long startPos, long endPos, long step) {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
         }
@@ -726,23 +730,24 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public void setToNative(long i, Object value)
-    {
+    public void setToNative(long i, Object value) {
         int v = 0;
-        if ((Boolean)value) {
+        if ((Boolean) value) {
             v = 1;
         }
         long index = i / 8l;
         long ii = i % 8l;
+        Utilities.UNSAFE.monitorEnter(LOCK);
         byte oldV = Utilities.UNSAFE.getByte(ptr + index);
         oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
         byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
         Utilities.UNSAFE.putByte(ptr + index, newV);
+        Utilities.UNSAFE.monitorExit(LOCK);
+            
     }
 
     @Override
-    public void setBoolean(long i, boolean value)
-    {
+    public void setBoolean(long i, boolean value) {
         if (ptr != 0) {
             int v = 0;
             if (value) {
@@ -750,10 +755,12 @@ public class BitLargeArray extends LargeArray
             }
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int v = 0;
             if (value) {
@@ -761,149 +768,175 @@ public class BitLargeArray extends LargeArray
             }
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);
         }
     }
 
     @Override
-    public void setByte(long i, byte value)
-    {
-        if (value < 0 || value > 1)
+    public void setByte(long i, byte value) {
+        if (value < 0 || value > 1) {
             throw new IllegalArgumentException("value has to be 0 or 1");
+        }
         if (ptr != 0) {
             int v = (int) (value & 0xFF);
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int v = (int) (value & 0xFF);
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);
         }
     }
 
     @Override
-    public void setShort(long i, short value)
-    {
-        if (value < 0 || value > 1)
+    public void setShort(long i, short value) {
+        if (value < 0 || value > 1) {
             throw new IllegalArgumentException("value has to be 0 or 1");
+        }
         if (ptr != 0) {
             int v = (int) ((byte) value & 0xFF);
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int v = (int) ((byte) value & 0xFF);
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);
         }
     }
 
     @Override
-    public void setInt(long i, int value)
-    {
-        if (value < 0 || value > 1)
+    public void setInt(long i, int value) {
+        if (value < 0 || value > 1) {
             throw new IllegalArgumentException("value has to ne 0 or 1");
+        }
         if (ptr != 0) {
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((value << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((value << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);            
         }
     }
 
     @Override
-    public void setLong(long i, long value)
-    {
-        if (value < 0 || value > 1)
+    public void setLong(long i, long value) {
+        if (value < 0 || value > 1) {
             throw new IllegalArgumentException("value has to be 0 or 1");
+        }
         int v = (int) value;
         if (ptr != 0) {
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);
         }
     }
 
     @Override
-    public void setFloat(long i, float value)
-    {
-        if (value != 0.0 && value != 1.0)
+    public void setFloat(long i, float value) {
+        if (value != 0.0 && value != 1.0) {
             throw new IllegalArgumentException("value has to be 0 or 1");
+        }
         int v = (int) value;
         if (ptr != 0) {
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);
         }
     }
 
     @Override
-    public void setDouble(long i, double value)
-    {
-        if (value != 0.0 && value != 1.0)
+    public void setDouble(long i, double value) {
+        if (value != 0.0 && value != 1.0) {
             throw new IllegalArgumentException("value has to be 0 or 1");
+        }
         int v = (int) value;
         if (ptr != 0) {
             long index = i / 8l;
             long ii = i % 8l;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = Utilities.UNSAFE.getByte(ptr + index);
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
             Utilities.UNSAFE.putByte(ptr + index, newV);
+            Utilities.UNSAFE.monitorExit(LOCK);
         } else {
             int index = (int) i / 8;
             int ii = (int) i % 8;
+            Utilities.UNSAFE.monitorEnter(LOCK);
             byte oldV = this.data[index];
             oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
             byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
             this.data[index] = newV;
+            Utilities.UNSAFE.monitorExit(LOCK);
         }
     }
 }
