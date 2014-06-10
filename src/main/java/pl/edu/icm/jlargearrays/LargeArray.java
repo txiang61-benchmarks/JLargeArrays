@@ -737,6 +737,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
 
     /**
      * Initializes allocated native memory to zero.
+     * @param size the length of native memory block
      */
     protected void zeroNativeMemory(long size)
     {
