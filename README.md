@@ -15,17 +15,21 @@ JLargeArrays is a pure-java library of one-dimensional arrays that can store up 
 
 To use JLargeArrays in a Maven project the following dependency and repository need to be added to pom.xml:
 
-    <dependency>
-        <groupId>pl.edu.icm</groupId>
-        <artifactId>JLargeArrays</artifactId>
-        <version>1.1</version>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>pl.edu.icm</groupId>
+            <artifactId>JLargeArrays</artifactId>
+            <version>1.1</version>
+        </dependency>
+    </dependencies>
 
-    <repository>
-        <id>icm</id>
-        <name>ICM project repository</name>
-        <url>http://maven.icm.edu.pl/artifactory/repo</url>
-    </repository>
+    <repositories>
+        <repository>
+            <id>icm</id>
+            <name>ICM project repository</name>
+            <url>http://maven.icm.edu.pl/artifactory/repo</url>
+        </repository>
+    </repositories>
 
 ##  JavaDoc
 The documentation is available at [apidocs](http://icmvis.github.io/JLargeArrays/apidocs/).
