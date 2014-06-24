@@ -150,7 +150,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setByte(j, src.getByte(i));
             }
@@ -207,7 +207,7 @@ public class Utilities {
 
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setBoolean(j, src[i++]);
             }
@@ -263,7 +263,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setByte(j, src.getByte(i));
             }
@@ -319,7 +319,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setByte(j, src[i++]);
             }
@@ -374,7 +374,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setShort(j, src.getShort(i));
             }
@@ -430,7 +430,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setShort(j, src[i++]);
             }
@@ -485,7 +485,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setInt(j, src.getInt(i));
             }
@@ -541,7 +541,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setInt(j, src[i++]);
             }
@@ -596,7 +596,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setLong(j, src.getLong(i));
             }
@@ -652,7 +652,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setLong(j, src[i++]);
             }
@@ -707,7 +707,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setFloat(j, src.getFloat(i));
             }
@@ -763,7 +763,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setFloat(j, src[i++]);
             }
@@ -818,7 +818,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setDouble(j, src.getDouble(i));
             }
@@ -874,7 +874,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setDouble(j, src[i++]);
             }
@@ -929,7 +929,7 @@ public class Utilities {
             throw new IllegalArgumentException("length < 0");
         }
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.set(j, src.get(i));
             }
@@ -985,7 +985,7 @@ public class Utilities {
         }
         int i = srcPos;
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2) {
+        if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.set(j, src[i++]);
             }
@@ -1074,7 +1074,7 @@ public class Utilities {
         long length = src.length;
         final LargeArray out = create(type, length, false);
         int nthreads = Runtime.getRuntime().availableProcessors();
-        if (nthreads < 2 || type == LargeArrayType.BIT) {
+        if (nthreads < 2 || length < 100000) {
             switch (type) {
                 case BIT:
                 case BYTE:

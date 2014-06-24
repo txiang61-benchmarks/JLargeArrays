@@ -743,7 +743,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     {
         if (ptr != 0) {
             int nthreads = Runtime.getRuntime().availableProcessors();
-            if (nthreads <= 2) {
+            if (nthreads <= 2 || size < 100000) {
                 Utilities.UNSAFE.setMemory(ptr, size * sizeof, (byte) 0);
             } else {
                 long k = size / nthreads;
