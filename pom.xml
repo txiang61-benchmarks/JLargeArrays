@@ -9,6 +9,14 @@
 
   <url>https://github.com/IcmVis/JLargeArrays</url> 
 
+  <licenses>
+    <license>
+      <name>FreeBSD</name>
+      <url>http://www.freebsd.org/copyright/freebsd-license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <build>
     <plugins>
             <plugin>
