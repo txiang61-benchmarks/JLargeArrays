@@ -9,6 +9,12 @@
 
   <url>https://github.com/IcmVis/JLargeArrays</url> 
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>9</version>
+  </parent>
+
   <licenses>
     <license>
       <name>FreeBSD</name>
@@ -49,22 +55,6 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5</version>
             </plugin>
-            <plugin>
-              <groupId>com.github.github</groupId>
-              <artifactId>site-maven-plugin</artifactId>
-              <version>0.9</version>
-              <configuration>
-                <message>Creating site for ${project.version}</message>
-              </configuration>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>site</goal>
-                  </goals>
-                  <phase>site</phase>
-                </execution>
-              </executions>
-            </plugin>
     </plugins>
   </build>
 
@@ -76,26 +66,15 @@
   <scm>
     <connection>scm:git:ssh://git@github.com/IcmVis/JLargeArrays.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/IcmVis/JLargeArrays.git</developerConnection>
-    <url>https://github.com/IcmVis/JLargeArrays</url>
+    <url>git@github.com:IcmVis/JLargeArrays.git</url>
     <tag>HEAD</tag>
   </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>libs-releases-local</id>
-      <url>http://maven.icm.edu.pl/artifactory/libs-releases-local</url>
-    </repository>
-    <snapshotRepository>
-      <id>libs-snapshots-local</id>
-      <url>http://maven.icm.edu.pl/artifactory/libs-snapshots-local</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
