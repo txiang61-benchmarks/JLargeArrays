@@ -39,8 +39,9 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     protected LargeArrayType type;
     protected long length;
     protected long sizeof;
+    protected boolean isConstant = false;
     protected long ptr = 0;
-    
+
     /**
      * Largest array size for which a regular 1D Java array is used to store the
      * data.
@@ -71,6 +72,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract Object get(long i);
@@ -79,6 +81,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public Object get_safe(long i)
@@ -94,6 +97,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * this method will cause JVM crash.
      *
      * @param i index
+     *
      * @return a value at index i. The type of returned value is the same as the type of this array.
      */
     public abstract Object getFromNative(long i);
@@ -102,6 +106,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a boolean value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a boolean value at index i.
      */
     public abstract boolean getBoolean(long i);
@@ -110,6 +115,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a boolean value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a boolean value at index i.
      */
     public boolean getBoolean_safe(long i)
@@ -124,6 +130,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a byte value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract byte getByte(long i);
@@ -132,6 +139,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a byte value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public byte getByte_safe(long i)
@@ -146,6 +154,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a short value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract short getShort(long i);
@@ -154,6 +163,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a short value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public short getShort_safe(long i)
@@ -168,6 +178,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns an int value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract int getInt(long i);
@@ -176,6 +187,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns an int value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public int getInt_safe(long i)
@@ -190,6 +202,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a long value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract long getLong(long i);
@@ -198,6 +211,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a long value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public long getLong_safe(long i)
@@ -212,6 +226,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a float value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract float getFloat(long i);
@@ -220,6 +235,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a float value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public float getFloat_safe(long i)
@@ -234,6 +250,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a double value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public abstract double getDouble(long i);
@@ -242,6 +259,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Returns a double value at index i. Array bounds are checked.
      *
      * @param i an index
+     *
      * @return a value at index i.
      */
     public double getDouble_safe(long i)
@@ -253,9 +271,11 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     }
 
     /**
-     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
-     * method returns a reference to the internal data array. Otherwise, it
-     * returns null.
+     * For non-constant arrays, if the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns a reference to the internal data array; otherwise, it
+     * returns null. For constant arrays, if the size of the array is smaller than LARGEST_32BIT_INDEX, 
+     * then this methods returns a constant array of length length() and of type getType(); otherwise, it
+     * returns null.  
      *
      * @return reference to the internal data array or null
      */
@@ -276,11 +296,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step);
@@ -300,11 +321,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract byte[] getByteData(byte[] a, long startPos, long endPos, long step);
@@ -324,11 +346,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract short[] getShortData(short[] a, long startPos, long endPos, long step);
@@ -348,11 +371,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract int[] getIntData(int[] a, long startPos, long endPos, long step);
@@ -372,11 +396,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract long[] getLongData(long[] a, long startPos, long endPos, long step);
@@ -396,11 +421,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract float[] getFloatData(float[] a, long startPos, long endPos, long step);
@@ -420,11 +446,12 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a the array into which the elements are to be stored, if it is big
-     * enough; otherwise, a new array of is allocated for this purpose.
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
      * @param startPos starting position (included)
-     * @param endPos ending position (excluded)
-     * @param step step size
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
      * @return an array containing the elements of the list or null
      */
     public abstract double[] getDoubleData(double[] a, long startPos, long endPos, long step);
@@ -432,7 +459,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void set(long i, Object value)
@@ -460,8 +487,9 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
      * Sets a value at index i. Array bounds are not checked. If isLarge() returns false for a given array or the index argument is invalid, then calling this
      * method will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
+     *
      * @throws ClassCastException if the type of value argument is different than the type of the array
      */
     public abstract void setToNative(long i, Object value);
@@ -469,7 +497,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void set_safe(long i, Object value)
@@ -496,7 +524,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a boolean value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setBoolean(long i, boolean value);
@@ -504,7 +532,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a boolean value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setBoolean_safe(long i, boolean value)
@@ -518,7 +546,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a byte value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setByte(long i, byte value);
@@ -526,7 +554,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a byte value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setByte_safe(long i, byte value)
@@ -540,7 +568,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a short value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setShort(long i, short value);
@@ -548,7 +576,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a short value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setShort_safe(long i, short value)
@@ -562,7 +590,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets an int value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setInt(long i, int value);
@@ -570,7 +598,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets an int value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setInt_safe(long i, int value)
@@ -584,7 +612,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a long value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setLong(long i, long value);
@@ -592,7 +620,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a long value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setLong_safe(long i, long value)
@@ -606,7 +634,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a float value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setFloat(long i, float value);
@@ -614,7 +642,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a float value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setFloat_safe(long i, float value)
@@ -628,7 +656,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a double value at index i. Array bounds are not checked. Calling this method with invalid index argument will cause JVM crash.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public abstract void setDouble(long i, double value);
@@ -636,7 +664,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     /**
      * Sets a double value at index i. Array bounds are checked.
      *
-     * @param i index
+     * @param i     index
      * @param value value to set
      */
     public void setDouble_safe(long i, double value)
@@ -648,14 +676,24 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
     }
 
     /**
-     * Returns true if the size od an array is larger than LARGEST_32BIT_INDEX.
+     * Returns true if the size of an array is larger than LARGEST_32BIT_INDEX.
      *
-     * @return true if the size od an array is larger than LARGEST_32BIT_INDEX,
-     * false otherwise.
+     * @return true if the size of an array is larger than LARGEST_32BIT_INDEX,
+     *         false otherwise.
      */
     public boolean isLarge()
     {
         return ptr != 0;
+    }
+
+    /**
+     * Return true if the array is constant. Constant arrays cannot be modified, i.e. all setters throw an IllegalAccessError exception.
+     *
+     * @return true if the arrays is constant, false otherwise
+     */
+    public boolean isConstant()
+    {
+        return isConstant;
     }
 
     /**
@@ -723,6 +761,7 @@ public abstract class LargeArray implements java.io.Serializable, Cloneable
 
     /**
      * Initializes allocated native memory to zero.
+     *
      * @param size the length of native memory block
      */
     protected void zeroNativeMemory(long size)

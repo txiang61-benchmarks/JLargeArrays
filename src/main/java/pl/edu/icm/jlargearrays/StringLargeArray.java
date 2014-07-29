@@ -61,7 +61,7 @@ public class StringLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param length number of elements
+     * @param length          number of elements
      * @param maxStringLength maximal length of the string, it is ignored when number of elements is smaller than LARGEST_32BIT_INDEX
      */
     public StringLargeArray(long length, int maxStringLength)
@@ -72,8 +72,8 @@ public class StringLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param length number of elements
-     * @param maxStringLength maximal length of the string, it is ignored when number of elements is smaller than LARGEST_32BIT_INDEX
+     * @param length           number of elements
+     * @param maxStringLength  maximal length of the string, it is ignored when number of elements is smaller than LARGEST_32BIT_INDEX
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
     public StringLargeArray(long length, int maxStringLength, boolean zeroNativeMemory)
@@ -104,6 +104,18 @@ public class StringLargeArray extends LargeArray
         }
     }
 
+    public StringLargeArray(long length, String constantValue)
+    {
+        this.type = LargeArrayType.DOUBLE;
+        this.sizeof = 1;
+        if (length <= 0) {
+            throw new IllegalArgumentException(length + " is not a positive long value");
+        }
+        this.length = length;
+        this.isConstant = true;
+        this.data = new String[]{constantValue};
+    }
+
     /**
      * Creates new instance of this class.
      *
@@ -116,7 +128,7 @@ public class StringLargeArray extends LargeArray
         this.length = data.length;
         this.data = data;
     }
-    
+
     /**
      * Returns a deep copy of this instance. (The elements themselves are copied.)
      *
@@ -125,9 +137,13 @@ public class StringLargeArray extends LargeArray
     @Override
     public StringLargeArray clone()
     {
-        StringLargeArray v = new StringLargeArray(size, maxStringLength, false);
-        Utilities.arraycopy(this, 0, v, 0, size);
-        return v;
+        if (isConstant()) {
+            return new StringLargeArray(length, get(0));
+        } else {
+            StringLargeArray v = new StringLargeArray(size, maxStringLength, false);
+            Utilities.arraycopy(this, 0, v, 0, size);
+            return v;
+        }
     }
 
     @Override
@@ -145,7 +161,11 @@ public class StringLargeArray extends LargeArray
                 return null;
             }
         } else {
-            return data[(int) i];
+            if (isConstant()) {
+                return data[0];
+            } else {
+                return data[(int) i];
+            }
         }
     }
 
@@ -212,7 +232,16 @@ public class StringLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            return data;
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                String[] out = new String[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = data[0];
+                }
+                return out;
+            } else {
+                return data;
+            }
         }
     }
 
@@ -331,10 +360,10 @@ public class StringLargeArray extends LargeArray
             throw new IllegalArgumentException(o + " is not a string.");
         }
         String s = (String) o;
-        if (s.length() > maxStringLength) {
-            throw new IllegalArgumentException("String  " + s + " is too long.");
-        }
         if (ptr != 0) {
+            if (s.length() > maxStringLength) {
+                throw new IllegalArgumentException("String  " + s + " is too long.");
+            }
             byte[] tmp;
             try {
                 tmp = s.getBytes(CHARSET);
@@ -351,6 +380,9 @@ public class StringLargeArray extends LargeArray
                 Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);
             }
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = s;
         }
     }
@@ -385,6 +417,9 @@ public class StringLargeArray extends LargeArray
                 Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);
             }
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = s;
         }
     }

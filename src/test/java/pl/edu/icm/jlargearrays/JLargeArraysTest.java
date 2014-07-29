@@ -35,25 +35,44 @@ import junit.framework.TestSuite;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class JLargeArraysTest extends TestCase {
+public class JLargeArraysTest extends TestCase
+{
 
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public JLargeArraysTest(String testName) {
+    public JLargeArraysTest(String testName)
+    {
         super(testName);
     }
 
     /**
      * @return the suite of tests being tested
      */
-    public static Test suite() {
+    public static Test suite()
+    {
         return new TestSuite(JLargeArraysTest.class);
     }
 
-    public void testBitLargeArrayGetSet() {
+    public void testBitLargeArrayConstant()
+    {
+        BitLargeArray a = new BitLargeArray(1l << 33, (byte) 1);
+        assertTrue(a.getBoolean(0));
+        assertTrue(a.getBoolean(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setBoolean(0, false);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testBitLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         BitLargeArray a = new BitLargeArray(10);
         long idx = 5;
@@ -73,7 +92,8 @@ public class JLargeArraysTest extends TestCase {
 
     }
 
-    public void testBitLargeArrayGetSetNative() {
+    public void testBitLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         BitLargeArray a = new BitLargeArray(10);
         long idx = 5;
@@ -82,7 +102,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (boolean) a.getFromNative(idx));
     }
 
-    public void testBitLargeArrayGetData() {
+    public void testBitLargeArrayGetData()
+    {
         boolean[] data = new boolean[]{true, false, false, false, true, true, true, false, true, true};
         long startPos = 2;
         long endPos = 7;
@@ -103,7 +124,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testBitArraycopy() {
+    public void testBitArraycopy()
+    {
         boolean[] data = new boolean[1000000];
         for (int i = 0; i < data.length; i++) {
             data[i] = i % 5 == 0;
@@ -136,7 +158,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testBitConvert() {
+    public void testBitConvert()
+    {
         boolean[] data = new boolean[]{true, false, false, false, true, true, true, false, true, true};
         BitLargeArray a = new BitLargeArray(data);
         ByteLargeArray b = (ByteLargeArray) Utilities.convert(a, LargeArrayType.BYTE);
@@ -145,7 +168,23 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testByteLargeArrayGetSet() {
+    public void testByteLargeArrayConstant()
+    {
+        ByteLargeArray a = new ByteLargeArray(1l << 33, (byte) 2);
+        assertEquals(2, a.getByte(0));
+        assertEquals(2, a.getByte(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setByte(0, (byte) 3);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testByteLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         ByteLargeArray a = new ByteLargeArray(10);
         long idx = 5;
@@ -164,7 +203,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (a.get(idx)).byteValue());
     }
 
-    public void testByteLargeArrayGetSetNative() {
+    public void testByteLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         ByteLargeArray a = new ByteLargeArray(10);
         long idx = 5;
@@ -173,7 +213,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (byte) a.getFromNative(idx));
     }
 
-    public void testByteLargeArrayGetData() {
+    public void testByteLargeArrayGetData()
+    {
         byte[] data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         long startPos = 2;
         long endPos = 7;
@@ -194,7 +235,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testByteArraycopy() {
+    public void testByteArraycopy()
+    {
         byte[] data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
         int length = 8;
@@ -224,7 +266,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testByteConvert() {
+    public void testByteConvert()
+    {
         byte[] data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         ByteLargeArray a = new ByteLargeArray(data);
         ShortLargeArray b = (ShortLargeArray) Utilities.convert(a, LargeArrayType.SHORT);
@@ -232,8 +275,24 @@ public class JLargeArraysTest extends TestCase {
             assertEquals(data[i], b.getShort(i));
         }
     }
+    
+    public void testShortLargeArrayConstant()
+    {
+        ShortLargeArray a = new ShortLargeArray(1l << 33, (short)2);
+        assertEquals(2, a.getShort(0));
+        assertEquals(2, a.getShort(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setShort(0, (short)3);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
 
-    public void testShortLargeArrayGetSet() {
+    public void testShortLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         ShortLargeArray a = new ShortLargeArray(10);
         long idx = 5;
@@ -252,7 +311,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (a.get(idx)).shortValue());
     }
 
-    public void testShortLargeArrayGetSetNative() {
+    public void testShortLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         ShortLargeArray a = new ShortLargeArray(10);
         long idx = 5;
@@ -261,7 +321,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (short) a.getFromNative(idx));
     }
 
-    public void testShortLargeArrayGetData() {
+    public void testShortLargeArrayGetData()
+    {
         short[] data = new short[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         long startPos = 2;
         long endPos = 7;
@@ -282,7 +343,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testShortArraycopy() {
+    public void testShortArraycopy()
+    {
         short[] data = new short[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
         int length = 8;
@@ -312,7 +374,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testShortConvert() {
+    public void testShortConvert()
+    {
         short[] data = new short[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         ShortLargeArray a = new ShortLargeArray(data);
         IntLargeArray b = (IntLargeArray) Utilities.convert(a, LargeArrayType.INT);
@@ -321,7 +384,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testIntLargeArrayGetSet() {
+    public void testIntLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         IntLargeArray a = new IntLargeArray(10);
         long idx = 5;
@@ -340,7 +404,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (a.get(idx)).intValue());
     }
 
-    public void testIntLargeArrayGetSetNative() {
+    public void testIntLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         IntLargeArray a = new IntLargeArray(10);
         long idx = 5;
@@ -349,7 +414,23 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (int) a.getFromNative(idx));
     }
 
-    public void testIntLargeArrayGetData() {
+    public void testIntLargeArrayConstant()
+    {
+        IntLargeArray a = new IntLargeArray(1l << 33, 2);
+        assertEquals(2, a.getInt(0));
+        assertEquals(2, a.getInt(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setInt(0, 3);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testIntLargeArrayGetData()
+    {
         int[] data = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         long startPos = 2;
         long endPos = 7;
@@ -370,7 +451,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testIntArraycopy() {
+    public void testIntArraycopy()
+    {
         int[] data = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
         int length = 8;
@@ -400,7 +482,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testIntConvert() {
+    public void testIntConvert()
+    {
         int[] data = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         IntLargeArray a = new IntLargeArray(data);
         LongLargeArray b = (LongLargeArray) Utilities.convert(a, LargeArrayType.LONG);
@@ -409,7 +492,23 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testLongLargeArrayGetSet() {
+    public void testLongLargeArrayConstant()
+    {
+        LongLargeArray a = new LongLargeArray(1l << 33, 2);
+        assertEquals(2, a.getLong(0));
+        assertEquals(2, a.getLong(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setLong(0, 3);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testLongLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         LongLargeArray a = new LongLargeArray(10);
         long idx = 5;
@@ -428,7 +527,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (a.get(idx)).longValue());
     }
 
-    public void testLongLargeArrayGetSetNative() {
+    public void testLongLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         LongLargeArray a = new LongLargeArray(10);
         long idx = 5;
@@ -437,7 +537,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (long) a.getFromNative(idx));
     }
 
-    public void testLongLargeArrayGetData() {
+    public void testLongLargeArrayGetData()
+    {
         long[] data = new long[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         long startPos = 2;
         long endPos = 7;
@@ -458,7 +559,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testLongArraycopy() {
+    public void testLongArraycopy()
+    {
         long[] data = new long[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
         int length = 8;
@@ -488,7 +590,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testLongConvert() {
+    public void testLongConvert()
+    {
         long[] data = new long[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         LongLargeArray a = new LongLargeArray(data);
         FloatLargeArray b = (FloatLargeArray) Utilities.convert(a, LargeArrayType.FLOAT);
@@ -497,7 +600,23 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testFloatLargeArrayGetSet() {
+    public void testFloatLargeArrayConstant()
+    {
+        FloatLargeArray a = new FloatLargeArray(1l << 33, 2.5f);
+        assertEquals(2.5f, a.getFloat(0));
+        assertEquals(2.5f, a.getFloat(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setFloat(0, 3.5f);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testFloatLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         FloatLargeArray a = new FloatLargeArray(10);
         long idx = 5;
@@ -516,7 +635,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, a.get(idx));
     }
 
-    public void testFloatLargeArrayGetSetNative() {
+    public void testFloatLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         FloatLargeArray a = new FloatLargeArray(10);
         long idx = 5;
@@ -525,7 +645,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, (float) a.getFromNative(idx), 0.0);
     }
 
-    public void testFloatLargeArrayGetData() {
+    public void testFloatLargeArrayGetData()
+    {
         float[] data = new float[]{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10.10f};
         long startPos = 2;
         long endPos = 7;
@@ -546,7 +667,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testFloatArraycopy() {
+    public void testFloatArraycopy()
+    {
         float[] data = new float[]{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10.10f};
         int startPos = 2;
         int length = 8;
@@ -576,7 +698,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testFloatConvert() {
+    public void testFloatConvert()
+    {
         float[] data = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         FloatLargeArray a = new FloatLargeArray(data);
         DoubleLargeArray b = (DoubleLargeArray) Utilities.convert(a, LargeArrayType.DOUBLE);
@@ -585,7 +708,23 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testDoubleLargeArrayGetSet() {
+    public void testDoubleLargeArrayConstant()
+    {
+        DoubleLargeArray a = new DoubleLargeArray(1l << 33, 2.5);
+        assertEquals(2.5, a.getDouble(0));
+        assertEquals(2.5, a.getDouble(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.setDouble(0, 3.5);
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testDoubleLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         DoubleLargeArray a = new DoubleLargeArray(10);
         long idx = 5;
@@ -604,7 +743,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, a.get(idx));
     }
 
-    public void testDoubleLargeArrayGetSetNative() {
+    public void testDoubleLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         DoubleLargeArray a = new DoubleLargeArray(10);
         long idx = 5;
@@ -613,7 +753,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val, a.getFromNative(idx), 0.0);
     }
 
-    public void testDoubleLargeArrayGetData() {
+    public void testDoubleLargeArrayGetData()
+    {
         double[] data = new double[]{1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10};
         long startPos = 2;
         long endPos = 7;
@@ -634,7 +775,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testDoubleArraycopy() {
+    public void testDoubleArraycopy()
+    {
         double[] data = new double[]{1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10};
         int startPos = 2;
         int length = 8;
@@ -664,7 +806,8 @@ public class JLargeArraysTest extends TestCase {
         }
     }
 
-    public void testDoubleConvert() {
+    public void testDoubleConvert()
+    {
         double[] data = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         DoubleLargeArray a = new DoubleLargeArray(data);
         FloatLargeArray b = (FloatLargeArray) Utilities.convert(a, LargeArrayType.FLOAT);
@@ -672,8 +815,25 @@ public class JLargeArraysTest extends TestCase {
             assertEquals(data[i], b.getFloat(i), 0.0);
         }
     }
+    
+     public void testStringLargeArrayConstant()
+    {
+        StringLargeArray a = new StringLargeArray(1l << 33, "test0123ąęćńżź");
+        assertEquals("test0123ąęćńżź", a.get(0));
+        assertEquals("test0123ąęćńżź", a.get(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.set(0, "test0123ąęćńżź");
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
 
-    public void testStringLargeArrayGetSet() {
+
+    public void testStringLargeArrayGetSet()
+    {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         StringLargeArray a = new StringLargeArray(10, 14);
         long idx = 5;
@@ -691,7 +851,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val2, a.get(idx));
     }
 
-    public void testStringLargeArrayGetSetNative() {
+    public void testStringLargeArrayGetSetNative()
+    {
         LargeArray.setMaxSizeOf32bitArray(1);
         StringLargeArray a = new StringLargeArray(10, 14);
         long idx = 5;
@@ -703,7 +864,8 @@ public class JLargeArraysTest extends TestCase {
         assertEquals(val2, a.getFromNative(idx));
     }
 
-    public void testStringArraycopy() {
+    public void testStringArraycopy()
+    {
         String[] data = new String[]{"a", "ab", "abc", "ąęć", "1234", "test string", "ANOTHER TEST STRING", "", "\n", "\r"};
         int startPos = 2;
         int length = 8;

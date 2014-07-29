@@ -53,7 +53,7 @@ public class IntLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param length number of elements
+     * @param length           number of elements
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
     public IntLargeArray(long length, boolean zeroNativeMemory)
@@ -77,6 +77,18 @@ public class IntLargeArray extends LargeArray
         }
     }
 
+    public IntLargeArray(long length, int constantValue)
+    {
+        this.type = LargeArrayType.INT;
+        this.sizeof = 4;
+        if (length <= 0) {
+            throw new IllegalArgumentException(length + " is not a positive long value");
+        }
+        this.length = length;
+        this.isConstant = true;
+        this.data = new int[]{constantValue};
+    }
+
     /**
      * Creates new instance of this class.
      *
@@ -89,7 +101,7 @@ public class IntLargeArray extends LargeArray
         this.length = data.length;
         this.data = data;
     }
-    
+
     /**
      * Returns a deep copy of this instance. (The elements themselves are copied.)
      *
@@ -98,9 +110,13 @@ public class IntLargeArray extends LargeArray
     @Override
     public IntLargeArray clone()
     {
-        IntLargeArray v = new IntLargeArray(length, false);
-        Utilities.arraycopy(this, 0, v, 0, length);
-        return v;
+        if (isConstant()) {
+            return new IntLargeArray(length, getInt(0));
+        } else {
+            IntLargeArray v = new IntLargeArray(length, false);
+            Utilities.arraycopy(this, 0, v, 0, length);
+            return v;
+        }
     }
 
     @Override
@@ -108,7 +124,7 @@ public class IntLargeArray extends LargeArray
     {
         return getInt(i);
     }
-    
+
     @Override
     public Integer getFromNative(long i)
     {
@@ -121,7 +137,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return (Utilities.UNSAFE.getInt(ptr + sizeof * i)) != 0;
         } else {
-            return data[(int) i] != 0;
+            if (isConstant()) {
+                return data[0] != 0;
+            } else {
+                return data[(int) i] != 0;
+            }
         }
     }
 
@@ -131,7 +151,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return (byte) (Utilities.UNSAFE.getInt(ptr + sizeof * i));
         } else {
-            return (byte) data[(int) i];
+            if (isConstant()) {
+                return (byte) data[0];
+            } else {
+                return (byte) data[(int) i];
+            }
         }
     }
 
@@ -141,7 +165,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return (short) (Utilities.UNSAFE.getInt(ptr + sizeof * i));
         } else {
-            return (short) data[(int) i];
+            if (isConstant()) {
+                return (short) data[0];
+            } else {
+                return (short) data[(int) i];
+            }
         }
     }
 
@@ -151,7 +179,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return Utilities.UNSAFE.getInt(ptr + sizeof * i);
         } else {
-            return data[(int) i];
+            if (isConstant()) {
+                return data[0];
+            } else {
+                return data[(int) i];
+            }
         }
     }
 
@@ -161,7 +193,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return (long) (Utilities.UNSAFE.getInt(ptr + sizeof * i));
         } else {
-            return (long) data[(int) i];
+            if (isConstant()) {
+                return (long) data[0];
+            } else {
+                return (long) data[(int) i];
+            }
         }
     }
 
@@ -171,7 +207,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return (float) (Utilities.UNSAFE.getInt(ptr + sizeof * i));
         } else {
-            return (float) data[(int) i];
+            if (isConstant()) {
+                return (float) data[0];
+            } else {
+                return (float) data[(int) i];
+            }
         }
     }
 
@@ -181,7 +221,11 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return (double) (Utilities.UNSAFE.getInt(ptr + sizeof * i));
         } else {
-            return (double) data[(int) i];
+            if (isConstant()) {
+                return (double) data[0];
+            } else {
+                return (double) data[(int) i];
+            }
         }
     }
 
@@ -191,7 +235,16 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            return data;
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                int[] out = new int[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = data[0];
+                }
+                return out;
+            } else {
+                return data;
+            }
         }
     }
 
@@ -201,12 +254,22 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            boolean[] res = new boolean[(int) length];
-            for (int i = 0; i < length; i++) {
-                res[i] = data[i] != 0;
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                boolean[] out = new boolean[(int) length];
+                boolean elem = data[0] != 0;
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                boolean[] out = new boolean[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = data[i] != 0;
 
+                }
+                return out;
             }
-            return res;
         }
     }
 
@@ -240,9 +303,15 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = v != 0;
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    int v = data[(int) i];
-                    out[idx++] = v != 0;
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = data[0] != 0;
+                    }
+                } else {
+                    for (long i = startPos; i < endPos; i += step) {
+                        int v = data[(int) i];
+                        out[idx++] = v != 0;
+                    }
                 }
             }
             return out;
@@ -255,12 +324,22 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            byte[] res = new byte[(int) length];
-            for (int i = 0; i < length; i++) {
-                res[i] = (byte) data[i];
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                byte[] out = new byte[(int) length];
+                byte elem = (byte) data[0];
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                byte[] out = new byte[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = (byte) data[i];
 
+                }
+                return out;
             }
-            return res;
         }
     }
 
@@ -293,8 +372,20 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = (byte) Utilities.UNSAFE.getInt(ptr + sizeof * i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (byte) data[(int) i];
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (byte) data[0];
+                    }
+                } else {
+                    if (isConstant()) {
+                        for (long i = startPos; i < endPos; i += step) {
+                            out[idx++] = (byte) data[0];
+                        }
+                    } else {
+                        for (long i = startPos; i < endPos; i += step) {
+                            out[idx++] = (byte) data[(int) i];
+                        }
+                    }
                 }
             }
             return out;
@@ -307,12 +398,22 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            short[] res = new short[(int) length];
-            for (int i = 0; i < length; i++) {
-                res[i] = (short) data[i];
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                short[] out = new short[(int) length];
+                short elem = (short) data[0];
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                short[] out = new short[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = (short) data[i];
 
+                }
+                return out;
             }
-            return res;
         }
     }
 
@@ -345,8 +446,14 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = (short) Utilities.UNSAFE.getInt(ptr + sizeof * i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (short) data[(int) i];
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (short) data[0];
+                    }
+                } else {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (short) data[(int) i];
+                    }
                 }
             }
             return out;
@@ -359,7 +466,17 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            return data.clone();
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                int[] out = new int[(int) length];
+                int elem = (int) data[0];
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                return data.clone();
+            }
         }
     }
 
@@ -392,8 +509,14 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = Utilities.UNSAFE.getInt(ptr + sizeof * i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = data[(int) i];
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = data[0];
+                    }
+                } else {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = data[(int) i];
+                    }
                 }
             }
             return out;
@@ -406,12 +529,21 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            long[] res = new long[(int) length];
-            for (int i = 0; i < length; i++) {
-                res[i] = (long) data[i];
-
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                long[] out = new long[(int) length];
+                long elem = (long) data[0];
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                long[] out = new long[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = (long) data[i];
+                }
+                return out;
             }
-            return res;
         }
     }
 
@@ -444,8 +576,14 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = (long) Utilities.UNSAFE.getInt(ptr + sizeof * i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (long) data[(int) i];
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (long) data[0];
+                    }
+                } else {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (long) data[(int) i];
+                    }
                 }
             }
             return out;
@@ -458,12 +596,21 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            float[] res = new float[(int) length];
-            for (int i = 0; i < length; i++) {
-                res[i] = (float) data[i];
-
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                float[] out = new float[(int) length];
+                float elem = (float) data[0];
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                float[] out = new float[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = (float) data[i];
+                }
+                return out;
             }
-            return res;
         }
     }
 
@@ -496,8 +643,14 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = (float) Utilities.UNSAFE.getInt(ptr + sizeof * i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (float) data[(int) i];
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (float) data[0];
+                    }
+                } else {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (float) data[(int) i];
+                    }
                 }
             }
             return out;
@@ -510,12 +663,21 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             return null;
         } else {
-            double[] res = new double[(int) length];
-            for (int i = 0; i < length; i++) {
-                res[i] = (double) data[i];
-
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                double[] out = new double[(int) length];
+                double elem = (double) data[0];
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                double[] out = new double[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = (double) data[i];
+                }
+                return out;
             }
-            return res;
         }
     }
 
@@ -548,18 +710,24 @@ public class IntLargeArray extends LargeArray
                     out[idx++] = (double) Utilities.UNSAFE.getInt(ptr + sizeof * i);
                 }
             } else {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (double) data[(int) i];
+                if (isConstant()) {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (double) data[0];
+                    }
+                } else {
+                    for (long i = startPos; i < endPos; i += step) {
+                        out[idx++] = (double) data[(int) i];
+                    }
                 }
             }
             return out;
         }
     }
-    
+
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putInt(ptr + sizeof * i, (Integer)value);
+        Utilities.UNSAFE.putInt(ptr + sizeof * i, (Integer) value);
     }
 
     @Override
@@ -568,6 +736,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, value == true ? 1 : 0);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = value == true ? 1 : 0;
         }
     }
@@ -578,6 +749,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, (int) value);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = (int) value;
         }
     }
@@ -588,6 +762,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, (int) value);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = (int) value;
         }
     }
@@ -598,6 +775,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, value);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = value;
         }
     }
@@ -608,6 +788,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, (int) value);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = (int) value;
         }
     }
@@ -618,6 +801,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, (int) value);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = (int) value;
         }
     }
@@ -628,6 +814,9 @@ public class IntLargeArray extends LargeArray
         if (ptr != 0) {
             Utilities.UNSAFE.putInt(ptr + sizeof * i, (int) value);
         } else {
+            if (isConstant()) {
+                throw new IllegalAccessError("Constant arrays cannot be modified.");
+            }
             data[(int) i] = (int) value;
         }
     }
