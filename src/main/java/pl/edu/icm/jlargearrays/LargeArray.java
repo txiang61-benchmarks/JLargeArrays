@@ -86,8 +86,7 @@ public abstract class LargeArray implements
         this.ptr = nativePointer;
         this.type = largeArrayType;
         this.sizeof = largeArrayType.sizeOf();
-        if (length <= 0)
-        {
+        if (length <= 0) {
             throw new IllegalArgumentException(length + " is not a positive long value");
         }
         this.length = length;
@@ -144,8 +143,7 @@ public abstract class LargeArray implements
      */
     public Object get_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return get(i);
@@ -185,8 +183,7 @@ public abstract class LargeArray implements
      */
     public boolean getBoolean_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getBoolean(i);
@@ -213,8 +210,7 @@ public abstract class LargeArray implements
      */
     public byte getByte_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getByte(i);
@@ -241,8 +237,7 @@ public abstract class LargeArray implements
      */
     public short getShort_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getShort(i);
@@ -269,8 +264,7 @@ public abstract class LargeArray implements
      */
     public int getInt_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getInt(i);
@@ -297,8 +291,7 @@ public abstract class LargeArray implements
      */
     public long getLong_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getLong(i);
@@ -325,8 +318,7 @@ public abstract class LargeArray implements
      */
     public float getFloat_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getFloat(i);
@@ -353,8 +345,7 @@ public abstract class LargeArray implements
      */
     public double getDouble_safe(final long i)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         return getDouble(i);
@@ -614,36 +605,28 @@ public abstract class LargeArray implements
      */
     public void set(final long i, final Object value)
     {
-        if (value instanceof Boolean)
-        {
+        if (value instanceof Boolean) {
             setBoolean(i, (Boolean) value);
         }
-        else if (value instanceof Byte)
-        {
+        else if (value instanceof Byte) {
             setByte(i, (Byte) value);
         }
-        else if (value instanceof Short)
-        {
+        else if (value instanceof Short) {
             setShort(i, (Short) value);
         }
-        else if (value instanceof Integer)
-        {
+        else if (value instanceof Integer) {
             setInt(i, (Integer) value);
         }
-        else if (value instanceof Long)
-        {
+        else if (value instanceof Long) {
             setLong(i, (Long) value);
         }
-        else if (value instanceof Float)
-        {
+        else if (value instanceof Float) {
             setFloat(i, (Float) value);
         }
-        else if (value instanceof Double)
-        {
+        else if (value instanceof Double) {
             setDouble(i, (Double) value);
         }
-        else if (value instanceof Double)
-        {
+        else if (value instanceof Double) {
             throw new IllegalArgumentException("Unsupported type.");
         }
     }
@@ -674,36 +657,28 @@ public abstract class LargeArray implements
      */
     public void set_safe(final long i, final Object value)
     {
-        if (value instanceof Boolean)
-        {
+        if (value instanceof Boolean) {
             setBoolean_safe(i, (Boolean) value);
         }
-        else if (value instanceof Byte)
-        {
+        else if (value instanceof Byte) {
             setByte_safe(i, (Byte) value);
         }
-        else if (value instanceof Short)
-        {
+        else if (value instanceof Short) {
             setShort_safe(i, (Short) value);
         }
-        else if (value instanceof Integer)
-        {
+        else if (value instanceof Integer) {
             setInt_safe(i, (Integer) value);
         }
-        else if (value instanceof Long)
-        {
+        else if (value instanceof Long) {
             setLong_safe(i, (Long) value);
         }
-        else if (value instanceof Float)
-        {
+        else if (value instanceof Float) {
             setFloat_safe(i, (Float) value);
         }
-        else if (value instanceof Double)
-        {
+        else if (value instanceof Double) {
             setDouble_safe(i, (Double) value);
         }
-        else if (value instanceof Double)
-        {
+        else if (value instanceof Double) {
             throw new IllegalArgumentException("Unsupported type.");
         }
     }
@@ -729,8 +704,7 @@ public abstract class LargeArray implements
      */
     public void setBoolean_safe(final long i, final boolean value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setBoolean(i, value);
@@ -757,8 +731,7 @@ public abstract class LargeArray implements
      */
     public void setByte_safe(final long i, final byte value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setByte(i, value);
@@ -785,8 +758,7 @@ public abstract class LargeArray implements
      */
     public void setShort_safe(final long i, final short value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setShort(i, value);
@@ -813,8 +785,7 @@ public abstract class LargeArray implements
      */
     public void setInt_safe(final long i, final int value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setInt(i, value);
@@ -841,8 +812,7 @@ public abstract class LargeArray implements
      */
     public void setLong_safe(final long i, final long value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setLong(i, value);
@@ -869,8 +839,7 @@ public abstract class LargeArray implements
      */
     public void setFloat_safe(final long i, final float value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setFloat(i, value);
@@ -897,8 +866,7 @@ public abstract class LargeArray implements
      */
     public void setDouble_safe(final long i, final double value)
     {
-        if (i < 0 || i >= length)
-        {
+        if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
         setDouble(i, value);
@@ -936,8 +904,7 @@ public abstract class LargeArray implements
      */
     public static void setMaxSizeOf32bitArray(final int index)
     {
-        if (index < 0)
-        {
+        if (index < 0) {
             throw new IllegalArgumentException("index cannot be negative");
         }
         LARGEST_32BIT_INDEX = index;
@@ -956,12 +923,10 @@ public abstract class LargeArray implements
     @Override
     public Object clone()
     {
-        try
-        {
+        try {
             return super.clone();
         }
-        catch (final CloneNotSupportedException exc)
-        {
+        catch (final CloneNotSupportedException exc) {
             throw new InternalError(); // should never happen
         }
     }
@@ -988,8 +953,7 @@ public abstract class LargeArray implements
         @Override
         public void run()
         {
-            if (ptr != 0)
-            {
+            if (ptr != 0) {
                 Utilities.UNSAFE.freeMemory(ptr);
                 ptr = 0;
                 MemoryCounter.decreaseCounter(length * sizeof);
@@ -1005,23 +969,19 @@ public abstract class LargeArray implements
      */
     protected void zeroNativeMemory(final long size)
     {
-        if (ptr != 0)
-        {
+        if (ptr != 0) {
             final int nthreads = Runtime.getRuntime()
                                         .availableProcessors();
-            if (nthreads <= 2 || size < 100000)
-            {
+            if (nthreads <= 2 || size < 100000) {
                 Utilities.UNSAFE.setMemory(ptr,
                                            size * sizeof,
                                            (byte) 0);
             }
-            else
-            {
+            else {
                 final long k = size / nthreads;
                 final Thread[] threads = new Thread[nthreads];
                 final long ptrf = ptr;
-                for (int j = 0; j < nthreads; j++)
-                {
+                for (int j = 0; j < nthreads; j++) {
                     final long firstIdx = j * k;
                     final long lastIdx = (j == nthreads - 1) ? size
                                                             : firstIdx + k;
@@ -1030,8 +990,7 @@ public abstract class LargeArray implements
                         @Override
                         public void run()
                         {
-                            for (long k = firstIdx; k < lastIdx; k++)
-                            {
+                            for (long k = firstIdx; k < lastIdx; k++) {
                                 Utilities.UNSAFE.putByte(ptrf    + sizeof
                                                                  * k,
                                                          (byte) 0);
@@ -1040,16 +999,13 @@ public abstract class LargeArray implements
                     });
                     threads[j].start();
                 }
-                try
-                {
-                    for (int j = 0; j < nthreads; j++)
-                    {
+                try {
+                    for (int j = 0; j < nthreads; j++) {
                         threads[j].join();
                         threads[j] = null;
                     }
                 }
-                catch (final InterruptedException ex)
-                {
+                catch (final InterruptedException ex) {
                     Utilities.UNSAFE.setMemory(ptr,
                                                size * sizeof,
                                                (byte) 0);
