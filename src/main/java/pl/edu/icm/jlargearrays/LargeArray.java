@@ -65,16 +65,12 @@ public abstract class LargeArray implements
      * unpredictable behavior and likely JVM crash. The assumption is that the
      * pointer is valid as long as the parent is not garbage collected.
      * 
-     * @param parent
-     *            class instance responsible for handling the pointer's life
-     *            cycle, the created instance of LargeArray will prevent the GC
-     *            from reclaiming the parent.
-     * @param nativePointer
-     *            native pointer to wrap.
-     * @param largeArrayType
-     *            type of array
-     * @param length
-     *            array length
+     * @param parent class instance responsible for handling the pointer's life
+     *        cycle, the created instance of LargeArray will prevent the GC from
+     *        reclaiming the parent.
+     * @param nativePointer native pointer to wrap.
+     * @param largeArrayType type of array
+     * @param length array length
      */
     public LargeArray(final Object parent,
                       final long nativePointer,
@@ -126,8 +122,7 @@ public abstract class LargeArray implements
      * Returns a value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -136,8 +131,7 @@ public abstract class LargeArray implements
     /**
      * Returns a value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -154,8 +148,7 @@ public abstract class LargeArray implements
      * returns false for a given array or the index argument is invalid, then
      * calling this method will cause JVM crash.
      *
-     * @param i
-     *            index
+     * @param i index
      *
      * @return a value at index i. The type of returned value is the same as the
      *         type of this array.
@@ -166,8 +159,7 @@ public abstract class LargeArray implements
      * Returns a boolean value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a boolean value at index i.
      */
@@ -176,8 +168,7 @@ public abstract class LargeArray implements
     /**
      * Returns a boolean value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a boolean value at index i.
      */
@@ -193,8 +184,7 @@ public abstract class LargeArray implements
      * Returns a byte value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -203,8 +193,7 @@ public abstract class LargeArray implements
     /**
      * Returns a byte value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -220,8 +209,7 @@ public abstract class LargeArray implements
      * Returns a short value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -230,8 +218,7 @@ public abstract class LargeArray implements
     /**
      * Returns a short value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -247,8 +234,7 @@ public abstract class LargeArray implements
      * Returns an int value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -257,8 +243,7 @@ public abstract class LargeArray implements
     /**
      * Returns an int value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -274,8 +259,7 @@ public abstract class LargeArray implements
      * Returns a long value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -284,8 +268,7 @@ public abstract class LargeArray implements
     /**
      * Returns a long value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -301,8 +284,7 @@ public abstract class LargeArray implements
      * Returns a float value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -311,8 +293,7 @@ public abstract class LargeArray implements
     /**
      * Returns a float value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -328,8 +309,7 @@ public abstract class LargeArray implements
      * Returns a double value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -338,8 +318,7 @@ public abstract class LargeArray implements
     /**
      * Returns a double value at index i. Array bounds are checked.
      *
-     * @param i
-     *            an index
+     * @param i an index
      *
      * @return a value at index i.
      */
@@ -378,16 +357,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -411,16 +385,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -444,16 +413,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -477,16 +441,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -510,16 +469,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -543,16 +497,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -576,16 +525,11 @@ public abstract class LargeArray implements
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
      *
-     * @param a
-     *            the array into which the elements are to be stored, if it is
-     *            big enough; otherwise, a new array of is allocated for this
-     *            purpose.
-     * @param startPos
-     *            starting position (included)
-     * @param endPos
-     *            ending position (excluded)
-     * @param step
-     *            step size
+     * @param a the array into which the elements are to be stored, if it is big
+     *        enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos ending position (excluded)
+     * @param step step size
      *
      * @return an array containing the elements of the list or null
      */
@@ -598,10 +542,8 @@ public abstract class LargeArray implements
      * Sets a value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void set(final long i, final Object value)
     {
@@ -636,24 +578,19 @@ public abstract class LargeArray implements
      * returns false for a given array or the index argument is invalid, then
      * calling this method will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      *
-     * @throws ClassCastException
-     *             if the type of value argument is different than the type of
-     *             the array
+     * @throws ClassCastException if the type of value argument is different
+     *         than the type of the array
      */
     public abstract void setToNative(long i, Object value);
 
     /**
      * Sets a value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void set_safe(final long i, final Object value)
     {
@@ -687,20 +624,16 @@ public abstract class LargeArray implements
      * Sets a boolean value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setBoolean(long i, boolean value);
 
     /**
      * Sets a boolean value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setBoolean_safe(final long i, final boolean value)
     {
@@ -714,20 +647,16 @@ public abstract class LargeArray implements
      * Sets a byte value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setByte(long i, byte value);
 
     /**
      * Sets a byte value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setByte_safe(final long i, final byte value)
     {
@@ -741,20 +670,16 @@ public abstract class LargeArray implements
      * Sets a short value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setShort(long i, short value);
 
     /**
      * Sets a short value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setShort_safe(final long i, final short value)
     {
@@ -768,20 +693,16 @@ public abstract class LargeArray implements
      * Sets an int value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setInt(long i, int value);
 
     /**
      * Sets an int value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setInt_safe(final long i, final int value)
     {
@@ -795,20 +716,16 @@ public abstract class LargeArray implements
      * Sets a long value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setLong(long i, long value);
 
     /**
      * Sets a long value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setLong_safe(final long i, final long value)
     {
@@ -822,20 +739,16 @@ public abstract class LargeArray implements
      * Sets a float value at index i. Array bounds are not checked. Calling this
      * method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setFloat(long i, float value);
 
     /**
      * Sets a float value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setFloat_safe(final long i, final float value)
     {
@@ -849,20 +762,16 @@ public abstract class LargeArray implements
      * Sets a double value at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public abstract void setDouble(long i, double value);
 
     /**
      * Sets a double value at index i. Array bounds are checked.
      *
-     * @param i
-     *            index
-     * @param value
-     *            value to set
+     * @param i index
+     * @param value value to set
      */
     public void setDouble_safe(final long i, final double value)
     {
@@ -899,8 +808,7 @@ public abstract class LargeArray implements
      * than index, the data is stored in the memory allocated by
      * sun.misc.Unsafe.allocateMemory().
      *
-     * @param index
-     *            the maximal size of a 32-bit array.
+     * @param index the maximal size of a 32-bit array.
      */
     public static void setMaxSizeOf32bitArray(final int index)
     {
@@ -964,8 +872,7 @@ public abstract class LargeArray implements
     /**
      * Initializes allocated native memory to zero.
      *
-     * @param size
-     *            the length of native memory block
+     * @param size the length of native memory block
      */
     protected void zeroNativeMemory(final long size)
     {
