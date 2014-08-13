@@ -140,8 +140,8 @@ public class StringLargeArray extends LargeArray
         if (isConstant()) {
             return new StringLargeArray(length, get(0));
         } else {
-            StringLargeArray v = new StringLargeArray(size, maxStringLength, false);
-            Utilities.arraycopy(this, 0, v, 0, size);
+            StringLargeArray v = new StringLargeArray(length, Math.max(1, maxStringLength), false);
+            Utilities.arraycopy(this, 0, v, 0, length);
             return v;
         }
     }
@@ -397,10 +397,10 @@ public class StringLargeArray extends LargeArray
             throw new IllegalArgumentException(o + " is not a string.");
         }
         String s = (String) o;
-        if (s.length() > maxStringLength) {
-            throw new IllegalArgumentException("String  " + s + " is too long.");
-        }
         if (ptr != 0) {
+            if (s.length() > maxStringLength) {
+                throw new IllegalArgumentException("String  " + s + " is too long.");
+            }
             byte[] tmp;
             try {
                 tmp = s.getBytes(CHARSET);
