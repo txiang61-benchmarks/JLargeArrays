@@ -77,6 +77,12 @@ public class IntLargeArray extends LargeArray
         }
     }
 
+    /**
+     * Creates a constant array.
+     * <p>
+     * @param length        number of elements
+     * @param constantValue value
+     */
     public IntLargeArray(long length, int constantValue)
     {
         this.type = LargeArrayType.INT;

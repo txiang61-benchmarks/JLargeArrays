@@ -26,6 +26,7 @@
  * ***** END LICENSE BLOCK ***** */
 package pl.edu.icm.jlargearrays;
 
+import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
 import sun.misc.Cleaner;
 
 /**
@@ -37,10 +38,8 @@ import sun.misc.Cleaner;
 public class BitLargeArray extends LargeArray
 {
 
-    private static final long serialVersionUID = -3499412355469845345L;
+    private static final long serialVersionUID = 3135411647668758832L;
     private byte[] data;
-    private long size;
-    private final Object LOCK = new Object();
 
     /**
      * Creates new instance of this class.
@@ -66,21 +65,25 @@ public class BitLargeArray extends LargeArray
             throw new IllegalArgumentException(length + " is not a positive long value");
         }
         this.length = length;
-        long tmp = (length - 1l) / 8l;
-        this.size = tmp + 1;
         if (length > LARGEST_32BIT_INDEX) {
             System.gc();
-            this.ptr = Utilities.UNSAFE.allocateMemory(this.size * this.sizeof);
+            this.ptr = Utilities.UNSAFE.allocateMemory(this.length * this.sizeof);
             if (zeroNativeMemory) {
-                zeroNativeMemory(this.size);
+                zeroNativeMemory(length);
             }
-            Cleaner.create(this, new LargeArray.Deallocator(this.ptr, this.size, this.sizeof));
-            MemoryCounter.increaseCounter(this.size * this.sizeof);
+            Cleaner.create(this, new LargeArray.Deallocator(this.ptr, this.length, this.sizeof));
+            MemoryCounter.increaseCounter(this.length * this.sizeof);
         } else {
-            data = new byte[(int) this.size];
+            data = new byte[(int) length];
         }
     }
 
+    /**
+     * Creates a constant array.
+     * <p>
+     * @param length        number of elements
+     * @param constantValue value
+     */
     public BitLargeArray(long length, byte constantValue)
     {
         this.type = LargeArrayType.BIT;
@@ -88,64 +91,52 @@ public class BitLargeArray extends LargeArray
         if (length <= 0) {
             throw new IllegalArgumentException(length + " is not a positive long value");
         }
-        if (constantValue < 0 || constantValue > 1) {
-            throw new IllegalArgumentException("constantValue has to be 0 or 1");
-        }
         this.length = length;
         this.isConstant = true;
-        this.data = new byte[]{constantValue};
+        this.data = new byte[]{constantValue != 0 ? (byte) 1 : (byte) 0};
     }
 
     /**
      * Creates new instance of this class.
      *
-     * @param data data array, this reference is not used internally.
+     * @param data data array, this reference is used internally.
+     */
+    public BitLargeArray(byte[] data)
+    {
+        this.type = LargeArrayType.BIT;
+        this.sizeof = 1;
+        this.length = data.length;
+        this.data = data;
+    }
+
+    /**
+     * Creates new instance of this class.
+     *
+     * @param data data array, this reference is used internally.
      */
     public BitLargeArray(boolean[] data)
     {
-        this(data.length);
-        if (ptr != 0) {
-            for (int i = 0; i < data.length; i++) {
-                int v = 0;
-                if (data[i]) {
-                    v = 1;
-                }
-                long index = i / 8l;
-                long ii = i % 8l;
-                byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-                oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-                byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-                Utilities.UNSAFE.putByte(ptr + index, newV);
-            }
-        } else {
-            for (int i = 0; i < data.length; i++) {
-                int v = 0;
-                if (data[i]) {
-                    v = 1;
-                }
-                int index = i / 8;
-                int ii = i % 8;
-                byte oldV = this.data[index];
-                oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-                byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-                this.data[index] = newV;
-            }
+        this.type = LargeArrayType.BIT;
+        this.sizeof = 1;
+        this.length = data.length;
+        this.data = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            this.data[i] = (data[i] == true ? (byte) 1 : (byte) 0);
         }
     }
 
     /**
-     * Returns a deep copy of this instance. (The elements themselves are
-     * copied.)
+     * Returns a deep copy of this instance. (The elements themselves are copied.)
      *
      * @return a clone of this instance
      */
     @Override
-    public BitLargeArray clone()
+    public ByteLargeArray clone()
     {
         if (isConstant()) {
-            return new BitLargeArray(length, getByte(0));
+            return new ByteLargeArray(length, getByte(0));
         } else {
-            BitLargeArray v = new BitLargeArray(length, false);
+            ByteLargeArray v = new ByteLargeArray(length, false);
             Utilities.arraycopy(this, 0, v, 0, length);
             return v;
         }
@@ -158,39 +149,21 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public Boolean getFromNative(long i)
+    public Byte getFromNative(long i)
     {
-        long index = i / 8l;
-        Utilities.UNSAFE.monitorEnter(LOCK);
-        byte v = Utilities.UNSAFE.getByte(ptr + index);
-        Utilities.UNSAFE.monitorExit(LOCK);
-        long ii = i % 8l;
-        int value = v >> (8l - (ii + 1l)) & 0x0001;
-        return value == 1;
+        return Utilities.UNSAFE.getByte(ptr + i);
     }
 
     @Override
     public boolean getBoolean(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorExit(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return value == 1;
+            return (Utilities.UNSAFE.getByte(ptr + i)) != 0;
         } else {
             if (isConstant()) {
-                return data[0] == 1;
+                return data[0] != 0;
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return value == 1;
+                return data[(int) i] != 0;
             }
         }
     }
@@ -199,24 +172,12 @@ public class BitLargeArray extends LargeArray
     public byte getByte(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorExit(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return (byte) value;
+            return Utilities.UNSAFE.getByte(ptr + i);
         } else {
             if (isConstant()) {
                 return data[0];
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return (byte) value;
+                return data[(int) i];
             }
         }
     }
@@ -225,24 +186,12 @@ public class BitLargeArray extends LargeArray
     public short getShort(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return (short) value;
+            return (short) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             if (isConstant()) {
                 return data[0];
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return (short) value;
+                return (short) data[(int) i];
             }
         }
     }
@@ -251,24 +200,12 @@ public class BitLargeArray extends LargeArray
     public int getInt(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorExit(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return value;
+            return (int) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             if (isConstant()) {
                 return data[0];
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return value;
+                return (int) data[(int) i];
             }
         }
     }
@@ -277,24 +214,12 @@ public class BitLargeArray extends LargeArray
     public long getLong(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorExit(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return (long) value;
+            return (long) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             if (isConstant()) {
                 return data[0];
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return (long) value;
+                return (long) data[(int) i];
             }
         }
     }
@@ -303,24 +228,12 @@ public class BitLargeArray extends LargeArray
     public float getFloat(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorExit(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return (float) value;
+            return (float) (Utilities.UNSAFE.getByte(ptr + i));
         } else {
             if (isConstant()) {
                 return data[0];
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return (float) value;
+                return (float) data[(int) i];
             }
         }
     }
@@ -329,72 +242,12 @@ public class BitLargeArray extends LargeArray
     public double getDouble(long i)
     {
         if (ptr != 0) {
-            long index = i / 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte v = Utilities.UNSAFE.getByte(ptr + index);
-            Utilities.UNSAFE.monitorExit(LOCK);
-            long ii = i % 8l;
-            int value = v >> (8l - (ii + 1l)) & 0x0001;
-            return (double) value;
+            return (double) Utilities.UNSAFE.getByte(ptr + i);
         } else {
             if (isConstant()) {
                 return data[0];
             } else {
-                int index = (int) i / 8;
-                Utilities.UNSAFE.monitorEnter(LOCK);
-                byte v = data[index];
-                Utilities.UNSAFE.monitorExit(LOCK);
-                int ii = (int) i % 8;
-                int value = v >> (8 - (ii + 1)) & 0x0001;
-                return (double) value;
-            }
-        }
-    }
-
-    @Override
-    public byte[] getData()
-    {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
-                byte[] out = new byte[(int) length];
-                for (int i = 0; i < length; i++) {
-                    out[i] = data[0];
-                }
-                return out;
-            } else {
-                return data;
-            }
-        }
-    }
-
-    @Override
-    public boolean[] getBooleanData()
-    {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
-                boolean[] out = new boolean[(int) length];
-                boolean elem = data[0] == 1;
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                boolean[] out = new boolean[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    int value = v >> (8 - (ii + 1)) & 0x0001;
-                    out[i] = value == 1;
-                }
-                return out;
+                return (double) data[(int) i];
             }
         }
     }
@@ -425,29 +278,67 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    int value = v >> (8l - (ii + 1l)) & 0x0001;
-                    out[idx++] = value == 1;
+                    byte v = Utilities.UNSAFE.getByte(ptr + i);
+                    out[idx++] = v == 1;
                 }
             } else {
                 if (isConstant()) {
-                    boolean elem = data[0] == 1;
+                    boolean elem = data[0] != 0;
                     for (long i = startPos; i < endPos; i += step) {
                         out[idx++] = elem;
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        int value = v >> (8 - (ii + 1)) & 0x0001;
-                        out[idx++] = value == 1;
+                        byte v = data[(int) i];
+                        out[idx++] = v != 0;
                     }
                 }
             }
             return out;
+        }
+    }
+
+    @Override
+    public boolean[] getBooleanData()
+    {
+        if (ptr != 0) {
+            return null;
+        } else {
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                boolean[] out = new boolean[(int) length];
+                boolean elem = data[0] != 0;
+                for (int i = 0; i < length; i++) {
+                    out[i] = elem;
+                }
+                return out;
+            } else {
+                boolean[] out = new boolean[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = data[i] != 0;
+
+                }
+                return out;
+            }
+        }
+    }
+
+    @Override
+    public byte[] getData()
+    {
+        if (ptr != 0) {
+            return null;
+        } else {
+            if (isConstant()) {
+                if (length > getMaxSizeOf32bitArray()) return null;
+                byte[] out = new byte[(int) length];
+                for (int i = 0; i < length; i++) {
+                    out[i] = data[0];
+                }
+                return out;
+            } else {
+                return data;
+            }
         }
     }
 
@@ -458,22 +349,15 @@ public class BitLargeArray extends LargeArray
             return null;
         } else {
             if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
+                if (length > getMaxSizeOf32bitArray()) return null;
                 byte[] out = new byte[(int) length];
+                byte elem = (byte) data[0];
                 for (int i = 0; i < length; i++) {
-                    out[i] = data[0];
+                    out[i] = elem;
                 }
                 return out;
             } else {
-                byte[] out = new byte[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    out[i] = (byte) (v >> (8 - (ii + 1)) & 0x0001);
-                }
-                return out;
+                return data.clone();
             }
         }
     }
@@ -504,10 +388,7 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    out[idx++] = (byte) (v >> (8l - (ii + 1l)) & 0x0001);
+                    out[idx++] = Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
                 if (isConstant()) {
@@ -516,10 +397,7 @@ public class BitLargeArray extends LargeArray
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        out[idx++] = (byte) (v >> (8 - (ii + 1)) & 0x0001);
+                        out[idx++] = data[(int) i];
                     }
                 }
             }
@@ -534,7 +412,7 @@ public class BitLargeArray extends LargeArray
             return null;
         } else {
             if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
+                if (length > getMaxSizeOf32bitArray()) return null;
                 short[] out = new short[(int) length];
                 for (int i = 0; i < length; i++) {
                     out[i] = data[0];
@@ -542,12 +420,9 @@ public class BitLargeArray extends LargeArray
                 return out;
             } else {
                 short[] out = new short[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    out[i] = (short) (v >> (8 - (ii + 1)) & 0x0001);
+                for (int i = 0; i < length; i++) {
+                    out[i] = (short) data[i];
+
                 }
                 return out;
             }
@@ -580,10 +455,7 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    out[idx++] = (short) (v >> (8l - (ii + 1l)) & 0x0001);
+                    out[idx++] = (short) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
                 if (isConstant()) {
@@ -592,10 +464,7 @@ public class BitLargeArray extends LargeArray
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        out[idx++] = (short) (v >> (8 - (ii + 1)) & 0x0001);
+                        out[idx++] = (short) data[(int) i];
                     }
                 }
             }
@@ -610,7 +479,7 @@ public class BitLargeArray extends LargeArray
             return null;
         } else {
             if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
+                if (length > getMaxSizeOf32bitArray()) return null;
                 int[] out = new int[(int) length];
                 for (int i = 0; i < length; i++) {
                     out[i] = data[0];
@@ -618,12 +487,9 @@ public class BitLargeArray extends LargeArray
                 return out;
             } else {
                 int[] out = new int[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    out[i] = v >> (8 - (ii + 1)) & 0x0001;
+                for (int i = 0; i < length; i++) {
+                    out[i] = (int) data[i];
+
                 }
                 return out;
             }
@@ -656,10 +522,7 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    out[idx++] = (int) (v >> (8l - (ii + 1l)) & 0x0001);
+                    out[idx++] = (int) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
                 if (isConstant()) {
@@ -668,10 +531,7 @@ public class BitLargeArray extends LargeArray
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        out[idx++] = (int) (v >> (8 - (ii + 1)) & 0x0001);
+                        out[idx++] = (int) data[(int) i];
                     }
                 }
             }
@@ -686,7 +546,7 @@ public class BitLargeArray extends LargeArray
             return null;
         } else {
             if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
+                if (length > getMaxSizeOf32bitArray()) return null;
                 long[] out = new long[(int) length];
                 for (int i = 0; i < length; i++) {
                     out[i] = data[0];
@@ -694,12 +554,9 @@ public class BitLargeArray extends LargeArray
                 return out;
             } else {
                 long[] out = new long[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    out[i] = (long) (v >> (8 - (ii + 1)) & 0x0001);
+                for (int i = 0; i < length; i++) {
+                    out[i] = (long) data[i];
+
                 }
                 return out;
             }
@@ -732,10 +589,7 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    out[idx++] = (long) (v >> (8l - (ii + 1l)) & 0x0001);
+                    out[idx++] = (long) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
                 if (isConstant()) {
@@ -744,10 +598,7 @@ public class BitLargeArray extends LargeArray
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        out[idx++] = (long) (v >> (8 - (ii + 1)) & 0x0001);
+                        out[idx++] = (long) data[(int) i];
                     }
                 }
             }
@@ -762,7 +613,7 @@ public class BitLargeArray extends LargeArray
             return null;
         } else {
             if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
+                if (length > getMaxSizeOf32bitArray()) return null;
                 float[] out = new float[(int) length];
                 for (int i = 0; i < length; i++) {
                     out[i] = data[0];
@@ -770,12 +621,9 @@ public class BitLargeArray extends LargeArray
                 return out;
             } else {
                 float[] out = new float[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    out[i] = (float) (v >> (8 - (ii + 1)) & 0x0001);
+                for (int i = 0; i < length; i++) {
+                    out[i] = (float) data[i];
+
                 }
                 return out;
             }
@@ -808,10 +656,7 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    out[idx++] = (float) (v >> (8l - (ii + 1l)) & 0x0001);
+                    out[idx++] = (float) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
                 if (isConstant()) {
@@ -820,10 +665,7 @@ public class BitLargeArray extends LargeArray
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        out[idx++] = (float) (v >> (8 - (ii + 1)) & 0x0001);
+                        out[idx++] = (float) data[(int) i];
                     }
                 }
             }
@@ -838,7 +680,7 @@ public class BitLargeArray extends LargeArray
             return null;
         } else {
             if (isConstant()) {
-                if(length > getMaxSizeOf32bitArray()) return null;
+                if (length > getMaxSizeOf32bitArray()) return null;
                 double[] out = new double[(int) length];
                 for (int i = 0; i < length; i++) {
                     out[i] = data[0];
@@ -846,12 +688,9 @@ public class BitLargeArray extends LargeArray
                 return out;
             } else {
                 double[] out = new double[(int) length];
-                byte v;
-                int ii;
-                for (int i = 0; i < out.length; i++) {
-                    v = data[i / 8];
-                    ii = i % 8;
-                    out[i] = (double) (v >> (8 - (ii + 1)) & 0x0001);
+                for (int i = 0; i < length; i++) {
+                    out[i] = (double) data[i];
+
                 }
                 return out;
             }
@@ -884,10 +723,7 @@ public class BitLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    long index = i / 8l;
-                    byte v = Utilities.UNSAFE.getByte(ptr + index);
-                    long ii = i % 8l;
-                    out[idx++] = (double) (v >> (8l - (ii + 1l)) & 0x0001);
+                    out[idx++] = (double) Utilities.UNSAFE.getByte(ptr + i);
                 }
             } else {
                 if (isConstant()) {
@@ -896,10 +732,7 @@ public class BitLargeArray extends LargeArray
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int index = (int) i / 8;
-                        byte v = data[index];
-                        int ii = (int) i % 8;
-                        out[idx++] = (double) (v >> (8 - (ii + 1)) & 0x0001);
+                        out[idx++] = (double) data[(int) i];
                     }
                 }
             }
@@ -910,240 +743,171 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setToNative(long i, Object value)
     {
-        int v = 0;
-        if ((Boolean) value) {
-            v = 1;
-        }
-        long index = i / 8l;
-        long ii = i % 8l;
-        Utilities.UNSAFE.monitorEnter(LOCK);
-        byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-        oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-        byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-        Utilities.UNSAFE.putByte(ptr + index, newV);
-        Utilities.UNSAFE.monitorExit(LOCK);
-
+        Utilities.UNSAFE.putByte(ptr + i, (Byte) value);
     }
 
     @Override
     public void setBoolean(long i, boolean value)
     {
         if (ptr != 0) {
-            int v = 0;
-            if (value) {
-                v = 1;
-            }
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, value == true ? (byte) 1 : (byte) 0);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int v = 0;
-            if (value) {
-                v = 1;
-            }
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = value == true ? (byte) 1 : (byte) 0;
         }
     }
 
     @Override
     public void setByte(long i, byte value)
     {
-        if (value < 0 || value > 1) {
-            throw new IllegalArgumentException("The value has to be 0 or 1.");
-        }
         if (ptr != 0) {
-            int v = (int) (value & 0xFF);
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, value);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int v = (int) (value & 0xFF);
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = value;
         }
     }
 
     @Override
     public void setShort(long i, short value)
     {
-        if (value < 0 || value > 1) {
-            throw new IllegalArgumentException("The value has to be 0 or 1.");
-        }
         if (ptr != 0) {
-            int v = (int) ((byte) value & 0xFF);
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int v = (int) ((byte) value & 0xFF);
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = (byte) value;
         }
     }
 
     @Override
     public void setInt(long i, int value)
     {
-        if (value < 0 || value > 1) {
-            throw new IllegalArgumentException("The value has to be 0 or 1.");
-        }
         if (ptr != 0) {
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((value << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((value << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = (byte) value;
         }
     }
 
     @Override
     public void setLong(long i, long value)
     {
-        if (value < 0 || value > 1) {
-            throw new IllegalArgumentException("The value has to be 0 or 1.");
-        }
-        int v = (int) value;
         if (ptr != 0) {
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = (byte) value;
         }
     }
 
     @Override
     public void setFloat(long i, float value)
     {
-        if (value != 0.0 && value != 1.0) {
-            throw new IllegalArgumentException("The value has to be 0 or 1.");
-        }
-        int v = (int) value;
         if (ptr != 0) {
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = (byte) value;
         }
     }
 
     @Override
     public void setDouble(long i, double value)
     {
-        if (value != 0.0 && value != 1.0) {
-            throw new IllegalArgumentException("The value has to be 0 or 1.");
-        }
-        int v = (int) value;
         if (ptr != 0) {
-            long index = i / 8l;
-            long ii = i % 8l;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = Utilities.UNSAFE.getByte(ptr + index);
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8l - (ii + 1l))) | oldV);
-            Utilities.UNSAFE.putByte(ptr + index, newV);
-            Utilities.UNSAFE.monitorExit(LOCK);
+            Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
             if (isConstant()) {
                 throw new IllegalAccessError("Constant arrays cannot be modified.");
             }
-            int index = (int) i / 8;
-            int ii = (int) i % 8;
-            Utilities.UNSAFE.monitorEnter(LOCK);
-            byte oldV = this.data[index];
-            oldV = (byte) (((0xFF7F >> ii) & oldV) & 0x00FF);
-            byte newV = (byte) ((v << (8 - (ii + 1))) | oldV);
-            this.data[index] = newV;
-            Utilities.UNSAFE.monitorExit(LOCK);
+            data[(int) i] = (byte) value;
         }
+    }
+
+    /**
+     * Performs binary and operation using this array and the input array
+     * <p>
+     * @param array input array
+     * <p>
+     * @return this & array
+     */
+    public BitLargeArray and(BitLargeArray array)
+    {
+        if (array == null || array.length() != length) {
+            throw new IllegalArgumentException("array == null || array.length() != length");
+        }
+
+        BitLargeArray out = new BitLargeArray(array.length(), false);
+        for (long i = 0; i < length; i++) {
+            out.setByte(i, (byte) (getByte(i) & array.getByte(i)));
+        }
+        return out;
+    }
+
+    /**
+     * Performs binary or operation using this array and the input array
+     * <p>
+     * @param array input array
+     * <p>
+     * @return this | array
+     */
+    public BitLargeArray or(BitLargeArray array)
+    {
+        if (array == null || array.length() != length) {
+            throw new IllegalArgumentException("array == null || array.length() != length");
+        }
+
+        BitLargeArray out = new BitLargeArray(array.length(), false);
+        for (long i = 0; i < length; i++) {
+            out.setByte(i, (byte) (getByte(i) | array.getByte(i)));
+        }
+        return out;
+    }
+
+    /**
+     * Performs binary and operation using this array and the input array
+     * <p>
+     * @param array input array
+     * <p>
+     * @return this ^ array
+     */
+    public BitLargeArray xor(BitLargeArray array)
+    {
+        if (array == null || array.length() != length) {
+            throw new IllegalArgumentException("array == null || array.length() != length");
+        }
+
+        BitLargeArray out = new BitLargeArray(array.length(), false);
+        for (long i = 0; i < length; i++) {
+            out.setByte(i, (byte) (getByte(i) ^ array.getByte(i)));
+        }
+        return out;
+    }
+
+    /**
+     * Performs binary negation of this array
+     * <p>
+     * @return ~this
+     */
+    public BitLargeArray not()
+    {
+        BitLargeArray out = new BitLargeArray(length, false);
+        for (long i = 0; i < length; i++) {
+            out.setByte(i, (byte) (~getByte(i)));
+        }
+        return out;
     }
 }

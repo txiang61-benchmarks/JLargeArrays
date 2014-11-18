@@ -77,6 +77,12 @@ public class ByteLargeArray extends LargeArray
         }
     }
 
+    /**
+     * Creates a constant array.
+     * <p>
+     * @param length        number of elements
+     * @param constantValue value
+     */
     public ByteLargeArray(long length, byte constantValue)
     {
         this.type = LargeArrayType.BYTE;

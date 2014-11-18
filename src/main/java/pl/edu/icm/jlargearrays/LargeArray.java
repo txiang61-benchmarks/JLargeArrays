@@ -561,7 +561,7 @@ public abstract class LargeArray implements
             setFloat(i, (Float) value);
         } else if (value instanceof Double) {
             setDouble(i, (Double) value);
-        } else if (value instanceof Double) {
+        } else {
             throw new IllegalArgumentException("Unsupported type.");
         }
     }
@@ -601,7 +601,7 @@ public abstract class LargeArray implements
             setFloat_safe(i, (Float) value);
         } else if (value instanceof Double) {
             setDouble_safe(i, (Double) value);
-        } else if (value instanceof Double) {
+        } else {
             throw new IllegalArgumentException("Unsupported type.");
         }
     }

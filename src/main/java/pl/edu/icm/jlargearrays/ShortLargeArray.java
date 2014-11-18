@@ -77,6 +77,12 @@ public class ShortLargeArray extends LargeArray
         }
     }
 
+    /**
+     * Creates a constant array.
+     * <p>
+     * @param length        number of elements
+     * @param constantValue value
+     */
     public ShortLargeArray(long length, short constantValue)
     {
         this.type = LargeArrayType.DOUBLE;

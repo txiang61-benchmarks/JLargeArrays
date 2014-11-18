@@ -109,6 +109,12 @@ public class Utilities
             case DOUBLE:
                 arraycopy((DoubleLargeArray) src, srcPos, (DoubleLargeArray) dest, destPos, length);
                 break;
+            case COMPLEX_FLOAT:
+                arraycopy((ComplexFloatLargeArray) src, srcPos, (ComplexFloatLargeArray) dest, destPos, length);
+                break;
+            case COMPLEX_DOUBLE:
+                arraycopy((ComplexDoubleLargeArray) src, srcPos, (ComplexDoubleLargeArray) dest, destPos, length);
+                break;
             case STRING:
                 arraycopy((StringLargeArray) src, srcPos, (StringLargeArray) dest, destPos, length);
                 break;
@@ -992,6 +998,282 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length  the number of array elements to be copied.
      */
+    public static void arraycopy(final ComplexFloatLargeArray src, final long srcPos, final ComplexFloatLargeArray dest, final long destPos, final long length)
+    {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+        if (dest.isConstant()) {
+            throw new IllegalArgumentException("Constant arrays cannot be modified.");
+        }
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || length < 100000) {
+            for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                dest.setComplex(j, src.getComplex(i));
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            dest.setComplex(destPos + k, src.getComplex(srcPos + k));
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setComplex(j, src.getComplex(i));
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
+    public static void arraycopy(final float[] src, final int srcPos, final ComplexFloatLargeArray dest, final long destPos, final long length)
+    {
+        if (src.length % 2 != 0) {
+            throw new IllegalArgumentException("The length of the source array must be even.");
+        }
+
+        if (srcPos < 0 || srcPos >= src.length / 2) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length / 2");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+        if (dest.isConstant()) {
+            throw new IllegalArgumentException("Constant arrays cannot be modified.");
+        }
+        int i = srcPos;
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || length < 100000) {
+            float[] elem = new float[2];
+            for (long j = destPos; j < destPos + length; j++) {
+                elem[0] = src[2 * i];
+                elem[1] = src[2 * i + 1];
+                dest.setComplex(j, elem);
+                i++;
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        float[] elem = new float[2];
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            elem[0] = src[2 * (srcPos + (int) k)];
+                            elem[1] = src[2 * (srcPos + (int) k) + 1];
+                            dest.setComplex(destPos + k, elem);
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                float[] elem = new float[2];
+                for (long j = destPos; j < destPos + length; j++) {
+                    elem[0] = src[2 * i];
+                    elem[1] = src[2 * i + 1];
+                    dest.setComplex(j, elem);
+                    i++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
+    public static void arraycopy(final ComplexDoubleLargeArray src, final long srcPos, final ComplexDoubleLargeArray dest, final long destPos, final long length)
+    {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+        if (dest.isConstant()) {
+            throw new IllegalArgumentException("Constant arrays cannot be modified.");
+        }
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || length < 100000) {
+            for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                dest.setComplex(j, src.getComplex(i));
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            dest.setComplex(destPos + k, src.getComplex(srcPos + k));
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.setComplex(j, src.getComplex(i));
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
+    public static void arraycopy(final double[] src, final int srcPos, final ComplexDoubleLargeArray dest, final long destPos, final long length)
+    {
+        if (src.length % 2 != 0) {
+            throw new IllegalArgumentException("The length of the source array must be even.");
+        }
+
+        if (srcPos < 0 || srcPos >= src.length / 2) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length / 2");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+        if (dest.isConstant()) {
+            throw new IllegalArgumentException("Constant arrays cannot be modified.");
+        }
+        int i = srcPos;
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || length < 100000) {
+            double[] elem = new double[2];
+            for (long j = destPos; j < destPos + length; j++) {
+                elem[0] = src[2 * i];
+                elem[1] = src[2 * i + 1];
+                dest.setComplex(j, elem);
+                i++;
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        double[] elem = new double[2];
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            elem[0] = src[2 * (srcPos + (int) k)];
+                            elem[1] = src[2 * (srcPos + (int) k) + 1];
+                            dest.setComplex(destPos + k, elem);
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                double[] elem = new double[2];
+                for (long j = destPos; j < destPos + length; j++) {
+                    elem[0] = src[2 * i];
+                    elem[1] = src[2 * i + 1];
+                    dest.setComplex(j, elem);
+                    i++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
     public static void arraycopy(final StringLargeArray src, final long srcPos, final StringLargeArray dest, final long destPos, final long length)
     {
         if (srcPos < 0 || srcPos >= src.length()) {
@@ -1143,6 +1425,8 @@ public class Utilities
                 return new FloatLargeArray(length, zeroNativeMemory);
             case DOUBLE:
                 return new DoubleLargeArray(length, zeroNativeMemory);
+            case COMPLEX_FLOAT:
+                return new ComplexFloatLargeArray(length, zeroNativeMemory);
             case STRING:
                 return new StringLargeArray(length, 100, zeroNativeMemory);
             default:
@@ -1179,6 +1463,10 @@ public class Utilities
                     return new FloatLargeArray(src.length(), src.getFloat(0));
                 case DOUBLE:
                     return new DoubleLargeArray(src.length(), src.getDouble(0));
+                case COMPLEX_FLOAT:
+                    return new ComplexFloatLargeArray(src.length(), ((ComplexFloatLargeArray) src).getComplex(0));
+                case STRING:
+                    return new StringLargeArray(src.length(), (String) src.get(0));
                 default:
                     throw new IllegalArgumentException("Invalid array type.");
             }
@@ -1217,6 +1505,16 @@ public class Utilities
                 case DOUBLE:
                     for (long i = 0; i < length; i++) {
                         out.setDouble(i, src.getDouble(i));
+                    }
+                    break;
+                case COMPLEX_FLOAT:
+                    for (long i = 0; i < length; i++) {
+                        out.setFloat(i, src.getFloat(i));
+                    }
+                    break;
+                case STRING:
+                    for (long i = 0; i < length; i++) {
+                        out.set(i, src.get(i).toString());
                     }
                     break;
                 default:
@@ -1264,6 +1562,16 @@ public class Utilities
                                     out.setDouble(i, src.getDouble(i));
                                 }
                                 break;
+                            case COMPLEX_FLOAT:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.setFloat(i, src.getFloat(i));
+                                }
+                                break;
+                            case STRING:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.set(i, src.get(i).toString());
+                                }
+                                break;
                             default:
                                 throw new IllegalArgumentException("Invalid array type.");
                         }
@@ -1307,6 +1615,16 @@ public class Utilities
                     case DOUBLE:
                         for (long i = 0; i < length; i++) {
                             out.setDouble(i, src.getDouble(i));
+                        }
+                        break;
+                    case COMPLEX_FLOAT:
+                        for (long i = 0; i < length; i++) {
+                            out.setFloat(i, src.getFloat(i));
+                        }
+                        break;
+                    case STRING:
+                        for (long i = 0; i < length; i++) {
+                            out.set(i, src.get(i).toString());
                         }
                         break;
                     default:

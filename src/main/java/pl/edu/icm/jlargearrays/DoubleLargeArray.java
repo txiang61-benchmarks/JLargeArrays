@@ -77,6 +77,12 @@ public class DoubleLargeArray extends LargeArray
         }
     }
 
+    /**
+     * Creates a constant array.
+     * <p>
+     * @param length        number of elements
+     * @param constantValue value
+     */
     public DoubleLargeArray(long length, double constantValue)
     {
         this.type = LargeArrayType.DOUBLE;

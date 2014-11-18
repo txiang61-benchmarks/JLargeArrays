@@ -47,7 +47,7 @@
                     <source>1.6</source>
                     <target>1.6</target>
                     <compilerArgument>-XDignore.symbol.file</compilerArgument>
-                    <debug>false</debug>
+                    <debug>true</debug>
                 </configuration>
             </plugin>
             <plugin>
