@@ -842,7 +842,7 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @param array input array
      * <p>
-     * @return this & array
+     * @return (this and array)
      */
     public BitLargeArray and(BitLargeArray array)
     {
@@ -862,7 +862,7 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @param array input array
      * <p>
-     * @return this | array
+     * @return (this or array)
      */
     public BitLargeArray or(BitLargeArray array)
     {
@@ -882,7 +882,7 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @param array input array
      * <p>
-     * @return this ^ array
+     * @return (this xor array)
      */
     public BitLargeArray xor(BitLargeArray array)
     {
@@ -900,7 +900,7 @@ public class BitLargeArray extends LargeArray
     /**
      * Performs binary negation of this array
      * <p>
-     * @return ~this
+     * @return (not this)
      */
     public BitLargeArray not()
     {
