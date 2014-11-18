@@ -5,20 +5,20 @@ JLargeArrays is a pure-java library of one-dimensional arrays that can store up 
 
 ## Sources and Binaries
 
-### JLargeArrays 1.2
+### JLargeArrays 1.3
 
-[JLargeArrays-1.2.jar](http://search.maven.org/remotecontent?filepath=pl/edu/icm/JLargeArrays/1.2/JLargeArrays-1.2.jar) 
+[JLargeArrays-1.3.jar](http://search.maven.org/remotecontent?filepath=pl/edu/icm/JLargeArrays/1.3/JLargeArrays-1.3.jar) 
 
-[JLargeArrays-1.2-javadoc.jar](http://search.maven.org/remotecontent?filepath=pl/edu/icm/JLargeArrays/1.2/JLargeArrays-1.2-javadoc.jar) 
+[JLargeArrays-1.3-javadoc.jar](http://search.maven.org/remotecontent?filepath=pl/edu/icm/JLargeArrays/1.3/JLargeArrays-1.3-javadoc.jar) 
 
-[JLargeArrays-1.2-sources.jar](http://search.maven.org/remotecontent?filepath=pl/edu/icm/JLargeArrays/1.2/JLargeArrays-1.2-sources.jar) 
+[JLargeArrays-1.3-sources.jar](http://search.maven.org/remotecontent?filepath=pl/edu/icm/JLargeArrays/1.3/JLargeArrays-1.3-sources.jar) 
 
 JLargeArrays is available on maven central as
 
         <dependency>
             <groupId>pl.edu.icm</groupId>
             <artifactId>JLargeArrays</artifactId>
-            <version>1.2</version>
+            <version>1.3</version>
         </dependency>
 
 ##  JavaDoc
