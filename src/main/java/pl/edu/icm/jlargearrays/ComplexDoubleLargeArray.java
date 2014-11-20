@@ -246,8 +246,18 @@ public class ComplexDoubleLargeArray extends LargeArray
     public DoubleLargeArray getRealArray()
     {
         DoubleLargeArray re = new DoubleLargeArray(length, false);
+        double val;
         for (long i = 0; i < length; i++) {
-            re.setDouble(i, getDouble(2 * i));
+            if (ptr != 0) {
+                val = Utilities.UNSAFE.getDouble(ptr + sizeof * 2 * i);
+            } else {
+                if (isConstant()) {
+                    val = data[0];
+                } else {
+                    val = data[(int) (2 * i)];
+                }
+            }
+            re.setDouble(i, val);
         }
         return re;
     }
@@ -260,8 +270,18 @@ public class ComplexDoubleLargeArray extends LargeArray
     public DoubleLargeArray getImaginaryArray()
     {
         DoubleLargeArray im = new DoubleLargeArray(length, false);
+        double val;
         for (long i = 0; i < length; i++) {
-            im.setDouble(i, getDouble(2 * i + 1));
+            if (ptr != 0) {
+                val = Utilities.UNSAFE.getDouble(ptr + sizeof * (2 * i + 1));
+            } else {
+                if (isConstant()) {
+                    val = data[0];
+                } else {
+                    val = data[(int) (2 * i + 1)];
+                }
+            }
+            im.setDouble(i, val);
         }
         return im;
     }
@@ -275,9 +295,8 @@ public class ComplexDoubleLargeArray extends LargeArray
     {
         DoubleLargeArray out = new DoubleLargeArray(length);
         for (long i = 0; i < length; i++) {
-            double re = getDouble(2 * i);
-            double im = getDouble(2 * i + 1);
-            out.setDouble(i, Math.sqrt(re * re + im * im));
+            double[] val = getComplex(i);
+            out.setDouble(i, Math.sqrt(val[0] * val[0] + val[1] * val[1]));
         }
         return out;
     }
@@ -291,10 +310,8 @@ public class ComplexDoubleLargeArray extends LargeArray
     {
         DoubleLargeArray out = new DoubleLargeArray(length);
         for (long i = 0; i < length; i++) {
-            double re = getDouble(2 * i);
-            double im = getDouble(2 * i + 1);
-
-            out.setDouble(i, Math.atan2(im, re));
+            double[] val = getComplex(i);
+            out.setDouble(i, Math.atan2(val[1], val[0]));
         }
         return out;
     }

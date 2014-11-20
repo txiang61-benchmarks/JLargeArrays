@@ -246,8 +246,18 @@ public class ComplexFloatLargeArray extends LargeArray
     public FloatLargeArray getRealArray()
     {
         FloatLargeArray re = new FloatLargeArray(length, false);
+        float val;
         for (long i = 0; i < length; i++) {
-            re.setFloat(i, getFloat(2 * i));
+            if (ptr != 0) {
+                val = Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
+            } else {
+                if (isConstant()) {
+                    val = data[0];
+                } else {
+                    val = data[(int) (2 * i)];
+                }
+            }
+            re.setFloat(i, val);
         }
         return re;
     }
@@ -260,8 +270,18 @@ public class ComplexFloatLargeArray extends LargeArray
     public FloatLargeArray getImaginaryArray()
     {
         FloatLargeArray im = new FloatLargeArray(length, false);
+        float val;
         for (long i = 0; i < length; i++) {
-            im.setFloat(i, getFloat(2 * i + 1));
+            if (ptr != 0) {
+                val = Utilities.UNSAFE.getFloat(ptr + sizeof * (2 * i + 1));
+            } else {
+                if (isConstant()) {
+                    val = data[0];
+                } else {
+                    val = data[(int) (2 * i + 1)];
+                }
+            }
+            im.setFloat(i, val);
         }
         return im;
     }
@@ -275,9 +295,8 @@ public class ComplexFloatLargeArray extends LargeArray
     {
         FloatLargeArray out = new FloatLargeArray(length);
         for (long i = 0; i < length; i++) {
-            float re = getFloat(2 * i);
-            float im = getFloat(2 * i + 1);
-            out.setFloat(i, (float) Math.sqrt(re * re + im * im));
+            float[] val = getComplex(i);
+            out.setFloat(i, (float) Math.sqrt(val[0] * val[0] + val[1] * val[1]));
         }
         return out;
     }
@@ -291,10 +310,8 @@ public class ComplexFloatLargeArray extends LargeArray
     {
         FloatLargeArray out = new FloatLargeArray(length);
         for (long i = 0; i < length; i++) {
-            float re = getFloat(2 * i);
-            float im = getFloat(2 * i + 1);
-
-            out.setFloat(i, (float) Math.atan2(im, re));
+            float[] val = getComplex(i);
+            out.setFloat(i, (float) Math.atan2(val[1], val[0]));
         }
         return out;
     }
