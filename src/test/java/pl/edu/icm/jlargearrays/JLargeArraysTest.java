@@ -97,9 +97,9 @@ public class JLargeArraysTest extends TestCase
         LargeArray.setMaxSizeOf32bitArray(1);
         BitLargeArray a = new BitLargeArray(10);
         long idx = 5;
-        byte val = 1;
+        Boolean val = true;
         a.setToNative(idx, val);
-        assertEquals(val, (byte)a.getFromNative(idx));
+        assertEquals(val, a.getFromNative(idx));
     }
 
     public void testBitLargeArrayGetData()

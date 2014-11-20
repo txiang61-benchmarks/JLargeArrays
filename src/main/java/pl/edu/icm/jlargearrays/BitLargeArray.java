@@ -149,9 +149,9 @@ public class BitLargeArray extends LargeArray
     }
 
     @Override
-    public Byte getFromNative(long i)
+    public Boolean getFromNative(long i)
     {
-        return Utilities.UNSAFE.getByte(ptr + i);
+        return Utilities.UNSAFE.getByte(ptr + i) == 1;
     }
 
     @Override
@@ -743,7 +743,7 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putByte(ptr + i, (Byte) value);
+        Utilities.UNSAFE.putByte(ptr + i, ((Boolean)value) == true ? (byte) 1 : (byte) 0);
     }
 
     @Override
@@ -762,6 +762,9 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setByte(long i, byte value)
     {
+        if (value < 0 || value > 1) {
+            throw new IllegalArgumentException("The value has to be 0 or 1.");
+        }
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, value);
         } else {
@@ -775,6 +778,9 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setShort(long i, short value)
     {
+        if (value < 0 || value > 1) {
+            throw new IllegalArgumentException("The value has to be 0 or 1.");
+        }
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
@@ -788,6 +794,9 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setInt(long i, int value)
     {
+        if (value < 0 || value > 1) {
+            throw new IllegalArgumentException("The value has to be 0 or 1.");
+        }
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
@@ -801,6 +810,9 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setLong(long i, long value)
     {
+        if (value < 0 || value > 1) {
+            throw new IllegalArgumentException("The value has to be 0 or 1.");
+        }
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
@@ -814,6 +826,9 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setFloat(long i, float value)
     {
+        if (value != 0.0 && value != 1.0) {
+            throw new IllegalArgumentException("The value has to be 0 or 1.");
+        }
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
@@ -827,6 +842,9 @@ public class BitLargeArray extends LargeArray
     @Override
     public void setDouble(long i, double value)
     {
+        if (value != 0.0 && value != 1.0) {
+            throw new IllegalArgumentException("The value has to be 0 or 1.");
+        }
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
         } else {
