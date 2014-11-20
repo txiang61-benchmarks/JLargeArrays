@@ -131,12 +131,12 @@ public class BitLargeArray extends LargeArray
      * @return a clone of this instance
      */
     @Override
-    public ByteLargeArray clone()
+    public BitLargeArray clone()
     {
         if (isConstant()) {
-            return new ByteLargeArray(length, getByte(0));
+            return new BitLargeArray(length, getByte(0));
         } else {
-            ByteLargeArray v = new ByteLargeArray(length, false);
+            BitLargeArray v = new BitLargeArray(length, false);
             Utilities.arraycopy(this, 0, v, 0, length);
             return v;
         }
