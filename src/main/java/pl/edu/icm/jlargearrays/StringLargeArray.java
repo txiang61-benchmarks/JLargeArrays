@@ -112,7 +112,7 @@ public class StringLargeArray extends LargeArray
      */
     public StringLargeArray(long length, String constantValue)
     {
-        this.type = LargeArrayType.DOUBLE;
+        this.type = LargeArrayType.STRING;
         this.sizeof = 1;
         if (length <= 0) {
             throw new IllegalArgumentException(length + " is not a positive long value");
@@ -871,6 +871,17 @@ public class StringLargeArray extends LargeArray
     public void setDouble(long i, double value)
     {
         set(i, Double.toString(value));
+    }
+
+    /**
+     * Returns maximal length of each element.
+     * <p>
+     * @return maximal length of each element
+     *
+     */
+    public int getMaxStringLength()
+    {
+        return maxStringLength;
     }
 
 }

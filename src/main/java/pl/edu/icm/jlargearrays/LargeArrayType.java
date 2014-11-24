@@ -34,7 +34,7 @@ package pl.edu.icm.jlargearrays;
 public enum LargeArrayType
 {
 
-    BIT, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, COMPLEX_FLOAT, COMPLEX_DOUBLE, STRING;
+    BIT, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, COMPLEX_FLOAT, COMPLEX_DOUBLE, STRING, OBJECT;
 
     public long sizeOf()
     {
@@ -58,6 +58,8 @@ public enum LargeArrayType
         case COMPLEX_DOUBLE:
             return 8;
         case STRING:
+            return 1;
+        case OBJECT:
             return 1;
         }
         return 0;

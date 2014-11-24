@@ -62,11 +62,12 @@ package pl.edu.icm.jlargearrays;
  obligated to do so.  If you do not wish to do so, delete this
  exception statement from your version. */
 import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
+import static pl.edu.icm.jlargearrays.LargeArray.getMaxSizeOf32bitArray;
 import sun.misc.Cleaner;
 
 /**
  *
- * An array of complex numbers (single precision) that can store up to 2<SUP>63</SUP> elements.
+ * An array of complex numbers (double precision) that can store up to 2<SUP>63</SUP> elements.
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
@@ -75,8 +76,8 @@ public class ComplexFloatLargeArray extends LargeArray
 
     private static final long serialVersionUID = 155390537810310407L;
 
-    private float[] data;
-    private long size;
+    private FloatLargeArray dataRe;
+    private FloatLargeArray dataIm;
 
     /**
      * Creates new instance of this class.
@@ -102,18 +103,8 @@ public class ComplexFloatLargeArray extends LargeArray
             throw new IllegalArgumentException(length + " is not a positive long value");
         }
         this.length = length;
-        this.size = 2 * this.length;
-        if (size > LARGEST_32BIT_INDEX) {
-            System.gc();
-            this.ptr = Utilities.UNSAFE.allocateMemory(size * this.sizeof);
-            if (zeroNativeMemory) {
-                zeroNativeMemory(2 * length);
-            }
-            Cleaner.create(this, new Deallocator(this.ptr, size, this.sizeof));
-            MemoryCounter.increaseCounter(size * this.sizeof);
-        } else {
-            data = new float[(int) size];
-        }
+        dataRe = new FloatLargeArray(length, zeroNativeMemory);
+        dataIm = new FloatLargeArray(length, zeroNativeMemory);
     }
 
     /**
@@ -132,17 +123,16 @@ public class ComplexFloatLargeArray extends LargeArray
         if (constantValue == null || constantValue.length != 2) {
             throw new IllegalArgumentException("constantValue == null || constantValue.length != 2");
         }
-
         this.length = length;
-        this.size = 2 * this.length;
         this.isConstant = true;
-        this.data = constantValue.clone();
+        this.dataRe = new FloatLargeArray(length, constantValue[0]);
+        this.dataIm = new FloatLargeArray(length, constantValue[1]);
     }
 
     /**
      * Creates new instance of this class.
      *
-     * @param data data array, this reference is used internally.
+     * @param data data array, this reference is not used internally.
      */
     public ComplexFloatLargeArray(float[] data)
     {
@@ -152,7 +142,7 @@ public class ComplexFloatLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      *
-     * @param data data array, this reference is used internally.
+     * @param data data array, this reference is not used internally.
      */
     public ComplexFloatLargeArray(FloatLargeArray data)
     {
@@ -165,17 +155,25 @@ public class ComplexFloatLargeArray extends LargeArray
         this.type = LargeArrayType.COMPLEX_FLOAT;
         this.sizeof = 4;
         this.length = data.length / 2;
-        this.size = data.length;
-        this.ptr = data.ptr;
         this.isConstant = data.isConstant;
-        this.data = data.getData();
+        if (this.isConstant) {
+            this.dataRe = new FloatLargeArray(length, data.getFloat(0));
+            this.dataIm = new FloatLargeArray(length, data.getFloat(1));
+        } else {
+            dataRe = new FloatLargeArray(length, false);
+            dataIm = new FloatLargeArray(length, false);
+            for (long i = 0; i < this.length; i++) {
+                dataRe.setFloat(i, data.getFloat(2 * i));
+                dataIm.setFloat(i, data.getFloat(2 * i + 1));
+            }
+        }
     }
 
     /**
      * Creates new instance of this class.
      * <p>
-     * @param dataRe real part
-     * @param dataIm imaginary part
+     * @param dataRe real part, this reference is used internally.
+     * @param dataIm imaginary part, this reference not used internally.
      */
     public ComplexFloatLargeArray(float[] dataRe, float[] dataIm)
     {
@@ -185,8 +183,8 @@ public class ComplexFloatLargeArray extends LargeArray
     /**
      * Creates new instance of this class.
      * <p>
-     * @param dataRe real part
-     * @param dataIm imaginary part
+     * @param dataRe real part, this reference is used internally.
+     * @param dataIm imaginary part, this reference is used internally.
      */
     public ComplexFloatLargeArray(FloatLargeArray dataRe, FloatLargeArray dataIm)
     {
@@ -199,26 +197,8 @@ public class ComplexFloatLargeArray extends LargeArray
         this.type = LargeArrayType.COMPLEX_FLOAT;
         this.sizeof = 4;
         this.length = dataRe.length();
-        this.size = 2 * dataRe.length();
-        if (dataRe.isConstant && dataIm.isConstant) {
-            this.isConstant = true;
-            this.data = new float[]{dataRe.getFloat(0), dataIm.getFloat(0)};
-        } else if (size > LARGEST_32BIT_INDEX) {
-            System.gc();
-            this.ptr = Utilities.UNSAFE.allocateMemory(size * this.sizeof);
-            Cleaner.create(this, new Deallocator(this.ptr, size, this.sizeof));
-            MemoryCounter.increaseCounter(size * this.sizeof);
-            for (long i = 0; i < this.length; i++) {
-                Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, dataRe.getFloat(i));
-                Utilities.UNSAFE.putFloat(ptr + sizeof * (2 * i + 1), dataIm.getFloat(i));
-            }
-        } else {
-            data = new float[(int) size];
-            for (int i = 0; i < this.length; i++) {
-                data[2 * i] = dataRe.getFloat(i);
-                data[2 * i + 1] = dataIm.getFloat(i);
-            }
-        }
+        this.dataRe = dataRe;
+        this.dataIm = dataIm;
     }
 
     /**
@@ -230,7 +210,7 @@ public class ComplexFloatLargeArray extends LargeArray
     public ComplexFloatLargeArray clone()
     {
         if (isConstant()) {
-            return new ComplexFloatLargeArray(length, data);
+            return new ComplexFloatLargeArray(length, new float[]{dataRe.getFloat(0), dataIm.getFloat(0)});
         } else {
             ComplexFloatLargeArray v = new ComplexFloatLargeArray(length, false);
             Utilities.arraycopy(this, 0, v, 0, length);
@@ -241,49 +221,21 @@ public class ComplexFloatLargeArray extends LargeArray
     /**
      * Returns the real part of this array.
      * <p>
-     * @return the real part.
+     * @return reference to the real part.
      */
     public FloatLargeArray getRealArray()
     {
-        FloatLargeArray re = new FloatLargeArray(length, false);
-        float val;
-        for (long i = 0; i < length; i++) {
-            if (ptr != 0) {
-                val = Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-            } else {
-                if (isConstant()) {
-                    val = data[0];
-                } else {
-                    val = data[(int) (2 * i)];
-                }
-            }
-            re.setFloat(i, val);
-        }
-        return re;
+        return dataRe;
     }
 
     /**
      * Returns the imaginary part of this array.
      * <p>
-     * @return the imaginary part.
+     * @return reference to the imaginary part.
      */
     public FloatLargeArray getImaginaryArray()
     {
-        FloatLargeArray im = new FloatLargeArray(length, false);
-        float val;
-        for (long i = 0; i < length; i++) {
-            if (ptr != 0) {
-                val = Utilities.UNSAFE.getFloat(ptr + sizeof * (2 * i + 1));
-            } else {
-                if (isConstant()) {
-                    val = data[0];
-                } else {
-                    val = data[(int) (2 * i + 1)];
-                }
-            }
-            im.setFloat(i, val);
-        }
-        return im;
+        return dataIm;
     }
 
     /**
@@ -293,10 +245,11 @@ public class ComplexFloatLargeArray extends LargeArray
      */
     public FloatLargeArray getAbsArray()
     {
-        FloatLargeArray out = new FloatLargeArray(length);
+        FloatLargeArray out = new FloatLargeArray(length, false);
         for (long i = 0; i < length; i++) {
-            float[] val = getComplex(i);
-            out.setFloat(i, (float) Math.sqrt(val[0] * val[0] + val[1] * val[1]));
+            double re = dataRe.getFloat(i);
+            double im = dataIm.getFloat(i);
+            out.setFloat(i, (float)Math.sqrt(re * re + im * im));
         }
         return out;
     }
@@ -308,128 +261,144 @@ public class ComplexFloatLargeArray extends LargeArray
      */
     public FloatLargeArray getArgArray()
     {
-        FloatLargeArray out = new FloatLargeArray(length);
+        FloatLargeArray out = new FloatLargeArray(length, false);
         for (long i = 0; i < length; i++) {
-            float[] val = getComplex(i);
-            out.setFloat(i, (float) Math.atan2(val[1], val[0]));
+            double re = dataRe.getFloat(i);
+            double im = dataIm.getFloat(i);
+            out.setFloat(i, (float)Math.atan2(im, re));
         }
         return out;
     }
 
+    /**
+     * Returns a complex value ({re, im}) at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value at index i ({re, im}).
+     */
     @Override
     public float[] get(long i)
     {
         return getComplex(i);
     }
 
+    /**
+     * Returns a complex value ({re, im}) at index i. Array bounds are not checked. If isLarge()
+     * returns false for a given array or the index argument is invalid, then
+     * calling this method will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value at index i ({re, im}).
+     */
     @Override
     public float[] getFromNative(long i)
     {
-        float re = Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        float im = Utilities.UNSAFE.getFloat(ptr + sizeof * (2 * i + 1));
-        return new float[]{re, im};
-    }
-
-    @Override
-    public boolean getBoolean(long i)
-    {
-        if (ptr != 0) {
-            return Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i) != 0;
-        } else {
-            if (isConstant()) {
-                return data[0] != 0;
-            } else {
-                return data[(int) (2 * i)] != 0;
-            }
-        }
-    }
-
-    @Override
-    public byte getByte(long i)
-    {
-        if (ptr != 0) {
-            return (byte) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        } else {
-            if (isConstant()) {
-                return (byte) data[0];
-            } else {
-                return (byte) data[(int) (2 * i)];
-            }
-        }
-    }
-
-    @Override
-    public short getShort(long i)
-    {
-        if (ptr != 0) {
-            return (short) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        } else {
-            if (isConstant()) {
-                return (short) data[0];
-            } else {
-                return (short) data[(int) (2 * i)];
-            }
-        }
-    }
-
-    @Override
-    public int getInt(long i)
-    {
-        if (ptr != 0) {
-            return (int) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        } else {
-            if (isConstant()) {
-                return (int) data[0];
-            } else {
-                return (int) data[(int) (2 * i)];
-            }
-        }
-    }
-
-    @Override
-    public long getLong(long i)
-    {
-        if (ptr != 0) {
-            return (long) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        } else {
-            if (isConstant()) {
-                return (long) data[0];
-            } else {
-                return (long) data[(int) (2 * i)];
-            }
-        }
-    }
-
-    @Override
-    public float getFloat(long i)
-    {
-        if (ptr != 0) {
-            return Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        } else {
-            if (isConstant()) {
-                return data[0];
-            } else {
-                return data[(int) (2 * i)];
-            }
-        }
-    }
-
-    @Override
-    public double getDouble(long i)
-    {
-        if (ptr != 0) {
-            return (double) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-        } else {
-            if (isConstant()) {
-                return (double) data[0];
-            } else {
-                return (double) data[(int) (2 * i)];
-            }
-        }
+        return new float[]{dataRe.getFromNative(i), dataIm.getFromNative(i)};
     }
 
     /**
-     * Returns a complex value at index i. Array bounds are not checked. Calling
+     * Returns a boolean value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public boolean getBoolean(long i)
+    {
+        return dataRe.getBoolean(i);
+    }
+
+    /**
+     * Returns a byte value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public byte getByte(long i)
+    {
+        return dataRe.getByte(i);
+    }
+
+    /**
+     * Returns a short value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public short getShort(long i)
+    {
+        return dataRe.getShort(i);
+    }
+
+    /**
+     * Returns an int value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public int getInt(long i)
+    {
+        return dataRe.getInt(i);
+    }
+
+    /**
+     * Returns a long value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public long getLong(long i)
+    {
+        return dataRe.getLong(i);
+    }
+
+    /**
+     * Returns a float value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public float getFloat(long i)
+    {
+        return dataRe.getFloat(i);
+    }
+
+    /**
+     * Returns a double value that corresponds to the real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value that corresponds to the real part at index i.
+     */
+    @Override
+    public double getDouble(long i)
+    {
+        return dataRe.getDouble(i);
+    }
+
+    /**
+     * Returns a complex value ({re, im}) at index i. Array bounds are not checked. Calling
      * this method with invalid index argument will cause JVM crash.
      *
      * @param i an index
@@ -438,502 +407,250 @@ public class ComplexFloatLargeArray extends LargeArray
      */
     public float[] getComplex(long i)
     {
-        if (ptr != 0) {
-            return new float[]{(Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i)), (Utilities.UNSAFE.getFloat(ptr + sizeof * (2 * i + 1)))};
-        } else {
-            if (isConstant()) {
-                return new float[]{data[0], data[1]};
-            } else {
-                return new float[]{data[(int) (2 * i)], data[(int) (2 * i + 1)]};
-            }
-        }
+        return new float[]{dataRe.getFloat(i), dataIm.getFloat(i)};
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns complex data in the interleaved layout. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the list or null
+     */
     @Override
     public float[] getData()
     {
         return getComplexData();
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns boolean data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public boolean[] getBooleanData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                boolean[] out = new boolean[(int) length];
-                boolean elem = data[0] != 0;
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                boolean[] res = new boolean[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = data[2 * i] != 0;
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getBooleanData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            boolean[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new boolean[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    float v = Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                    out[idx++] = v != 0;
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[0] != 0;
-                    }
-                } else {
-                    for (long i = startPos; i < endPos; i += step) {
-                        float v = data[(int) (2 * i)];
-                        out[idx++] = v != 0;
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getBooleanData(a, startPos, endPos, step);
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns byte data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public byte[] getByteData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                byte[] out = new byte[(int) length];
-                byte elem = (byte) data[0];
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                byte[] res = new byte[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = (byte) data[2 * i];
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getByteData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public byte[] getByteData(byte[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            byte[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new byte[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (byte) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (byte) data[0];
-                    }
-                } else {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (byte) data[(int) (2 * i)];
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getByteData(a, startPos, endPos, step);
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns short data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public short[] getShortData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                short[] out = new short[(int) length];
-                short elem = (short) data[0];
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                short[] res = new short[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = (short) data[2 * i];
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getShortData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public short[] getShortData(short[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            short[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new short[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (short) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (short) data[0];
-                    }
-                } else {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (short) data[(int) (2 * i)];
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getShortData(a, startPos, endPos, step);
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns int data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public int[] getIntData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                int[] out = new int[(int) length];
-                int elem = (int) data[0];
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                int[] res = new int[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = (int) data[2 * i];
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getIntData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public int[] getIntData(int[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            int[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new int[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (int) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (int) data[0];
-                    }
-                } else {
-
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (int) data[(int) (2 * i)];
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getIntData(a, startPos, endPos, step);
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns long data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public long[] getLongData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                long[] out = new long[(int) length];
-                long elem = (long) data[0];
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                long[] res = new long[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = (long) data[2 * i];
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getLongData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public long[] getLongData(long[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            long[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new long[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (long) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (long) data[0];
-                    }
-                } else {
-
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (long) data[(int) (2 * i)];
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getLongData(a, startPos, endPos, step);
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns float data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public float[] getFloatData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                float[] out = new float[(int) length];
-                float elem = (float) data[0];
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                float[] res = new float[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = data[2 * i];
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getFloatData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public float[] getFloatData(float[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            float[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new float[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[0];
-                    }
-                } else {
-
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[(int) (2 * i)];
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getFloatData(a, startPos, endPos, step);
     }
 
+    /**
+     * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
+     * method returns double data that correspond to the real part of this object. Otherwise, it returns null.
+     *
+     * @return an array containing the elements of the real part of this object or null
+     */
     @Override
     public double[] getDoubleData()
     {
-        if (ptr != 0) {
-            return null;
-        } else {
-            if (isConstant()) {
-                if (length > getMaxSizeOf32bitArray()) return null;
-                double[] out = new double[(int) length];
-                double elem = (double) data[0];
-                for (int i = 0; i < length; i++) {
-                    out[i] = elem;
-                }
-                return out;
-            } else {
-                double[] res = new double[(int) length];
-                for (int i = 0; i < length; i++) {
-                    res[i] = (double) data[2 * i];
-
-                }
-                return res;
-            }
-        }
+        return dataRe.getDoubleData();
     }
 
+    /**
+     * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
+     * this method returns selected elements of the real part of this object. Otherwise, it returns
+     * null. If (endPos - startPos) / step is smaller or equal to a.length, it
+     * is returned therein. Otherwise, a new array is allocated and returned.
+     * Array bounds are checked.
+     *
+     * @param a        the array into which the elements are to be stored, if it is big
+     *                 enough; otherwise, a new array of is allocated for this purpose.
+     * @param startPos starting position (included)
+     * @param endPos   ending position (excluded)
+     * @param step     step size
+     *
+     * @return an array containing the elements of the real part this object or null
+     */
     @Override
     public double[] getDoubleData(double[] a, long startPos, long endPos, long step)
     {
-        if (startPos < 0 || startPos >= length) {
-            throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
-        }
-        if (endPos < 0 || endPos > length || endPos < startPos) {
-            throw new ArrayIndexOutOfBoundsException("endPos < 0 || endPos > length || endPos < startPos");
-        }
-        if (step < 1) {
-            throw new IllegalArgumentException("step < 1");
-        }
-
-        long len = (long) Math.ceil((endPos - startPos) / (double) step);
-        if (len > getMaxSizeOf32bitArray()) {
-            return null;
-        } else {
-            double[] out;
-            if (a != null && a.length >= len) {
-                out = a;
-            } else {
-                out = new double[(int) len];
-            }
-            int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (double) Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (double) data[0];
-                    }
-                } else {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (double) data[(int) (2 * i)];
-                    }
-                }
-            }
-            return out;
-        }
+        return dataRe.getDoubleData(a, startPos, endPos, step);
     }
 
     /**
@@ -944,20 +661,15 @@ public class ComplexFloatLargeArray extends LargeArray
      */
     public float[] getComplexData()
     {
-        if (ptr != 0) {
+        if (2 * length > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            if (isConstant()) {
-                if (size > getMaxSizeOf32bitArray()) return null;
-                float[] out = new float[(int) size];
-                for (int i = 0; i < length; i++) {
-                    out[2 * i] = data[0];
-                    out[2 * i + 1] = data[1];
-                }
-                return out;
-            } else {
-                return data;
+            float[] out = new float[(int) (2 * length)];
+            for (int i = 0; i < length; i++) {
+                out[2 * i] = dataRe.getFloat(i);
+                out[2 * i + 1] = dataIm.getFloat(i);
             }
+            return out;
         }
     }
 
@@ -999,131 +711,134 @@ public class ComplexFloatLargeArray extends LargeArray
                 out = new float[(int) len];
             }
             int idx = 0;
-            if (ptr != 0) {
-                for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = Utilities.UNSAFE.getFloat(ptr + sizeof * 2 * i);
-                    out[idx++] = Utilities.UNSAFE.getFloat(ptr + sizeof * (2 * i + 1));
-                }
-            } else {
-                if (isConstant()) {
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[0];
-                        out[idx++] = data[1];
-                    }
-                } else {
-
-                    for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[(int) (2 * i)];
-                        out[idx++] = data[(int) (2 * i + 1)];
-                    }
-                }
+            for (long i = startPos; i < endPos; i += step) {
+                out[idx++] = dataRe.getFloat(i);
+                out[idx++] = dataIm.getFloat(i);
             }
+
             return out;
         }
     }
 
+    /**
+     * Sets a complex value at index i. Array bounds are not checked. If isLarge()
+     * returns false for a given array or the index argument is invalid, then
+     * calling this method will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set, must be float[] of length 2
+     *
+     * @throws ClassCastException if the type of value argument is different
+     *                            than the type of the array
+     */
     @Override
     public void setToNative(long i, Object value)
     {
         if (!(value instanceof float[])) {
             throw new IllegalArgumentException(value + " is not an array of floats.");
         }
-
-        Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, ((float[]) value)[0]);
-        Utilities.UNSAFE.putFloat(ptr + sizeof * (2 * i + 1), ((float[]) value)[1]);
+        dataRe.setToNative(i, ((float[]) value)[0]);
+        dataIm.setToNative(i, ((float[]) value)[1]);
     }
 
+    /**
+     * Sets a boolean value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setBoolean(long i, boolean value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value == true ? 1 : 0);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value == true ? 1 : 0;
-        }
+        dataRe.setBoolean(i, value);
     }
 
+    /**
+     * Sets a byte value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setByte(long i, byte value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value;
-        }
+        dataRe.setByte(i, value);
     }
 
+    /**
+     * Sets a short value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setShort(long i, short value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value;
-        }
+        dataRe.setShort(i, value);
     }
 
+    /**
+     * Sets an int value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setInt(long i, int value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value;
-        }
+        dataRe.setInt(i, value);
     }
 
+    /**
+     * Sets a long value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setLong(long i, long value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value;
-        }
+        dataRe.setLong(i, value);
     }
 
+    /**
+     * Sets a float value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setFloat(long i, float value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value;
-        }
+        dataRe.setFloat(i, value);
     }
 
+    /**
+     * Sets a double value as a real part at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set as a real part
+     */
     @Override
     public void setDouble(long i, double value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, (float) value);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = (float) value;
-        }
+        dataRe.setDouble(i, value);
     }
 
+    /**
+     * Sets a complex value ({re, im}) at index i. Array bounds are not checked. Calling this
+     * method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set, must be float[] of length 2
+     */
     @Override
     public void set(long i, Object value)
     {
@@ -1142,16 +857,8 @@ public class ComplexFloatLargeArray extends LargeArray
      */
     public void setComplex(long i, float[] value)
     {
-        if (ptr != 0) {
-            Utilities.UNSAFE.putFloat(ptr + sizeof * 2 * i, value[0]);
-            Utilities.UNSAFE.putFloat(ptr + sizeof * (2 * i + 1), value[1]);
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) (2 * i)] = value[0];
-            data[(int) (2 * i + 1)] = value[1];
-        }
+        dataRe.setFloat(i, value[0]);
+        dataIm.setFloat(i, value[1]);
     }
 
 }

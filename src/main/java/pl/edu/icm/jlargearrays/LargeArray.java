@@ -346,13 +346,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns boolean data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract boolean[] getBooleanData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -363,7 +363,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract boolean[] getBooleanData(boolean[] a,
                                              long startPos,
@@ -374,13 +374,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns byte data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract byte[] getByteData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -391,7 +391,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract byte[] getByteData(byte[] a,
                                        long startPos,
@@ -402,13 +402,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns short data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract short[] getShortData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -419,7 +419,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract short[] getShortData(short[] a,
                                          long startPos,
@@ -430,13 +430,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns int data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract int[] getIntData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -447,7 +447,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract int[] getIntData(int[] a,
                                      long startPos,
@@ -458,13 +458,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns long data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract long[] getLongData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -475,7 +475,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract long[] getLongData(long[] a,
                                        long startPos,
@@ -486,13 +486,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns float data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract float[] getFloatData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -503,7 +503,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract float[] getFloatData(float[] a,
                                          long startPos,
@@ -514,13 +514,13 @@ public abstract class LargeArray implements
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
      * method returns double data. Otherwise, it returns null.
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract double[] getDoubleData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
-     * this method returns selected elements of an array. Otherwise, it returns
+     * this method returns selected elements of this object. Otherwise, it returns
      * null. If (endPos - startPos) / step is smaller or equal to a.length, it
      * is returned therein. Otherwise, a new array is allocated and returned.
      * Array bounds are checked.
@@ -531,7 +531,7 @@ public abstract class LargeArray implements
      * @param endPos   ending position (excluded)
      * @param step     step size
      *
-     * @return an array containing the elements of the list or null
+     * @return an array containing the elements of this object or null
      */
     public abstract double[] getDoubleData(double[] a,
                                            long startPos,

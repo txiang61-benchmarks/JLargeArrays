@@ -1385,6 +1385,129 @@ public class Utilities
             }
         }
     }
+    
+     /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
+    public static void arraycopy(final ObjectLargeArray src, final long srcPos, final ObjectLargeArray dest, final long destPos, final long length)
+    {
+        if (srcPos < 0 || srcPos >= src.length()) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+        if (dest.isConstant()) {
+            throw new IllegalArgumentException("Constant arrays cannot be modified.");
+        }
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || length < 100000) {
+            for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                dest.set(j, src.get(i));
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            dest.set(destPos + k, src.get(srcPos + k));
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
+                    dest.set(j, src.get(i));
+                }
+            }
+        }
+    }
+
+    /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
+    public static void arraycopy(final Object[] src, final int srcPos, final ObjectLargeArray dest, final long destPos, final long length)
+    {
+        if (srcPos < 0 || srcPos >= src.length) {
+            throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
+        }
+        if (destPos < 0 || destPos >= dest.length()) {
+            throw new ArrayIndexOutOfBoundsException("destPos < 0 || destPos >= dest.length()");
+        }
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0");
+        }
+        if (dest.isConstant()) {
+            throw new IllegalArgumentException("Constant arrays cannot be modified.");
+        }
+        int i = srcPos;
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        if (nthreads < 2 || length < 100000) {
+            for (long j = destPos; j < destPos + length; j++) {
+                dest.set(j, src[i++]);
+            }
+        } else {
+            long k = length / nthreads;
+            Thread[] threads = new Thread[nthreads];
+            for (int j = 0; j < nthreads; j++) {
+                final long firstIdx = j * k;
+                final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+                threads[j] = new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (long k = firstIdx; k < lastIdx; k++) {
+                            dest.set(destPos + k, src[srcPos + (int) k]);
+                        }
+                    }
+                });
+                threads[j].start();
+            }
+            try {
+                for (int j = 0; j < nthreads; j++) {
+                    threads[j].join();
+                    threads[j] = null;
+                }
+            } catch (InterruptedException ex) {
+                for (long j = destPos; j < destPos + length; j++) {
+                    dest.set(j, src[i++]);
+                }
+            }
+        }
+    }
 
     /**
      * Creates a new instance of LargeArray. The native memory is zeroed.
@@ -1429,6 +1552,8 @@ public class Utilities
                 return new ComplexFloatLargeArray(length, zeroNativeMemory);
             case STRING:
                 return new StringLargeArray(length, 100, zeroNativeMemory);
+            case OBJECT:
+                return new ObjectLargeArray(length, 100, zeroNativeMemory);
             default:
                 throw new IllegalArgumentException("Invalid array type.");
         }
@@ -1467,6 +1592,8 @@ public class Utilities
                     return new ComplexFloatLargeArray(src.length(), ((ComplexFloatLargeArray) src).getComplex(0));
                 case STRING:
                     return new StringLargeArray(src.length(), (String) src.get(0));
+                case OBJECT:
+                    return new ObjectLargeArray(src.length(), src.get(0));
                 default:
                     throw new IllegalArgumentException("Invalid array type.");
             }
@@ -1515,6 +1642,11 @@ public class Utilities
                 case STRING:
                     for (long i = 0; i < length; i++) {
                         out.set(i, src.get(i).toString());
+                    }
+                    break;
+                case OBJECT:
+                    for (long i = 0; i < length; i++) {
+                        out.set(i, src.get(i));
                     }
                     break;
                 default:
@@ -1572,6 +1704,11 @@ public class Utilities
                                     out.set(i, src.get(i).toString());
                                 }
                                 break;
+                            case OBJECT:
+                                for (long i = firstIdx; i < lastIdx; i++) {
+                                    out.set(i, src.get(i));
+                                }
+                                break;
                             default:
                                 throw new IllegalArgumentException("Invalid array type.");
                         }
@@ -1625,6 +1762,11 @@ public class Utilities
                     case STRING:
                         for (long i = 0; i < length; i++) {
                             out.set(i, src.get(i).toString());
+                        }
+                        break;
+                    case OBJECT:
+                        for (long i = 0; i < length; i++) {
+                            out.set(i, src.get(i));
                         }
                         break;
                     default:
