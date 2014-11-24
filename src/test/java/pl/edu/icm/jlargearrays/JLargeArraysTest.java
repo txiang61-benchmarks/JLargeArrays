@@ -29,6 +29,7 @@ package pl.edu.icm.jlargearrays;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import sun.org.mozilla.javascript.internal.ScriptRuntime;
 
 /**
  * Unit tests.
@@ -1145,6 +1146,94 @@ public class JLargeArraysTest extends TestCase
         IntLargeArray b = (IntLargeArray) Utilities.convert(a, LargeArrayType.INT);
         for (int i = 0; i < data.length; i++) {
             assertEquals(data[i].length(), b.getInt(i));
+        }
+    }
+    
+    public void testObjectLargeArrayConstant()
+    {
+        ObjectLargeArray a = new ObjectLargeArray(1l << 33, new Float(12345));
+        assertEquals(12345f, a.get(0));
+        assertEquals(12345f, a.get(a.length() - 1));
+        Throwable e = null;
+        try {
+            a.set(0, new Float(12346));
+        } catch (IllegalAccessError ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof IllegalAccessError);
+        assertNull(a.getData());
+    }
+
+    public void testObjectLargeArrayGetSet()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        ObjectLargeArray a = new ObjectLargeArray(10, 84);
+        long idx = 5;
+        Double val1 = 2.0;
+        Double val2 = Double.MAX_VALUE;
+        a.set(idx, val1);
+        assertEquals(val1, a.get(idx));
+        a.set(idx, val2);
+        assertEquals(val2, a.get(idx));
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new ObjectLargeArray(10, 84);
+        a.set(idx, val1);
+        assertEquals(val1, a.get(idx));
+        a.set(idx, val2);
+        assertEquals(val2, a.get(idx));
+    }
+
+    public void testObjectLargeArrayGetSetNative()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1);
+        ObjectLargeArray a = new ObjectLargeArray(10, 84);
+        long idx = 5;
+        Double val1 = 2.0;
+        Double val2 = Double.MAX_VALUE;
+        a.setToNative(idx, val1);
+        assertEquals(val1, a.getFromNative(idx));
+        a.setToNative(idx, val2);
+        assertEquals(val2, a.getFromNative(idx));
+    }
+
+    public void testObjectArraycopy()
+    {
+        Double[] data = new Double[]{1.12345, -1.54321, 100., -100., Double.MAX_VALUE, Double.MIN_VALUE, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NaN, Double.MIN_NORMAL};
+        int startPos = 2;
+        int length = 8;
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        ObjectLargeArray a = new ObjectLargeArray(data);
+        ObjectLargeArray b = new ObjectLargeArray(2 * data.length, 84);
+        Utilities.arraycopy(a, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+        b = new ObjectLargeArray(2 * data.length, 84);
+        Utilities.arraycopy(data, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+        LargeArray.setMaxSizeOf32bitArray(data.length - 1);
+        a = new ObjectLargeArray(data);
+        b = new ObjectLargeArray(2 * data.length, 84);
+        Utilities.arraycopy(a, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+        b = new ObjectLargeArray(2 * data.length, 84);
+        Utilities.arraycopy(data, startPos, b, 0, length);
+        for (int i = 0; i < length; i++) {
+            assertEquals(data[startPos + i], b.get(i));
+        }
+    }
+    
+    public void testObjectConvert()
+    {
+        double[] data = new double[]{1.12345, -1.54321, 100., -100., Double.MAX_VALUE, Double.MIN_VALUE, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NaN, Double.MIN_NORMAL};
+        DoubleLargeArray a = new DoubleLargeArray(data);
+        ObjectLargeArray b = (ObjectLargeArray) Utilities.convert(a, LargeArrayType.OBJECT);
+        for (int i = 0; i < data.length; i++) {
+            assertEquals(data[i], b.get(i));
         }
     }
 
