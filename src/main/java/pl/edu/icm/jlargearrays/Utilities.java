@@ -88,8 +88,8 @@ public class Utilities
             throw new IllegalArgumentException("The type of source array is different than the type of destimation array.");
         }
         switch (src.getType()) {
-            case BIT:
-                arraycopy((BitLargeArray) src, srcPos, (BitLargeArray) dest, destPos, length);
+            case LOGIC:
+                arraycopy((LogicLargeArray) src, srcPos, (LogicLargeArray) dest, destPos, length);
                 break;
             case BYTE:
                 arraycopy((ByteLargeArray) src, srcPos, (ByteLargeArray) dest, destPos, length);
@@ -134,7 +134,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length  the number of array elements to be copied.
      */
-    public static void arraycopy(final BitLargeArray src, final long srcPos, final BitLargeArray dest, final long destPos, final long length)
+    public static void arraycopy(final LogicLargeArray src, final long srcPos, final LogicLargeArray dest, final long destPos, final long length)
     {
         if (srcPos < 0 || srcPos >= src.length()) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length()");
@@ -195,7 +195,7 @@ public class Utilities
      * @param destPos starting position in the destination data.
      * @param length  the number of array elements to be copied.
      */
-    public static void arraycopy(final boolean[] src, final int srcPos, final BitLargeArray dest, final long destPos, final long length)
+    public static void arraycopy(final boolean[] src, final int srcPos, final LogicLargeArray dest, final long destPos, final long length)
     {
         if (srcPos < 0 || srcPos >= src.length) {
             throw new ArrayIndexOutOfBoundsException("srcPos < 0 || srcPos >= src.length");
@@ -1534,8 +1534,8 @@ public class Utilities
     public static LargeArray create(LargeArrayType type, long length, boolean zeroNativeMemory)
     {
         switch (type) {
-            case BIT:
-                return new BitLargeArray(length, zeroNativeMemory);
+            case LOGIC:
+                return new LogicLargeArray(length, zeroNativeMemory);
             case BYTE:
                 return new ByteLargeArray(length, zeroNativeMemory);
             case SHORT:
@@ -1574,8 +1574,8 @@ public class Utilities
         }
         if (src.isConstant()) {
             switch (type) {
-                case BIT:
-                    return new BitLargeArray(src.length(), src.getByte(0));
+                case LOGIC:
+                    return new LogicLargeArray(src.length(), src.getByte(0));
                 case BYTE:
                     return new ByteLargeArray(src.length(), src.getByte(0));
                 case SHORT:
@@ -1603,7 +1603,7 @@ public class Utilities
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2 || length < 100000) {
             switch (type) {
-                case BIT:
+                case LOGIC:
                 case BYTE:
                     for (long i = 0; i < length; i++) {
                         out.setByte(i, src.getByte(i));
@@ -1723,7 +1723,7 @@ public class Utilities
                 }
             } catch (InterruptedException ex) {
                 switch (type) {
-                    case BIT:
+                    case LOGIC:
                     case BYTE:
                         for (long i = 0; i < length; i++) {
                             out.setByte(i, src.getByte(i));

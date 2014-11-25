@@ -34,13 +34,13 @@ package pl.edu.icm.jlargearrays;
 public enum LargeArrayType
 {
 
-    BIT, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, COMPLEX_FLOAT, COMPLEX_DOUBLE, STRING, OBJECT;
+    LOGIC, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, COMPLEX_FLOAT, COMPLEX_DOUBLE, STRING, OBJECT;
 
     public long sizeOf()
     {
         switch (this)
         {
-        case BIT:
+        case LOGIC:
         case BYTE:
             return 1;
         case SHORT:

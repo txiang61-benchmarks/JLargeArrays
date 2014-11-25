@@ -35,7 +35,7 @@ import sun.misc.Cleaner;
  *
  * @author Piotr Wendykier (p.wendykier@icm.edu.pl)
  */
-public class BitLargeArray extends LargeArray
+public class LogicLargeArray extends LargeArray
 {
 
     private static final long serialVersionUID = 3135411647668758832L;
@@ -46,7 +46,7 @@ public class BitLargeArray extends LargeArray
      *
      * @param length number of elements
      */
-    public BitLargeArray(long length)
+    public LogicLargeArray(long length)
     {
         this(length, true);
     }
@@ -57,9 +57,9 @@ public class BitLargeArray extends LargeArray
      * @param length           number of elements
      * @param zeroNativeMemory if true, then the native memory is zeroed.
      */
-    public BitLargeArray(long length, boolean zeroNativeMemory)
+    public LogicLargeArray(long length, boolean zeroNativeMemory)
     {
-        this.type = LargeArrayType.BIT;
+        this.type = LargeArrayType.LOGIC;
         this.sizeof = 1;
         if (length <= 0) {
             throw new IllegalArgumentException(length + " is not a positive long value");
@@ -84,9 +84,9 @@ public class BitLargeArray extends LargeArray
      * @param length        number of elements
      * @param constantValue value
      */
-    public BitLargeArray(long length, byte constantValue)
+    public LogicLargeArray(long length, byte constantValue)
     {
-        this.type = LargeArrayType.BIT;
+        this.type = LargeArrayType.LOGIC;
         this.sizeof = 1;
         if (length <= 0) {
             throw new IllegalArgumentException(length + " is not a positive long value");
@@ -101,9 +101,9 @@ public class BitLargeArray extends LargeArray
      *
      * @param data data array, this reference is used internally.
      */
-    public BitLargeArray(byte[] data)
+    public LogicLargeArray(byte[] data)
     {
-        this.type = LargeArrayType.BIT;
+        this.type = LargeArrayType.LOGIC;
         this.sizeof = 1;
         this.length = data.length;
         this.data = data;
@@ -114,9 +114,9 @@ public class BitLargeArray extends LargeArray
      *
      * @param data data array, this reference is used internally.
      */
-    public BitLargeArray(boolean[] data)
+    public LogicLargeArray(boolean[] data)
     {
-        this.type = LargeArrayType.BIT;
+        this.type = LargeArrayType.LOGIC;
         this.sizeof = 1;
         this.length = data.length;
         this.data = new byte[data.length];
@@ -131,12 +131,12 @@ public class BitLargeArray extends LargeArray
      * @return a clone of this instance
      */
     @Override
-    public BitLargeArray clone()
+    public LogicLargeArray clone()
     {
         if (isConstant()) {
-            return new BitLargeArray(length, getByte(0));
+            return new LogicLargeArray(length, getByte(0));
         } else {
-            BitLargeArray v = new BitLargeArray(length, false);
+            LogicLargeArray v = new LogicLargeArray(length, false);
             Utilities.arraycopy(this, 0, v, 0, length);
             return v;
         }
@@ -862,13 +862,13 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @return (this and array)
      */
-    public BitLargeArray and(BitLargeArray array)
+    public LogicLargeArray and(LogicLargeArray array)
     {
         if (array == null || array.length() != length) {
             throw new IllegalArgumentException("array == null || array.length() != length");
         }
 
-        BitLargeArray out = new BitLargeArray(array.length(), false);
+        LogicLargeArray out = new LogicLargeArray(array.length(), false);
         for (long i = 0; i < length; i++) {
             out.setByte(i, (byte) (getByte(i) & array.getByte(i)));
         }
@@ -882,13 +882,13 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @return (this or array)
      */
-    public BitLargeArray or(BitLargeArray array)
+    public LogicLargeArray or(LogicLargeArray array)
     {
         if (array == null || array.length() != length) {
             throw new IllegalArgumentException("array == null || array.length() != length");
         }
 
-        BitLargeArray out = new BitLargeArray(array.length(), false);
+        LogicLargeArray out = new LogicLargeArray(array.length(), false);
         for (long i = 0; i < length; i++) {
             out.setByte(i, (byte) (getByte(i) | array.getByte(i)));
         }
@@ -902,13 +902,13 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @return (this xor array)
      */
-    public BitLargeArray xor(BitLargeArray array)
+    public LogicLargeArray xor(LogicLargeArray array)
     {
         if (array == null || array.length() != length) {
             throw new IllegalArgumentException("array == null || array.length() != length");
         }
 
-        BitLargeArray out = new BitLargeArray(array.length(), false);
+        LogicLargeArray out = new LogicLargeArray(array.length(), false);
         for (long i = 0; i < length; i++) {
             out.setByte(i, (byte) (getByte(i) ^ array.getByte(i)));
         }
@@ -920,9 +920,9 @@ public class BitLargeArray extends LargeArray
      * <p>
      * @return (not this)
      */
-    public BitLargeArray not()
+    public LogicLargeArray not()
     {
-        BitLargeArray out = new BitLargeArray(length, false);
+        LogicLargeArray out = new LogicLargeArray(length, false);
         for (long i = 0; i < length; i++) {
             out.setByte(i, (byte) (~getByte(i)));
         }
