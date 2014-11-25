@@ -29,7 +29,6 @@ package pl.edu.icm.jlargearrays;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import sun.org.mozilla.javascript.internal.ScriptRuntime;
 
 /**
  * Unit tests.
@@ -57,9 +56,9 @@ public class JLargeArraysTest extends TestCase
         return new TestSuite(JLargeArraysTest.class);
     }
 
-    public void testBitLargeArrayConstant()
+    public void testLogicLargeArrayConstant()
     {
-        BitLargeArray a = new BitLargeArray(1l << 33, (byte) 1);
+        LogicLargeArray a = new LogicLargeArray(1l << 33, (byte) 1);
         assertTrue(a.getBoolean(0));
         assertTrue(a.getBoolean(a.length() - 1));
         Throwable e = null;
@@ -72,10 +71,10 @@ public class JLargeArraysTest extends TestCase
         assertNull(a.getData());
     }
 
-    public void testBitLargeArrayGetSet()
+    public void testLogicLargeArrayGetSet()
     {
         LargeArray.setMaxSizeOf32bitArray(1073741824);
-        BitLargeArray a = new BitLargeArray(10);
+        LogicLargeArray a = new LogicLargeArray(10);
         long idx = 5;
         boolean val = true;
         a.setBoolean(idx, val);
@@ -84,7 +83,7 @@ public class JLargeArraysTest extends TestCase
         a.set(idx, val);
         assertEquals(val, (boolean)a.get(idx));
         LargeArray.setMaxSizeOf32bitArray(1);
-        a = new BitLargeArray(10);
+        a = new LogicLargeArray(10);
         a.setBoolean(idx, val);
         assertEquals(val, a.getBoolean(idx));
         idx = 6;
@@ -93,31 +92,31 @@ public class JLargeArraysTest extends TestCase
 
     }
 
-    public void testBitLargeArrayGetSetNative()
+    public void testLogicLargeArrayGetSetNative()
     {
         LargeArray.setMaxSizeOf32bitArray(1);
-        BitLargeArray a = new BitLargeArray(10);
+        LogicLargeArray a = new LogicLargeArray(10);
         long idx = 5;
         Boolean val = true;
         a.setToNative(idx, val);
         assertEquals(val, a.getFromNative(idx));
     }
 
-    public void testBitLargeArrayGetData()
+    public void testLogicLargeArrayGetData()
     {
         boolean[] data = new boolean[]{true, false, false, false, true, true, true, false, true, true};
         long startPos = 2;
         long endPos = 7;
         long step = 2;
         LargeArray.setMaxSizeOf32bitArray(1073741824);
-        BitLargeArray a = new BitLargeArray(data);
+        LogicLargeArray a = new LogicLargeArray(data);
         boolean[] res = a.getBooleanData(null, startPos, endPos, step);
         int idx = 0;
         for (long i = startPos; i < endPos; i += step) {
             assertEquals(data[(int) i], res[idx++]);
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
-        a = new BitLargeArray(data);
+        a = new LogicLargeArray(data);
         res = a.getBooleanData(null, startPos, endPos, step);
         idx = 0;
         for (long i = startPos; i < endPos; i += step) {
@@ -134,25 +133,25 @@ public class JLargeArraysTest extends TestCase
         int startPos = 2;
         int length = data.length - 2;
         LargeArray.setMaxSizeOf32bitArray(1073741824);
-        BitLargeArray a = new BitLargeArray(data);
-        BitLargeArray b = new BitLargeArray(2 * data.length);
+        LogicLargeArray a = new LogicLargeArray(data);
+        LogicLargeArray b = new LogicLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
             assertEquals(data[startPos + i], b.getBoolean(i));
         }
-        b = new BitLargeArray(2 * data.length);
+        b = new LogicLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
             assertEquals(data[startPos + i], b.getBoolean(i));
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
-        a = new BitLargeArray(data);
-        b = new BitLargeArray(2 * data.length);
+        a = new LogicLargeArray(data);
+        b = new LogicLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
             assertEquals(data[startPos + i], b.getBoolean(i));
         }
-        b = new BitLargeArray(2 * data.length);
+        b = new LogicLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
             assertEquals(data[startPos + i], b.getBoolean(i));
@@ -162,7 +161,7 @@ public class JLargeArraysTest extends TestCase
     public void testBitConvert()
     {
         boolean[] data = new boolean[]{true, false, false, false, true, true, true, false, true, true};
-        BitLargeArray a = new BitLargeArray(data);
+        LogicLargeArray a = new LogicLargeArray(data);
         ByteLargeArray b = (ByteLargeArray) Utilities.convert(a, LargeArrayType.BYTE);
         for (int i = 0; i < data.length; i++) {
             assertEquals(data[i] == true ? 1 : 0, b.getByte(i));
