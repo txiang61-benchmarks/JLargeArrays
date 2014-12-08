@@ -280,7 +280,7 @@ public class ComplexDoubleLargeArray extends LargeArray
     @Override
     public double[] get(long i)
     {
-        return getComplex(i);
+        return getComplexDouble(i);
     }
 
     /**
@@ -404,7 +404,20 @@ public class ComplexDoubleLargeArray extends LargeArray
      *
      * @return a value at index i ({re, im}).
      */
-    public double[] getComplex(long i)
+    public float[] getComplexFloat(long i)
+    {
+        return new float[]{dataRe.getFloat(i), dataIm.getFloat(i)};
+    }
+
+    /**
+     * Returns a complex value ({re, im}) at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value at index i ({re, im}).
+     */
+    public double[] getComplexDouble(long i)
     {
         return new double[]{dataRe.getDouble(i), dataIm.getDouble(i)};
     }
@@ -844,7 +857,7 @@ public class ComplexDoubleLargeArray extends LargeArray
         if (!(value instanceof double[])) {
             throw new IllegalArgumentException(value + " is not an array of doubles.");
         }
-        setComplex(i, (double[]) value);
+        setComplexDouble(i, (double[]) value);
     }
 
     /**
@@ -854,7 +867,20 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param i     index
      * @param value value to set
      */
-    public void setComplex(long i, double[] value)
+    public void setComplexFloat(long i, float[] value)
+    {
+        dataRe.setFloat(i, value[0]);
+        dataIm.setFloat(i, value[1]);
+    }
+
+    /**
+     * Sets a complex value ({re, im}) at index i. Array bounds are not checked. Calling this
+     * method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set
+     */
+    public void setComplexDouble(long i, double[] value)
     {
         dataRe.setDouble(i, value[0]);
         dataIm.setDouble(i, value[1]);

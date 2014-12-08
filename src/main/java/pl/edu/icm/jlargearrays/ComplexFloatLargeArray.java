@@ -249,7 +249,7 @@ public class ComplexFloatLargeArray extends LargeArray
         for (long i = 0; i < length; i++) {
             double re = dataRe.getFloat(i);
             double im = dataIm.getFloat(i);
-            out.setFloat(i, (float)Math.sqrt(re * re + im * im));
+            out.setFloat(i, (float) Math.sqrt(re * re + im * im));
         }
         return out;
     }
@@ -265,7 +265,7 @@ public class ComplexFloatLargeArray extends LargeArray
         for (long i = 0; i < length; i++) {
             double re = dataRe.getFloat(i);
             double im = dataIm.getFloat(i);
-            out.setFloat(i, (float)Math.atan2(im, re));
+            out.setFloat(i, (float) Math.atan2(im, re));
         }
         return out;
     }
@@ -281,7 +281,7 @@ public class ComplexFloatLargeArray extends LargeArray
     @Override
     public float[] get(long i)
     {
-        return getComplex(i);
+        return getComplexFloat(i);
     }
 
     /**
@@ -405,9 +405,22 @@ public class ComplexFloatLargeArray extends LargeArray
      *
      * @return a value at index i ({re, im}).
      */
-    public float[] getComplex(long i)
+    public float[] getComplexFloat(long i)
     {
         return new float[]{dataRe.getFloat(i), dataIm.getFloat(i)};
+    }
+
+    /**
+     * Returns a complex value ({re, im}) at index i. Array bounds are not checked. Calling
+     * this method with invalid index argument will cause JVM crash.
+     *
+     * @param i an index
+     *
+     * @return a value at index i ({re, im}).
+     */
+    public double[] getComplexDouble(long i)
+    {
+        return new double[]{dataRe.getDouble(i), dataIm.getDouble(i)};
     }
 
     /**
@@ -845,7 +858,7 @@ public class ComplexFloatLargeArray extends LargeArray
         if (!(value instanceof float[])) {
             throw new IllegalArgumentException(value + " is not an array of floats.");
         }
-        setComplex(i, (float[]) value);
+        setComplexFloat(i, (float[]) value);
     }
 
     /**
@@ -855,10 +868,23 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param i     index
      * @param value value to set
      */
-    public void setComplex(long i, float[] value)
+    public void setComplexFloat(long i, float[] value)
     {
         dataRe.setFloat(i, value[0]);
         dataIm.setFloat(i, value[1]);
+    }
+    
+    /**
+     * Sets a complex value ({re, im}) at index i. Array bounds are not checked. Calling this
+     * method with invalid index argument will cause JVM crash.
+     *
+     * @param i     index
+     * @param value value to set
+     */
+    public void setComplexDouble(long i, double[] value)
+    {
+        dataRe.setDouble(i, value[0]);
+        dataIm.setDouble(i, value[1]);
     }
 
 }

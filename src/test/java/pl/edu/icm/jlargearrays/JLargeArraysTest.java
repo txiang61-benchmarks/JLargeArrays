@@ -819,13 +819,13 @@ public class JLargeArraysTest extends TestCase
     public void testComplexFloatLargeArrayConstant()
     {
         ComplexFloatLargeArray a = new ComplexFloatLargeArray(1l << 33, new float[] {2.5f, 1.5f});
-        assertEquals(2.5f, a.getComplex(0)[0], 0.0);
-        assertEquals(1.5f, a.getComplex(0)[1], 0.0);
-        assertEquals(2.5f, a.getComplex(a.length-1)[0], 0.0);
-        assertEquals(1.5f, a.getComplex(a.length-1)[1], 0.0);
+        assertEquals(2.5f, a.getComplexFloat(0)[0], 0.0);
+        assertEquals(1.5f, a.getComplexFloat(0)[1], 0.0);
+        assertEquals(2.5f, a.getComplexFloat(a.length-1)[0], 0.0);
+        assertEquals(1.5f, a.getComplexFloat(a.length-1)[1], 0.0);
         Throwable e = null;
         try {
-            a.setComplex(0, new float[]{3.5f, 4.5f});
+            a.setComplexFloat(0, new float[]{3.5f, 4.5f});
         } catch (IllegalAccessError ex) {
             e = ex;
         }
@@ -839,17 +839,17 @@ public class JLargeArraysTest extends TestCase
         ComplexFloatLargeArray a = new ComplexFloatLargeArray(10);
         long idx = 5;
         float[] val = {3.4f, -3.7f};
-        a.setComplex(idx, val);
-        assertEquals(val[0], a.getComplex(idx)[0], 0.0);
-        assertEquals(val[1], a.getComplex(idx)[1], 0.0);
+        a.setComplexFloat(idx, val);
+        assertEquals(val[0], a.getComplexFloat(idx)[0], 0.0);
+        assertEquals(val[1], a.getComplexFloat(idx)[1], 0.0);
         idx = 6;
         a.set(idx, val);
         assertEquals(val[0], a.get(idx)[0], 0.0);
         assertEquals(val[1], a.get(idx)[1], 0.0);
         a = new ComplexFloatLargeArray(10);
-        a.setComplex(idx, val);
-        assertEquals(val[0], a.getComplex(idx)[0], 0.0);
-        assertEquals(val[1], a.getComplex(idx)[1], 0.0);
+        a.setComplexFloat(idx, val);
+        assertEquals(val[0], a.getComplexFloat(idx)[0], 0.0);
+        assertEquals(val[1], a.getComplexFloat(idx)[1], 0.0);
         idx = 6;
         a.set(idx, val);
         assertEquals(val[0], a.get(idx)[0], 0.0);
@@ -903,28 +903,28 @@ public class JLargeArraysTest extends TestCase
         ComplexFloatLargeArray b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
         b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
         a = new ComplexFloatLargeArray(data);
         b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
         b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
     }
     
@@ -941,13 +941,13 @@ public class JLargeArraysTest extends TestCase
     public void testComplexDoubleLargeArrayConstant()
     {
         ComplexDoubleLargeArray a = new ComplexDoubleLargeArray(1l << 33, new double[] {2.5, 1.5});
-        assertEquals(2.5, a.getComplex(0)[0], 0.0);
-        assertEquals(1.5, a.getComplex(0)[1], 0.0);
-        assertEquals(2.5, a.getComplex(a.length-1)[0], 0.0);
-        assertEquals(1.5, a.getComplex(a.length-1)[1], 0.0);
+        assertEquals(2.5, a.getComplexDouble(0)[0], 0.0);
+        assertEquals(1.5, a.getComplexDouble(0)[1], 0.0);
+        assertEquals(2.5, a.getComplexDouble(a.length-1)[0], 0.0);
+        assertEquals(1.5, a.getComplexDouble(a.length-1)[1], 0.0);
         Throwable e = null;
         try {
-            a.setComplex(0, new double[]{3.5, 4.5});
+            a.setComplexDouble(0, new double[]{3.5, 4.5});
         } catch (IllegalAccessError ex) {
             e = ex;
         }
@@ -961,17 +961,17 @@ public class JLargeArraysTest extends TestCase
         ComplexDoubleLargeArray a = new ComplexDoubleLargeArray(10);
         long idx = 5;
         double[] val = {3.4, -3.7};
-        a.setComplex(idx, val);
-        assertEquals(val[0], a.getComplex(idx)[0], 0.0);
-        assertEquals(val[1], a.getComplex(idx)[1], 0.0);
+        a.setComplexDouble(idx, val);
+        assertEquals(val[0], a.getComplexDouble(idx)[0], 0.0);
+        assertEquals(val[1], a.getComplexDouble(idx)[1], 0.0);
         idx = 6;
         a.set(idx, val);
         assertEquals(val[0], a.get(idx)[0], 0.0);
         assertEquals(val[1], a.get(idx)[1], 0.0);
         a = new ComplexDoubleLargeArray(10);
-        a.setComplex(idx, val);
-        assertEquals(val[0], a.getComplex(idx)[0], 0.0);
-        assertEquals(val[1], a.getComplex(idx)[1], 0.0);
+        a.setComplexDouble(idx, val);
+        assertEquals(val[0], a.getComplexDouble(idx)[0], 0.0);
+        assertEquals(val[1], a.getComplexDouble(idx)[1], 0.0);
         idx = 6;
         a.set(idx, val);
         assertEquals(val[0], a.get(idx)[0], 0.0);
@@ -1025,28 +1025,28 @@ public class JLargeArraysTest extends TestCase
         ComplexDoubleLargeArray b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
         b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
         a = new ComplexDoubleLargeArray(data);
         b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
         b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplex(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplex(i)[1], 0.0);
+            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
     }
     

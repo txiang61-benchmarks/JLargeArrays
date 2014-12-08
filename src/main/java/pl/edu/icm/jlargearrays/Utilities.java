@@ -118,6 +118,61 @@ public class Utilities
             case STRING:
                 arraycopy((StringLargeArray) src, srcPos, (StringLargeArray) dest, destPos, length);
                 break;
+            case OBJECT:
+                arraycopy((ObjectLargeArray) src, srcPos, (ObjectLargeArray) dest, destPos, length);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid array type.");
+        }
+    }
+
+    /**
+     * Copies an array from the specified source array, beginning at the
+     * specified position, to the specified position of the destination array.
+     * Both arrays need to be of the same type. Array bounds are checked.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    the destination array.
+     * @param destPos starting position in the destination data.
+     * @param length  the number of array elements to be copied.
+     */
+    public static void arraycopy(final Object src, final long srcPos, final LargeArray dest, final long destPos, final long length)
+    {
+        switch (dest.getType()) {
+            case LOGIC:
+                arraycopy((boolean[]) src, srcPos, (LogicLargeArray) dest, destPos, length);
+                break;
+            case BYTE:
+                arraycopy((byte[]) src, srcPos, (ByteLargeArray) dest, destPos, length);
+                break;
+            case SHORT:
+                arraycopy((short[]) src, srcPos, (ShortLargeArray) dest, destPos, length);
+                break;
+            case INT:
+                arraycopy((int[]) src, srcPos, (IntLargeArray) dest, destPos, length);
+                break;
+            case LONG:
+                arraycopy((long[]) src, srcPos, (LongLargeArray) dest, destPos, length);
+                break;
+            case FLOAT:
+                arraycopy((float[]) src, srcPos, (FloatLargeArray) dest, destPos, length);
+                break;
+            case DOUBLE:
+                arraycopy((double[]) src, srcPos, (DoubleLargeArray) dest, destPos, length);
+                break;
+            case COMPLEX_FLOAT:
+                arraycopy((float[]) src, srcPos, (ComplexFloatLargeArray) dest, destPos, length);
+                break;
+            case COMPLEX_DOUBLE:
+                arraycopy((double[]) src, srcPos, (ComplexDoubleLargeArray) dest, destPos, length);
+                break;
+            case STRING:
+                arraycopy((String[]) src, srcPos, (StringLargeArray) dest, destPos, length);
+                break;
+            case OBJECT:
+                arraycopy((Object[]) src, srcPos, (ObjectLargeArray) dest, destPos, length);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid array type.");
         }
@@ -1015,7 +1070,7 @@ public class Utilities
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-                dest.setComplex(j, src.getComplex(i));
+                dest.setComplexFloat(j, src.getComplexFloat(i));
             }
         } else {
             long k = length / nthreads;
@@ -1029,7 +1084,7 @@ public class Utilities
                     public void run()
                     {
                         for (long k = firstIdx; k < lastIdx; k++) {
-                            dest.setComplex(destPos + k, src.getComplex(srcPos + k));
+                            dest.setComplexFloat(destPos + k, src.getComplexFloat(srcPos + k));
                         }
                     }
                 });
@@ -1042,7 +1097,7 @@ public class Utilities
                 }
             } catch (InterruptedException ex) {
                 for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-                    dest.setComplex(j, src.getComplex(i));
+                    dest.setComplexFloat(j, src.getComplexFloat(i));
                 }
             }
         }
@@ -1084,7 +1139,7 @@ public class Utilities
             for (long j = destPos; j < destPos + length; j++) {
                 elem[0] = src[2 * i];
                 elem[1] = src[2 * i + 1];
-                dest.setComplex(j, elem);
+                dest.setComplexFloat(j, elem);
                 i++;
             }
         } else {
@@ -1102,7 +1157,7 @@ public class Utilities
                         for (long k = firstIdx; k < lastIdx; k++) {
                             elem[0] = src[2 * (srcPos + (int) k)];
                             elem[1] = src[2 * (srcPos + (int) k) + 1];
-                            dest.setComplex(destPos + k, elem);
+                            dest.setComplexFloat(destPos + k, elem);
                         }
                     }
                 });
@@ -1118,7 +1173,7 @@ public class Utilities
                 for (long j = destPos; j < destPos + length; j++) {
                     elem[0] = src[2 * i];
                     elem[1] = src[2 * i + 1];
-                    dest.setComplex(j, elem);
+                    dest.setComplexFloat(j, elem);
                     i++;
                 }
             }
@@ -1153,7 +1208,7 @@ public class Utilities
         int nthreads = Runtime.getRuntime().availableProcessors();
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-                dest.setComplex(j, src.getComplex(i));
+                dest.setComplexDouble(j, src.getComplexDouble(i));
             }
         } else {
             long k = length / nthreads;
@@ -1167,7 +1222,7 @@ public class Utilities
                     public void run()
                     {
                         for (long k = firstIdx; k < lastIdx; k++) {
-                            dest.setComplex(destPos + k, src.getComplex(srcPos + k));
+                            dest.setComplexDouble(destPos + k, src.getComplexDouble(srcPos + k));
                         }
                     }
                 });
@@ -1180,7 +1235,7 @@ public class Utilities
                 }
             } catch (InterruptedException ex) {
                 for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
-                    dest.setComplex(j, src.getComplex(i));
+                    dest.setComplexDouble(j, src.getComplexDouble(i));
                 }
             }
         }
@@ -1222,7 +1277,7 @@ public class Utilities
             for (long j = destPos; j < destPos + length; j++) {
                 elem[0] = src[2 * i];
                 elem[1] = src[2 * i + 1];
-                dest.setComplex(j, elem);
+                dest.setComplexDouble(j, elem);
                 i++;
             }
         } else {
@@ -1240,7 +1295,7 @@ public class Utilities
                         for (long k = firstIdx; k < lastIdx; k++) {
                             elem[0] = src[2 * (srcPos + (int) k)];
                             elem[1] = src[2 * (srcPos + (int) k) + 1];
-                            dest.setComplex(destPos + k, elem);
+                            dest.setComplexDouble(destPos + k, elem);
                         }
                     }
                 });
@@ -1256,7 +1311,7 @@ public class Utilities
                 for (long j = destPos; j < destPos + length; j++) {
                     elem[0] = src[2 * i];
                     elem[1] = src[2 * i + 1];
-                    dest.setComplex(j, elem);
+                    dest.setComplexDouble(j, elem);
                     i++;
                 }
             }
@@ -1385,8 +1440,8 @@ public class Utilities
             }
         }
     }
-    
-     /**
+
+    /**
      * Copies an array from the specified source array, beginning at the
      * specified position, to the specified position of the destination array.
      * Array bounds are checked.
@@ -1550,6 +1605,8 @@ public class Utilities
                 return new DoubleLargeArray(length, zeroNativeMemory);
             case COMPLEX_FLOAT:
                 return new ComplexFloatLargeArray(length, zeroNativeMemory);
+            case COMPLEX_DOUBLE:
+                return new ComplexDoubleLargeArray(length, zeroNativeMemory);
             case STRING:
                 return new StringLargeArray(length, 100, zeroNativeMemory);
             case OBJECT:
@@ -1560,7 +1617,7 @@ public class Utilities
     }
 
     /**
-     * Converts LargeArray to a given type.
+     * Converts LargeArray to a given type. 
      *
      * @param src  the source array
      * @param type the type of LargeArray
@@ -1589,9 +1646,11 @@ public class Utilities
                 case DOUBLE:
                     return new DoubleLargeArray(src.length(), src.getDouble(0));
                 case COMPLEX_FLOAT:
-                    return new ComplexFloatLargeArray(src.length(), ((ComplexFloatLargeArray) src).getComplex(0));
+                    return new ComplexFloatLargeArray(src.length(), ((ComplexFloatLargeArray) src).getComplexFloat(0));
+                case COMPLEX_DOUBLE:
+                    return new ComplexDoubleLargeArray(src.length(), ((ComplexDoubleLargeArray) src).getComplexDouble(0));
                 case STRING:
-                    return new StringLargeArray(src.length(), (String) src.get(0));
+                    return new StringLargeArray(src.length(), src.get(0).toString());
                 case OBJECT:
                     return new ObjectLargeArray(src.length(), src.get(0));
                 default:
@@ -1635,8 +1694,25 @@ public class Utilities
                     }
                     break;
                 case COMPLEX_FLOAT:
-                    for (long i = 0; i < length; i++) {
-                        out.setFloat(i, src.getFloat(i));
+                    if (src.getType() == LargeArrayType.COMPLEX_DOUBLE) {
+                        for (long i = 0; i < length; i++) {
+                            ((ComplexFloatLargeArray) out).setComplexDouble(i, ((ComplexDoubleLargeArray) src).getComplexDouble(i));
+                        }
+                    } else {
+                        for (long i = 0; i < length; i++) {
+                            out.setFloat(i, src.getFloat(i));
+                        }
+                    }
+                    break;
+                case COMPLEX_DOUBLE:
+                    if (src.getType() == LargeArrayType.COMPLEX_FLOAT) {
+                        for (long i = 0; i < length; i++) {
+                            ((ComplexDoubleLargeArray) out).setComplexFloat(i, ((ComplexFloatLargeArray) src).getComplexFloat(i));
+                        }
+                    } else {
+                        for (long i = 0; i < length; i++) {
+                            out.setDouble(i, src.getDouble(i));
+                        }
                     }
                     break;
                 case STRING:
@@ -1695,8 +1771,25 @@ public class Utilities
                                 }
                                 break;
                             case COMPLEX_FLOAT:
-                                for (long i = firstIdx; i < lastIdx; i++) {
-                                    out.setFloat(i, src.getFloat(i));
+                                if (src.getType() == LargeArrayType.COMPLEX_DOUBLE) {
+                                    for (long i = firstIdx; i < lastIdx; i++) {
+                                        ((ComplexFloatLargeArray) out).setComplexDouble(i, ((ComplexDoubleLargeArray) src).getComplexDouble(i));
+                                    }
+                                } else {
+                                    for (long i = firstIdx; i < lastIdx; i++) {
+                                        out.setFloat(i, src.getFloat(i));
+                                    }
+                                }
+                                break;
+                            case COMPLEX_DOUBLE:
+                                if (src.getType() == LargeArrayType.COMPLEX_FLOAT) {
+                                    for (long i = firstIdx; i < lastIdx; i++) {
+                                        ((ComplexDoubleLargeArray) out).setComplexFloat(i, ((ComplexFloatLargeArray) src).getComplexFloat(i));
+                                    }
+                                } else {
+                                    for (long i = firstIdx; i < lastIdx; i++) {
+                                        out.setDouble(i, src.getDouble(i));
+                                    }
                                 }
                                 break;
                             case STRING:
@@ -1755,8 +1848,25 @@ public class Utilities
                         }
                         break;
                     case COMPLEX_FLOAT:
-                        for (long i = 0; i < length; i++) {
-                            out.setFloat(i, src.getFloat(i));
+                        if (src.getType() == LargeArrayType.COMPLEX_DOUBLE) {
+                            for (long i = 0; i < length; i++) {
+                                ((ComplexFloatLargeArray) out).setComplexDouble(i, ((ComplexDoubleLargeArray) src).getComplexDouble(i));
+                            }
+                        } else {
+                            for (long i = 0; i < length; i++) {
+                                out.setFloat(i, src.getFloat(i));
+                            }
+                        }
+                        break;
+                    case COMPLEX_DOUBLE:
+                        if (src.getType() == LargeArrayType.COMPLEX_FLOAT) {
+                            for (long i = 0; i < length; i++) {
+                                ((ComplexDoubleLargeArray) out).setComplexFloat(i, ((ComplexFloatLargeArray) src).getComplexFloat(i));
+                            }
+                        } else {
+                            for (long i = 0; i < length; i++) {
+                                out.setDouble(i, src.getDouble(i));
+                            }
                         }
                         break;
                     case STRING:
