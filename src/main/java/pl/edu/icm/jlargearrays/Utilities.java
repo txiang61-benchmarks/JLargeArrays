@@ -141,37 +141,37 @@ public class Utilities
     {
         switch (dest.getType()) {
             case LOGIC:
-                arraycopy((boolean[]) src, srcPos, (LogicLargeArray) dest, destPos, length);
+                arraycopy((boolean[]) src, (int)srcPos, (LogicLargeArray) dest, destPos, length);
                 break;
             case BYTE:
-                arraycopy((byte[]) src, srcPos, (ByteLargeArray) dest, destPos, length);
+                arraycopy((byte[]) src, (int)srcPos, (ByteLargeArray) dest, destPos, length);
                 break;
             case SHORT:
-                arraycopy((short[]) src, srcPos, (ShortLargeArray) dest, destPos, length);
+                arraycopy((short[]) src, (int)srcPos, (ShortLargeArray) dest, destPos, length);
                 break;
             case INT:
-                arraycopy((int[]) src, srcPos, (IntLargeArray) dest, destPos, length);
+                arraycopy((int[]) src, (int)srcPos, (IntLargeArray) dest, destPos, length);
                 break;
             case LONG:
-                arraycopy((long[]) src, srcPos, (LongLargeArray) dest, destPos, length);
+                arraycopy((long[]) src, (int)srcPos, (LongLargeArray) dest, destPos, length);
                 break;
             case FLOAT:
-                arraycopy((float[]) src, srcPos, (FloatLargeArray) dest, destPos, length);
+                arraycopy((float[]) src, (int)srcPos, (FloatLargeArray) dest, destPos, length);
                 break;
             case DOUBLE:
-                arraycopy((double[]) src, srcPos, (DoubleLargeArray) dest, destPos, length);
+                arraycopy((double[]) src, (int)srcPos, (DoubleLargeArray) dest, destPos, length);
                 break;
             case COMPLEX_FLOAT:
-                arraycopy((float[]) src, srcPos, (ComplexFloatLargeArray) dest, destPos, length);
+                arraycopy((float[]) src, (int)srcPos, (ComplexFloatLargeArray) dest, destPos, length);
                 break;
             case COMPLEX_DOUBLE:
-                arraycopy((double[]) src, srcPos, (ComplexDoubleLargeArray) dest, destPos, length);
+                arraycopy((double[]) src, (int)srcPos, (ComplexDoubleLargeArray) dest, destPos, length);
                 break;
             case STRING:
-                arraycopy((String[]) src, srcPos, (StringLargeArray) dest, destPos, length);
+                arraycopy((String[]) src, (int)srcPos, (StringLargeArray) dest, destPos, length);
                 break;
             case OBJECT:
-                arraycopy((Object[]) src, srcPos, (ObjectLargeArray) dest, destPos, length);
+                arraycopy((Object[]) src, (int)srcPos, (ObjectLargeArray) dest, destPos, length);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid array type.");
