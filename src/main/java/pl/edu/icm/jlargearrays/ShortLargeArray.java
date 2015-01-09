@@ -126,6 +126,22 @@ public class ShortLargeArray extends LargeArray
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            ShortLargeArray la = (ShortLargeArray) o;
+            return this.data == la.data;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+    }
+
+    @Override
     public Short get(long i)
     {
         return getShort(i);

@@ -143,6 +143,22 @@ public class LogicLargeArray extends LargeArray
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            LogicLargeArray la = (LogicLargeArray) o;
+            return this.data == la.data;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+    }
+
+    @Override
     public Boolean get(long i)
     {
         return getBoolean(i);
@@ -743,7 +759,7 @@ public class LogicLargeArray extends LargeArray
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putByte(ptr + i, ((Boolean)value) == true ? (byte) 1 : (byte) 0);
+        Utilities.UNSAFE.putByte(ptr + i, ((Boolean) value) == true ? (byte) 1 : (byte) 0);
     }
 
     @Override

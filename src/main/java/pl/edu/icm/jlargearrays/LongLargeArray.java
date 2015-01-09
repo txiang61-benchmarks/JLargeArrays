@@ -127,6 +127,22 @@ public class LongLargeArray extends LargeArray
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            LongLargeArray la = (LongLargeArray) o;
+            return this.data == la.data;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+    }
+
+    @Override
     public Long get(long i)
     {
         return getLong(i);

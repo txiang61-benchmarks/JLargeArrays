@@ -217,6 +217,23 @@ public class ComplexFloatLargeArray extends LargeArray
             return v;
         }
     }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            ComplexFloatLargeArray la = (ComplexFloatLargeArray) o;
+            return this.dataRe.equals(la.dataRe) && this.dataIm.equals(la.dataIm);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 29 * super.hashCode() + (this.dataRe != null ? this.dataRe.hashCode() : 0);
+        return 29 * hash + (this.dataIm != null ? this.dataIm.hashCode() : 0);
+    }
 
     /**
      * Returns the real part of this array.

@@ -126,19 +126,38 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public Byte get(long i)
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            ByteLargeArray la = (ByteLargeArray) o;
+            return this.data == la.data;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+    }
+
+    @Override
+    public Byte get(long i
+    )
     {
         return getByte(i);
     }
 
     @Override
-    public Byte getFromNative(long i)
+    public Byte getFromNative(long i
+    )
     {
         return Utilities.UNSAFE.getByte(ptr + i);
     }
 
     @Override
-    public boolean getBoolean(long i)
+    public boolean getBoolean(long i
+    )
     {
         if (ptr != 0) {
             return (Utilities.UNSAFE.getByte(ptr + i)) != 0;
@@ -152,7 +171,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public byte getByte(long i)
+    public byte getByte(long i
+    )
     {
         if (ptr != 0) {
             return Utilities.UNSAFE.getByte(ptr + i);
@@ -166,7 +186,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public short getShort(long i)
+    public short getShort(long i
+    )
     {
         if (ptr != 0) {
             return (short) (Utilities.UNSAFE.getByte(ptr + i));
@@ -180,7 +201,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public int getInt(long i)
+    public int getInt(long i
+    )
     {
         if (ptr != 0) {
             return (int) (Utilities.UNSAFE.getByte(ptr + i));
@@ -194,7 +216,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public long getLong(long i)
+    public long getLong(long i
+    )
     {
         if (ptr != 0) {
             return (long) (Utilities.UNSAFE.getByte(ptr + i));
@@ -208,7 +231,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public float getFloat(long i)
+    public float getFloat(long i
+    )
     {
         if (ptr != 0) {
             return (float) (Utilities.UNSAFE.getByte(ptr + i));
@@ -222,7 +246,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public double getDouble(long i)
+    public double getDouble(long i
+    )
     {
         if (ptr != 0) {
             return (double) Utilities.UNSAFE.getByte(ptr + i);
@@ -236,7 +261,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step)
+    public boolean[] getBooleanData(boolean[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -346,7 +372,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public byte[] getByteData(byte[] a, long startPos, long endPos, long step)
+    public byte[] getByteData(byte[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -413,7 +440,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public short[] getShortData(short[] a, long startPos, long endPos, long step)
+    public short[] getShortData(short[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -480,7 +508,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public int[] getIntData(int[] a, long startPos, long endPos, long step)
+    public int[] getIntData(int[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -547,7 +576,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public long[] getLongData(long[] a, long startPos, long endPos, long step)
+    public long[] getLongData(long[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -614,7 +644,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public float[] getFloatData(float[] a, long startPos, long endPos, long step)
+    public float[] getFloatData(float[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -681,7 +712,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public double[] getDoubleData(double[] a, long startPos, long endPos, long step)
+    public double[] getDoubleData(double[] a, long startPos, long endPos, long step
+    )
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -724,13 +756,15 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setToNative(long i, Object value)
+    public void setToNative(long i, Object value
+    )
     {
         Utilities.UNSAFE.putByte(ptr + i, (Byte) value);
     }
 
     @Override
-    public void setBoolean(long i, boolean value)
+    public void setBoolean(long i, boolean value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, value == true ? (byte) 1 : (byte) 0);
@@ -743,7 +777,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setByte(long i, byte value)
+    public void setByte(long i, byte value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, value);
@@ -756,7 +791,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setShort(long i, short value)
+    public void setShort(long i, short value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
@@ -769,7 +805,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setInt(long i, int value)
+    public void setInt(long i, int value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
@@ -782,7 +819,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setLong(long i, long value)
+    public void setLong(long i, long value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
@@ -795,7 +833,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setFloat(long i, float value)
+    public void setFloat(long i, float value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);
@@ -808,7 +847,8 @@ public class ByteLargeArray extends LargeArray
     }
 
     @Override
-    public void setDouble(long i, double value)
+    public void setDouble(long i, double value
+    )
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putByte(ptr + i, (byte) value);

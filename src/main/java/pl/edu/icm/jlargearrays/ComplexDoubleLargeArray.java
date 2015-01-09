@@ -61,9 +61,6 @@ package pl.edu.icm.jlargearrays;
  this exception to your version of the library, but you are not
  obligated to do so.  If you do not wish to do so, delete this
  exception statement from your version. */
-import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
-import sun.misc.Cleaner;
-
 /**
  *
  * An array of complex numbers (double precision) that can store up to 2<SUP>63</SUP> elements.
@@ -215,6 +212,23 @@ public class ComplexDoubleLargeArray extends LargeArray
             Utilities.arraycopy(this, 0, v, 0, length);
             return v;
         }
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            ComplexDoubleLargeArray la = (ComplexDoubleLargeArray) o;
+            return this.dataRe.equals(la.dataRe) && this.dataIm.equals(la.dataIm);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 29 * super.hashCode() + (this.dataRe != null ? this.dataRe.hashCode() : 0);
+        return 29 * hash + (this.dataIm != null ? this.dataIm.hashCode() : 0);
     }
 
     /**

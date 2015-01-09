@@ -56,6 +56,23 @@ public class JLargeArraysTest extends TestCase
         return new TestSuite(JLargeArraysTest.class);
     }
 
+    public void testLogicLargeArrayEqualsHashCode()
+    {
+        LogicLargeArray a = new LogicLargeArray(10);
+        LogicLargeArray b = new LogicLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new LogicLargeArray(10);
+        b = new LogicLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+    }
+
     public void testLogicLargeArrayConstant()
     {
         LogicLargeArray a = new LogicLargeArray(1l << 33, (byte) 1);
@@ -81,14 +98,14 @@ public class JLargeArraysTest extends TestCase
         assertEquals(val, a.getBoolean(idx));
         idx = 6;
         a.set(idx, val);
-        assertEquals(val, (boolean)a.get(idx));
+        assertEquals(val, (boolean) a.get(idx));
         LargeArray.setMaxSizeOf32bitArray(1);
         a = new LogicLargeArray(10);
         a.setBoolean(idx, val);
         assertEquals(val, a.getBoolean(idx));
         idx = 6;
         a.set(idx, val);
-        assertEquals(val, (boolean)a.get(idx));
+        assertEquals(val, (boolean) a.get(idx));
 
     }
 
@@ -124,7 +141,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testBitArraycopy()
+    public void testLogicLargeArrayArraycopy()
     {
         boolean[] data = new boolean[1000000];
         for (int i = 0; i < data.length; i++) {
@@ -158,7 +175,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testBitConvert()
+    public void testLogicLargeArrayConvert()
     {
         boolean[] data = new boolean[]{true, false, false, false, true, true, true, false, true, true};
         LogicLargeArray a = new LogicLargeArray(data);
@@ -167,6 +184,24 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[i] == true ? 1 : 0, b.getByte(i));
         }
     }
+    
+    public void testByteLargeArrayEqualsHashCode()
+    {
+        ByteLargeArray a = new ByteLargeArray(10);
+        ByteLargeArray b = new ByteLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new ByteLargeArray(10);
+        b = new ByteLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+    }
+    
 
     public void testByteLargeArrayConstant()
     {
@@ -235,7 +270,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testByteArraycopy()
+    public void testByteLargeArrayArraycopy()
     {
         byte[] data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
@@ -266,7 +301,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testByteConvert()
+    public void testByteLargeArrayConvert()
     {
         byte[] data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         ByteLargeArray a = new ByteLargeArray(data);
@@ -274,6 +309,23 @@ public class JLargeArraysTest extends TestCase
         for (int i = 0; i < data.length; i++) {
             assertEquals(data[i], b.getShort(i));
         }
+    }
+    
+    public void testShortLargeArrayEqualsHashCode()
+    {
+        ShortLargeArray a = new ShortLargeArray(10);
+        ShortLargeArray b = new ShortLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new ShortLargeArray(10);
+        b = new ShortLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
     }
 
     public void testShortLargeArrayConstant()
@@ -343,7 +395,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testShortArraycopy()
+    public void testShortLargeArrayArraycopy()
     {
         short[] data = new short[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
@@ -374,7 +426,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testShortConvert()
+    public void testShortLargeArrayConvert()
     {
         short[] data = new short[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         ShortLargeArray a = new ShortLargeArray(data);
@@ -382,6 +434,23 @@ public class JLargeArraysTest extends TestCase
         for (int i = 0; i < data.length; i++) {
             assertEquals(data[i], b.getInt(i));
         }
+    }
+    
+    public void testIntLargeArrayEqualsHashCode()
+    {
+        IntLargeArray a = new IntLargeArray(10);
+        IntLargeArray b = new IntLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new IntLargeArray(10);
+        b = new IntLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
     }
 
     public void testIntLargeArrayGetSet()
@@ -451,7 +520,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testIntArraycopy()
+    public void testIntLargeArrayArraycopy()
     {
         int[] data = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
@@ -482,7 +551,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testIntConvert()
+    public void testIntLargeArrayConvert()
     {
         int[] data = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         IntLargeArray a = new IntLargeArray(data);
@@ -490,6 +559,23 @@ public class JLargeArraysTest extends TestCase
         for (int i = 0; i < data.length; i++) {
             assertEquals(data[i], b.getLong(i));
         }
+    }
+    
+    public void testLongLargeArrayEqualsHashCode()
+    {
+        LongLargeArray a = new LongLargeArray(10);
+        LongLargeArray b = new LongLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new LongLargeArray(10);
+        b = new LongLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
     }
 
     public void testLongLargeArrayConstant()
@@ -559,7 +645,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testLongArraycopy()
+    public void testLongLargeArrayArraycopy()
     {
         long[] data = new long[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int startPos = 2;
@@ -590,7 +676,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testLongConvert()
+    public void testLongLargeArrayConvert()
     {
         long[] data = new long[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         LongLargeArray a = new LongLargeArray(data);
@@ -598,6 +684,23 @@ public class JLargeArraysTest extends TestCase
         for (int i = 0; i < data.length; i++) {
             assertEquals((float) data[i], b.getFloat(i));
         }
+    }
+    
+    public void testFloatLargeArrayEqualsHashCode()
+    {
+        FloatLargeArray a = new FloatLargeArray(10);
+        FloatLargeArray b = new FloatLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new FloatLargeArray(10);
+        b = new FloatLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
     }
 
     public void testFloatLargeArrayConstant()
@@ -667,7 +770,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testFloatArraycopy()
+    public void testFloatlargeArrayArraycopy()
     {
         float[] data = new float[]{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10.10f};
         int startPos = 2;
@@ -698,7 +801,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testFloatConvert()
+    public void testFloatLargeArrayConvert()
     {
         float[] data = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         FloatLargeArray a = new FloatLargeArray(data);
@@ -706,6 +809,23 @@ public class JLargeArraysTest extends TestCase
         for (int i = 0; i < data.length; i++) {
             assertEquals(data[i], b.getDouble(i), 0.0);
         }
+    }
+    
+    public void testDoubleLargeArrayEqualsHashCode()
+    {
+        DoubleLargeArray a = new DoubleLargeArray(10);
+        DoubleLargeArray b = new DoubleLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new DoubleLargeArray(10);
+        b = new DoubleLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
     }
 
     public void testDoubleLargeArrayConstant()
@@ -775,7 +895,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testDoubleArraycopy()
+    public void testDoubleLargeArrayArraycopy()
     {
         double[] data = new double[]{1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10};
         int startPos = 2;
@@ -806,7 +926,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testDoubleConvert()
+    public void testDoubleLargeArrayConvert()
     {
         double[] data = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         DoubleLargeArray a = new DoubleLargeArray(data);
@@ -815,14 +935,31 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[i], b.getFloat(i), 0.0);
         }
     }
+    
+    public void testComplexFloatLargeArrayEqualsHashCode()
+    {
+        ComplexFloatLargeArray a = new ComplexFloatLargeArray(10);
+        ComplexFloatLargeArray b = new ComplexFloatLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new ComplexFloatLargeArray(10);
+        b = new ComplexFloatLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+    }
 
     public void testComplexFloatLargeArrayConstant()
     {
-        ComplexFloatLargeArray a = new ComplexFloatLargeArray(1l << 33, new float[] {2.5f, 1.5f});
+        ComplexFloatLargeArray a = new ComplexFloatLargeArray(1l << 33, new float[]{2.5f, 1.5f});
         assertEquals(2.5f, a.getComplexFloat(0)[0], 0.0);
         assertEquals(1.5f, a.getComplexFloat(0)[1], 0.0);
-        assertEquals(2.5f, a.getComplexFloat(a.length-1)[0], 0.0);
-        assertEquals(1.5f, a.getComplexFloat(a.length-1)[1], 0.0);
+        assertEquals(2.5f, a.getComplexFloat(a.length - 1)[0], 0.0);
+        assertEquals(1.5f, a.getComplexFloat(a.length - 1)[1], 0.0);
         Throwable e = null;
         try {
             a.setComplexFloat(0, new float[]{3.5f, 4.5f});
@@ -893,7 +1030,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testComplexFloatArraycopy()
+    public void testComplexFloatLargeArrayArraycopy()
     {
         float[] data = new float[]{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10.10f};
         int startPos = 1;
@@ -903,32 +1040,32 @@ public class JLargeArraysTest extends TestCase
         ComplexFloatLargeArray b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
         b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
         a = new ComplexFloatLargeArray(data);
         b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
         b = new ComplexFloatLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexFloat(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexFloat(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexFloat(i)[1], 0.0);
         }
     }
-    
-    public void testComplexFloatConvert()
+
+    public void testComplexFloatLargeArrayConvert()
     {
         float[] data = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         ComplexFloatLargeArray a = new ComplexFloatLargeArray(data);
@@ -938,13 +1075,30 @@ public class JLargeArraysTest extends TestCase
         }
     }
     
+    public void testComplexDoubleLargeArrayEqualsHashCode()
+    {
+        ComplexDoubleLargeArray a = new ComplexDoubleLargeArray(10);
+        ComplexDoubleLargeArray b = new ComplexDoubleLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new ComplexDoubleLargeArray(10);
+        b = new ComplexDoubleLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+    }
+
     public void testComplexDoubleLargeArrayConstant()
     {
-        ComplexDoubleLargeArray a = new ComplexDoubleLargeArray(1l << 33, new double[] {2.5, 1.5});
+        ComplexDoubleLargeArray a = new ComplexDoubleLargeArray(1l << 33, new double[]{2.5, 1.5});
         assertEquals(2.5, a.getComplexDouble(0)[0], 0.0);
         assertEquals(1.5, a.getComplexDouble(0)[1], 0.0);
-        assertEquals(2.5, a.getComplexDouble(a.length-1)[0], 0.0);
-        assertEquals(1.5, a.getComplexDouble(a.length-1)[1], 0.0);
+        assertEquals(2.5, a.getComplexDouble(a.length - 1)[0], 0.0);
+        assertEquals(1.5, a.getComplexDouble(a.length - 1)[1], 0.0);
         Throwable e = null;
         try {
             a.setComplexDouble(0, new double[]{3.5, 4.5});
@@ -1015,7 +1169,7 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
-    public void testComplexDoubleArraycopy()
+    public void testComplexDoubleLargeArrayArraycopy()
     {
         double[] data = new double[]{1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.10};
         int startPos = 1;
@@ -1025,32 +1179,32 @@ public class JLargeArraysTest extends TestCase
         ComplexDoubleLargeArray b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
         b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
         LargeArray.setMaxSizeOf32bitArray(data.length - 1);
         a = new ComplexDoubleLargeArray(data);
         b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(a, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
         b = new ComplexDoubleLargeArray(2 * data.length);
         Utilities.arraycopy(data, startPos, b, 0, length);
         for (int i = 0; i < length; i++) {
-            assertEquals(data[2*(startPos + i)], b.getComplexDouble(i)[0], 0.0);
-            assertEquals(data[2*(startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
+            assertEquals(data[2 * (startPos + i)], b.getComplexDouble(i)[0], 0.0);
+            assertEquals(data[2 * (startPos + i) + 1], b.getComplexDouble(i)[1], 0.0);
         }
     }
-    
-    public void testComplexDoubleConvert()
+
+    public void testComplexDoubleLargeArrayConvert()
     {
         float[] data = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         ComplexFloatLargeArray a = new ComplexFloatLargeArray(data);
@@ -1058,6 +1212,23 @@ public class JLargeArraysTest extends TestCase
         for (int i = 0; i < data.length / 2; i++) {
             assertEquals(data[2 * i], b.getFloat(i), 0.0);
         }
+    }
+    
+    public void testStringLargeArrayEqualsHashCode()
+    {
+        StringLargeArray a = new StringLargeArray(10);
+        StringLargeArray b = new StringLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new StringLargeArray(10);
+        b = new StringLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
     }
 
     public void testStringLargeArrayConstant()
@@ -1107,7 +1278,7 @@ public class JLargeArraysTest extends TestCase
         assertEquals(val2, a.getFromNative(idx));
     }
 
-    public void testStringArraycopy()
+    public void testStringLargeArrayArraycopy()
     {
         String[] data = new String[]{"a", "ab", "abc", "ąęć", "1234", "test string", "ANOTHER TEST STRING", "", "\n", "\r"};
         int startPos = 2;
@@ -1137,8 +1308,8 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.get(i));
         }
     }
-    
-    public void testStringConvert()
+
+    public void testStringLargeArrayConvert()
     {
         String[] data = new String[]{"a", "ab", "abc", "ąęć", "1234", "test string", "ANOTHER TEST STRING", "", "\n", "\r"};
         StringLargeArray a = new StringLargeArray(data);
@@ -1148,6 +1319,23 @@ public class JLargeArraysTest extends TestCase
         }
     }
     
+    public void testObjectLargeArrayEqualsHashCode()
+    {
+        ObjectLargeArray a = new ObjectLargeArray(10);
+        ObjectLargeArray b = new ObjectLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+        LargeArray.setMaxSizeOf32bitArray(1);
+        a = new ObjectLargeArray(10);
+        b = new ObjectLargeArray(10);
+        assertTrue(a.equals(a));
+        assertTrue(a.hashCode() == a.hashCode());
+        assertFalse(a.equals(b));
+        assertFalse(a.hashCode() == b.hashCode());
+    }
+
     public void testObjectLargeArrayConstant()
     {
         ObjectLargeArray a = new ObjectLargeArray(1l << 33, new Float(12345));
@@ -1195,7 +1383,7 @@ public class JLargeArraysTest extends TestCase
         assertEquals(val2, a.getFromNative(idx));
     }
 
-    public void testObjectArraycopy()
+    public void testObjectLargeArrayArraycopy()
     {
         Double[] data = new Double[]{1.12345, -1.54321, 100., -100., Double.MAX_VALUE, Double.MIN_VALUE, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NaN, Double.MIN_NORMAL};
         int startPos = 2;
@@ -1225,8 +1413,8 @@ public class JLargeArraysTest extends TestCase
             assertEquals(data[startPos + i], b.get(i));
         }
     }
-    
-    public void testObjectConvert()
+
+    public void testObjectLargeArrayConvert()
     {
         double[] data = new double[]{1.12345, -1.54321, 100., -100., Double.MAX_VALUE, Double.MIN_VALUE, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NaN, Double.MIN_NORMAL};
         DoubleLargeArray a = new DoubleLargeArray(data);

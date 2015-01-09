@@ -824,6 +824,38 @@ public abstract class LargeArray implements
         }
     }
 
+    
+    @Override
+    public boolean equals(Object o){
+        if(o == null || !(o instanceof LargeArray))
+            return false;
+        LargeArray la = (LargeArray)o;
+        boolean equal = this.type == la.type && this.length == la.length && this.sizeof == la.sizeof && this.isConstant == la.isConstant && this.ptr == la.ptr;
+        if(this.parent != null && la.parent != null) {
+            equal = equal && this.parent.equals(la.parent);
+        }
+        else if(this.parent == null && la.parent == null) {
+            equal = equal && true;
+        }
+        else {
+            equal = false;
+        }
+    return equal;
+  }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 29 * hash + (this.type != null ? this.type.hashCode() : 0);
+        hash = 29 * hash + (int) (this.length ^ (this.length >>> 32));
+        hash = 29 * hash + (int) (this.sizeof ^ (this.sizeof >>> 32));
+        hash = 29 * hash + (this.isConstant ? 1 : 0);
+        hash = 29 * hash + (this.parent != null ? this.parent.hashCode() : 0);
+        hash = 29 * hash + (int) (this.ptr ^ (this.ptr >>> 32));
+        return hash;
+    }
+    
     /**
      * Memory deallocator.
      */

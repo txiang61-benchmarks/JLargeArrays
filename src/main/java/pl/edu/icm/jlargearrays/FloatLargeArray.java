@@ -126,6 +126,22 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            FloatLargeArray la = (FloatLargeArray) o;
+            return this.data == la.data;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+    }
+
+    @Override
     public Float get(long i)
     {
         return getFloat(i);

@@ -158,6 +158,24 @@ public class ObjectLargeArray extends LargeArray
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            ObjectLargeArray la = (ObjectLargeArray) o;
+            return this.maxObjectLength == la.maxObjectLength && this.data == la.data && this.objectLengths.equals(la.objectLengths);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+        hash = 29 * hash + (int) (this.maxObjectLength ^ (this.maxObjectLength >>> 16));
+        return 29 * hash + (this.objectLengths != null ? this.objectLengths.hashCode() : 0);
+    }
+
+    @Override
     public Object get(long i)
     {
         if (ptr != 0) {

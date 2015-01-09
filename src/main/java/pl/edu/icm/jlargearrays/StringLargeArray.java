@@ -151,6 +151,24 @@ public class StringLargeArray extends LargeArray
             return v;
         }
     }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (super.equals(o)) {
+            StringLargeArray la = (StringLargeArray) o;
+            return this.maxStringLength == la.maxStringLength && this.data == la.data && this.stringLengths.equals(la.stringLengths);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 29 * super.hashCode() + (this.data != null ? this.data.hashCode() : 0);
+        hash = 29 * hash + (int) (this.maxStringLength ^ (this.maxStringLength >>> 16));
+        return 29 * hash + (this.stringLengths != null ? this.stringLengths.hashCode() : 0);
+    }
 
     @Override
     public String get(long i)
