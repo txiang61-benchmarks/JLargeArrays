@@ -180,6 +180,7 @@ public class ObjectLargeArray extends LargeArray
     {
         if (ptr != 0) {
             short objLen = objectLengths.getShort(i);
+            if (objLen < 0) return null;
             long offset = sizeof * i * maxObjectLength;
             for (int j = 0; j < objLen; j++) {
                 byteArray[j] = Utilities.UNSAFE.getByte(ptr + offset + sizeof * j);
@@ -198,6 +199,7 @@ public class ObjectLargeArray extends LargeArray
     public Object getFromNative(long i)
     {
         short objLen = objectLengths.getShort(i);
+        if (objLen < 0) return null;
         long offset = sizeof * i * maxObjectLength;
         for (int j = 0; j < objLen; j++) {
             byteArray[j] = Utilities.UNSAFE.getByte(ptr + offset + sizeof * j);
@@ -353,26 +355,9 @@ public class ObjectLargeArray extends LargeArray
     @Override
     public void setToNative(long i, Object value)
     {
-        byte[] ba = toByteArray(value);
-        if (ba.length > maxObjectLength) {
-            throw new IllegalArgumentException("Object  " + value + " is too long.");
-        }
-        int objLen = ba.length;
-        if (objLen > Short.MAX_VALUE) {
-            throw new IllegalArgumentException("Object  " + value + " is too long.");
-        }
-        objectLengths.setShort(i, (short) objLen);
-        long offset = sizeof * i * maxObjectLength;
-        for (int j = 0; j < objLen; j++) {
-            Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, ba[j]);
-        }
-    }
-
-    @Override
-    public void set(long i, Object value)
-    {
-
-        if (ptr != 0) {
+        if (value == null) {
+            objectLengths.setShort(i, (short) -1);
+        } else {
             byte[] ba = toByteArray(value);
             if (ba.length > maxObjectLength) {
                 throw new IllegalArgumentException("Object  " + value + " is too long.");
@@ -386,11 +371,43 @@ public class ObjectLargeArray extends LargeArray
             for (int j = 0; j < objLen; j++) {
                 Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, ba[j]);
             }
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
+        }
+    }
+
+    @Override
+    public void set(long i, Object o)
+    {
+
+        if (o == null) {
+            if (ptr != 0) {
+                objectLengths.setShort(i, (short) -1);
+            } else {
+                if (isConstant()) {
+                    throw new IllegalAccessError("Constant arrays cannot be modified.");
+                }
+                data[(int) i] = null;
             }
-            data[(int) i] = value;
+        } else {
+            if (ptr != 0) {
+                byte[] ba = toByteArray(o);
+                if (ba.length > maxObjectLength) {
+                    throw new IllegalArgumentException("Object  " + o + " is too long.");
+                }
+                int objLen = ba.length;
+                if (objLen > Short.MAX_VALUE) {
+                    throw new IllegalArgumentException("Object  " + o + " is too long.");
+                }
+                objectLengths.setShort(i, (short) objLen);
+                long offset = sizeof * i * maxObjectLength;
+                for (int j = 0; j < objLen; j++) {
+                    Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, ba[j]);
+                }
+            } else {
+                if (isConstant()) {
+                    throw new IllegalAccessError("Constant arrays cannot be modified.");
+                }
+                data[(int) i] = o;
+            }
         }
     }
 

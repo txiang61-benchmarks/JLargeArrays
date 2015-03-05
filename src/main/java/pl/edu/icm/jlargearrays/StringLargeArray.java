@@ -151,7 +151,7 @@ public class StringLargeArray extends LargeArray
             return v;
         }
     }
-    
+
     @Override
     public boolean equals(Object o)
     {
@@ -175,6 +175,7 @@ public class StringLargeArray extends LargeArray
     {
         if (ptr != 0) {
             short strLen = stringLengths.getShort(i);
+            if (strLen < 0) return null;
             long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
             for (int j = 0; j < strLen; j++) {
                 byteArray[j] = Utilities.UNSAFE.getByte(ptr + offset + sizeof * j);
@@ -197,6 +198,7 @@ public class StringLargeArray extends LargeArray
     public String getFromNative(long i)
     {
         short strLen = stringLengths.getShort(i);
+        if (strLen < 0) return null;
         long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
         for (int j = 0; j < strLen; j++) {
             byteArray[j] = Utilities.UNSAFE.getByte(ptr + offset + sizeof * j);
@@ -212,42 +214,42 @@ public class StringLargeArray extends LargeArray
     public boolean getBoolean(long i)
     {
         String s = get(i);
-        return s.length() != 0;
+        return s != null ? s.length() != 0 : false;
     }
 
     @Override
     public byte getByte(long i)
     {
         String s = get(i);
-        return (byte) s.length();
+        return (byte) (s != null ? s.length() : 0);
     }
 
     @Override
     public short getShort(long i)
     {
         String s = get(i);
-        return (short) s.length();
+        return (short) (s != null ? s.length() : 0);
     }
 
     @Override
     public int getInt(long i)
     {
         String s = get(i);
-        return (int) s.length();
+        return (int) (s != null ? s.length() : 0);
     }
 
     @Override
     public long getLong(long i)
     {
         String s = get(i);
-        return (long) s.length();
+        return (long) (s != null ? s.length(): 0);
     }
 
     @Override
     public float getFloat(long i)
     {
         String s = get(i);
-        return (float) s.length();
+        return (float) (s != null ? s.length() : 0);
 
     }
 
@@ -255,7 +257,7 @@ public class StringLargeArray extends LargeArray
     public double getDouble(long i)
     {
         String s = get(i);
-        return (double) s.length();
+        return (double) (s != null ? s.length() : 0);
     }
 
     @Override
@@ -287,13 +289,13 @@ public class StringLargeArray extends LargeArray
                 if (length > getMaxSizeOf32bitArray()) return null;
                 boolean[] out = new boolean[(int) length];
                 for (int i = 0; i < length; i++) {
-                    out[i] = data[0].length() != 0;
+                    out[i] = data[0] != null ? data[0].length() != 0 : false;
                 }
                 return out;
             } else {
                 boolean[] out = new boolean[(int) length];
                 for (int i = 0; i < length; i++) {
-                    out[i] = data[i].length() != 0;
+                    out[i] = data[i] != null ? data[i].length() != 0 : false;
                 }
                 return out;
             }
@@ -326,18 +328,18 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    byte v = Utilities.UNSAFE.getByte(ptr + i);
-                    out[idx++] = v == 1;
+                    short strLen = stringLengths.getShort(i);
+                    out[idx++] = strLen > 0;
                 }
             } else {
                 if (isConstant()) {
-                    boolean elem = data[0].length() != 0;
+                    boolean elem = data[0] != null ? data[0].length() != 0 : false;
                     for (long i = startPos; i < endPos; i += step) {
                         out[idx++] = elem;
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        int v = data[(int) i].length();
+                        int v = data[(int) i] != null ? data[(int)i].length() : 0;
                         out[idx++] = v != 0;
                     }
                 }
@@ -355,7 +357,7 @@ public class StringLargeArray extends LargeArray
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
                 byte[] out = new byte[(int) length];
-                byte elem = (byte) data[0].length();
+                byte elem = (byte) (data[0] != null ? data[0].length() : 0);
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
@@ -363,7 +365,7 @@ public class StringLargeArray extends LargeArray
             } else {
                 byte[] res = new byte[(int) length];
                 for (int i = 0; i < length; i++) {
-                    res[i] = (byte) data[i].length();
+                    res[i] = (byte) (data[i]!= null ? data[i].length() : 0);
 
                 }
                 return res;
@@ -397,16 +399,16 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (byte) Utilities.UNSAFE.getFloat(ptr + sizeof * i);
+                    out[idx++] = (byte) stringLengths.getShort(i);
                 }
             } else {
                 if (isConstant()) {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (byte) data[0].length();
+                        out[idx++] = (byte) (data[0] != null ? data[0].length() : 0);
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (byte) data[(int) i].length();
+                        out[idx++] = (byte) (data[(int) i] != null ? data[(int) i].length() : 0);
                     }
                 }
             }
@@ -423,7 +425,7 @@ public class StringLargeArray extends LargeArray
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
                 short[] out = new short[(int) length];
-                short elem = (short) data[0].length();
+                short elem = (short) (data[0] != null ? data[0].length() : 0);
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
@@ -431,7 +433,7 @@ public class StringLargeArray extends LargeArray
             } else {
                 short[] res = new short[(int) length];
                 for (int i = 0; i < length; i++) {
-                    res[i] = (short) data[i].length();
+                    res[i] = (short) (data[i] != null ? data[i].length() : 0);
 
                 }
                 return res;
@@ -465,16 +467,16 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (short) Utilities.UNSAFE.getFloat(ptr + sizeof * i);
+                    out[idx++] = (short) stringLengths.getShort(i);
                 }
             } else {
                 if (isConstant()) {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (short) data[0].length();
+                        out[idx++] = (short) (data[0] != null ? data[0].length() : 0);
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (short) data[(int) i].length();
+                        out[idx++] = (short) (data[(int) i] != null ? data[(int) i].length() : 0);
                     }
                 }
             }
@@ -491,7 +493,7 @@ public class StringLargeArray extends LargeArray
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
                 int[] out = new int[(int) length];
-                int elem = (int) data[0].length();
+                int elem = (int) (data[0] != null ? data[0].length() : 0);
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
@@ -499,7 +501,7 @@ public class StringLargeArray extends LargeArray
             } else {
                 int[] res = new int[(int) length];
                 for (int i = 0; i < length; i++) {
-                    res[i] = (int) data[i].length();
+                    res[i] = (int) (data[i] != null ? data[i].length() : 0);
 
                 }
                 return res;
@@ -533,17 +535,17 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (int) Utilities.UNSAFE.getFloat(ptr + sizeof * i);
+                    out[idx++] = (int) stringLengths.getShort(i);
                 }
             } else {
                 if (isConstant()) {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (int) data[0].length();
+                        out[idx++] = (int) (data[0] != null ? data[0].length() : 0);
                     }
                 } else {
 
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (int) data[(int) i].length();
+                        out[idx++] = (int) (data[(int) i] != null ? data[(int) i].length() : 0);
                     }
                 }
             }
@@ -560,7 +562,7 @@ public class StringLargeArray extends LargeArray
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
                 long[] out = new long[(int) length];
-                long elem = (long) data[0].length();
+                long elem = (long) (data[0] != null ? data[0].length() : 0);
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
@@ -568,7 +570,7 @@ public class StringLargeArray extends LargeArray
             } else {
                 long[] res = new long[(int) length];
                 for (int i = 0; i < length; i++) {
-                    res[i] = (long) data[i].length();
+                    res[i] = (long) (data[i] != null ? data[i].length() : 0);
 
                 }
                 return res;
@@ -602,17 +604,17 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (long) Utilities.UNSAFE.getFloat(ptr + sizeof * i);
+                    out[idx++] = (long) stringLengths.getShort(i);
                 }
             } else {
                 if (isConstant()) {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (long) data[0].length();
+                        out[idx++] = (long) (data[0] != null ? data[0].length() : 0);
                     }
                 } else {
 
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (long) data[(int) i].length();
+                        out[idx++] = (long) (data[(int) i]!= null ? data[(int) i].length() : 0);
                     }
                 }
             }
@@ -630,13 +632,13 @@ public class StringLargeArray extends LargeArray
                 if (length > getMaxSizeOf32bitArray()) return null;
                 float[] out = new float[(int) length];
                 for (int i = 0; i < length; i++) {
-                    out[i] = data[0].length();
+                    out[i] = data[0] != null ? data[0].length() : 0;
                 }
                 return out;
             } else {
                 float[] out = new float[(int) length];
                 for (int i = 0; i < length; i++) {
-                    out[i] = (float) data[i].length();
+                    out[i] = (float) (data[i] != null ? data[i].length() : 0);
 
                 }
                 return out;
@@ -670,16 +672,16 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (float) Utilities.UNSAFE.getByte(ptr + i);
+                    out[idx++] = (float) stringLengths.getShort(i);
                 }
             } else {
                 if (isConstant()) {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[0].length();
+                        out[idx++] = data[0] != null ? data[0].length() : 0;
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (float) data[(int) i].length();
+                        out[idx++] = (float) (data[(int) i] != null ? data[(int) i].length() : 0);
                     }
                 }
             }
@@ -697,13 +699,13 @@ public class StringLargeArray extends LargeArray
                 if (length > getMaxSizeOf32bitArray()) return null;
                 double[] out = new double[(int) length];
                 for (int i = 0; i < length; i++) {
-                    out[i] = data[0].length();
+                    out[i] = data[0] != null ? data[0].length() : 0;
                 }
                 return out;
             } else {
                 double[] out = new double[(int) length];
                 for (int i = 0; i < length; i++) {
-                    out[i] = (double) data[i].length();
+                    out[i] = (double) (data[i] != null ? data[i].length() : 0);
 
                 }
                 return out;
@@ -737,16 +739,16 @@ public class StringLargeArray extends LargeArray
             int idx = 0;
             if (ptr != 0) {
                 for (long i = startPos; i < endPos; i += step) {
-                    out[idx++] = (double) Utilities.UNSAFE.getByte(ptr + i);
+                    out[idx++] = (double) stringLengths.getShort(i);
                 }
             } else {
                 if (isConstant()) {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = data[0].length();
+                        out[idx++] = data[0] != null ? data[0].length() : 0;
                     }
                 } else {
                     for (long i = startPos; i < endPos; i += step) {
-                        out[idx++] = (double) data[(int) i].length();
+                        out[idx++] = (double) (data[(int) i] != null ? data[(int) i].length() : 0);
                     }
                 }
             }
@@ -755,37 +757,15 @@ public class StringLargeArray extends LargeArray
     }
 
     @Override
-    public void setToNative(long i, Object value)
+    public void setToNative(long i, Object o)
     {
-        String s = (String) value;
-        if (s.length() > maxStringLength) {
-            throw new IllegalArgumentException("String  " + s + " is too long.");
-        }
-        byte[] tmp;
-        try {
-            tmp = s.getBytes(CHARSET);
-        } catch (UnsupportedEncodingException ex) {
-            return;
-        }
-        int strLen = tmp.length;
-        if (strLen > Short.MAX_VALUE) {
-            throw new IllegalArgumentException("String  " + s + " is too long.");
-        }
-        stringLengths.setShort(i, (short) strLen);
-        long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
-        for (int j = 0; j < strLen; j++) {
-            Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);
-        }
-    }
-
-    @Override
-    public void set(long i, Object o)
-    {
-        if (!(o instanceof String)) {
-            throw new IllegalArgumentException(o + " is not a string.");
-        }
-        String s = (String) o;
-        if (ptr != 0) {
+        if (o == null) {
+            stringLengths.setShort(i, (short) -1);
+        } else {
+            if (!(o instanceof String)) {
+                throw new IllegalArgumentException(o + " is not a string.");
+            }
+            String s = (String) o;
             if (s.length() > maxStringLength) {
                 throw new IllegalArgumentException("String  " + s + " is too long.");
             }
@@ -804,11 +784,51 @@ public class StringLargeArray extends LargeArray
             for (int j = 0; j < strLen; j++) {
                 Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);
             }
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
+        }
+    }
+
+    @Override
+    public void set(long i, Object o)
+    {
+        if (o == null) {
+            if (ptr != 0) {
+                stringLengths.setShort(i, (short) -1);
+            } else {
+                if (isConstant()) {
+                    throw new IllegalAccessError("Constant arrays cannot be modified.");
+                }
+                data[(int) i] = null;
             }
-            data[(int) i] = s;
+        } else {
+            if (!(o instanceof String)) {
+                throw new IllegalArgumentException(o + " is not a string.");
+            }
+            String s = (String) o;
+            if (ptr != 0) {
+                if (s.length() > maxStringLength) {
+                    throw new IllegalArgumentException("String  " + s + " is too long.");
+                }
+                byte[] tmp;
+                try {
+                    tmp = s.getBytes(CHARSET);
+                } catch (UnsupportedEncodingException ex) {
+                    return;
+                }
+                int strLen = tmp.length;
+                if (strLen > Short.MAX_VALUE) {
+                    throw new IllegalArgumentException("String  " + s + " is too long.");
+                }
+                stringLengths.setShort(i, (short) strLen);
+                long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
+                for (int j = 0; j < strLen; j++) {
+                    Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);
+                }
+            } else {
+                if (isConstant()) {
+                    throw new IllegalAccessError("Constant arrays cannot be modified.");
+                }
+                data[(int) i] = s;
+            }
         }
     }
 
@@ -818,35 +838,7 @@ public class StringLargeArray extends LargeArray
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
         }
-        if (!(o instanceof String)) {
-            throw new IllegalArgumentException(o + " is not a string.");
-        }
-        String s = (String) o;
-        if (ptr != 0) {
-            if (s.length() > maxStringLength) {
-                throw new IllegalArgumentException("String  " + s + " is too long.");
-            }
-            byte[] tmp;
-            try {
-                tmp = s.getBytes(CHARSET);
-            } catch (UnsupportedEncodingException ex) {
-                return;
-            }
-            int strLen = tmp.length;
-            if (strLen > Short.MAX_VALUE) {
-                throw new IllegalArgumentException("String  " + s + " is too long.");
-            }
-            stringLengths.setShort(i, (short) strLen);
-            long offset = sizeof * i * maxStringLength * CHARSET_SIZE;
-            for (int j = 0; j < strLen; j++) {
-                Utilities.UNSAFE.putByte(ptr + offset + sizeof * j, tmp[j]);
-            }
-        } else {
-            if (isConstant()) {
-                throw new IllegalAccessError("Constant arrays cannot be modified.");
-            }
-            data[(int) i] = s;
-        }
+        set(i, o);
     }
 
     @Override
