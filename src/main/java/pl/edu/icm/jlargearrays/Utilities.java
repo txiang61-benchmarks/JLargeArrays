@@ -27,6 +27,10 @@
 package pl.edu.icm.jlargearrays;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -141,37 +145,37 @@ public class Utilities
     {
         switch (dest.getType()) {
             case LOGIC:
-                arraycopy((boolean[]) src, (int)srcPos, (LogicLargeArray) dest, destPos, length);
+                arraycopy((boolean[]) src, (int) srcPos, (LogicLargeArray) dest, destPos, length);
                 break;
             case BYTE:
-                arraycopy((byte[]) src, (int)srcPos, (ByteLargeArray) dest, destPos, length);
+                arraycopy((byte[]) src, (int) srcPos, (ByteLargeArray) dest, destPos, length);
                 break;
             case SHORT:
-                arraycopy((short[]) src, (int)srcPos, (ShortLargeArray) dest, destPos, length);
+                arraycopy((short[]) src, (int) srcPos, (ShortLargeArray) dest, destPos, length);
                 break;
             case INT:
-                arraycopy((int[]) src, (int)srcPos, (IntLargeArray) dest, destPos, length);
+                arraycopy((int[]) src, (int) srcPos, (IntLargeArray) dest, destPos, length);
                 break;
             case LONG:
-                arraycopy((long[]) src, (int)srcPos, (LongLargeArray) dest, destPos, length);
+                arraycopy((long[]) src, (int) srcPos, (LongLargeArray) dest, destPos, length);
                 break;
             case FLOAT:
-                arraycopy((float[]) src, (int)srcPos, (FloatLargeArray) dest, destPos, length);
+                arraycopy((float[]) src, (int) srcPos, (FloatLargeArray) dest, destPos, length);
                 break;
             case DOUBLE:
-                arraycopy((double[]) src, (int)srcPos, (DoubleLargeArray) dest, destPos, length);
+                arraycopy((double[]) src, (int) srcPos, (DoubleLargeArray) dest, destPos, length);
                 break;
             case COMPLEX_FLOAT:
-                arraycopy((float[]) src, (int)srcPos, (ComplexFloatLargeArray) dest, destPos, length);
+                arraycopy((float[]) src, (int) srcPos, (ComplexFloatLargeArray) dest, destPos, length);
                 break;
             case COMPLEX_DOUBLE:
-                arraycopy((double[]) src, (int)srcPos, (ComplexDoubleLargeArray) dest, destPos, length);
+                arraycopy((double[]) src, (int) srcPos, (ComplexDoubleLargeArray) dest, destPos, length);
                 break;
             case STRING:
-                arraycopy((String[]) src, (int)srcPos, (StringLargeArray) dest, destPos, length);
+                arraycopy((String[]) src, (int) srcPos, (StringLargeArray) dest, destPos, length);
                 break;
             case OBJECT:
-                arraycopy((Object[]) src, (int)srcPos, (ObjectLargeArray) dest, destPos, length);
+                arraycopy((Object[]) src, (int) srcPos, (ObjectLargeArray) dest, destPos, length);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid array type.");
@@ -1617,7 +1621,7 @@ public class Utilities
     }
 
     /**
-     * Converts LargeArray to a given type. 
+     * Converts LargeArray to a given type.
      *
      * @param src  the source array
      * @param type the type of LargeArray
@@ -1885,5 +1889,85 @@ public class Utilities
             }
         }
         return out;
+    }
+
+    /**
+     * Returns all elements of the specified source array for which the corresponding mask element is equal to 1.
+     *
+     * @param src  the source array
+     * @param mask the mask array
+     * <p>
+     * @return selection of elements from the source array
+     */
+    public static LargeArray select(final LargeArray src, final LogicLargeArray mask)
+    {
+        if (src.length != mask.length) {
+            throw new IllegalArgumentException("src.length != mask.length");
+        }
+        long length = src.length;
+        long count = 0;
+        int nthreads = Runtime.getRuntime().availableProcessors();
+        long k = length / nthreads;
+        ExecutorService pool = Executors.newCachedThreadPool();
+        Future[] futures = new Future[nthreads];
+        for (int j = 0; j < nthreads; j++) {
+            final long firstIdx = j * k;
+            final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+            futures[j] = pool.submit(new Callable()
+            {
+                @Override
+                public Long call()
+                {
+                    long count = 0;
+                    for (long k = firstIdx; k < lastIdx; k++) {
+                        if (mask.getByte(k) == 1) count++;
+                    }
+                    return count;
+                }
+            });
+        }
+        try {
+            for (int j = 0; j < nthreads; j++) {
+                count += (Long) (futures[j].get());
+            }
+        } catch (Exception ex) {
+            for (long j = 0; j < length; j++) {
+                if (mask.getByte(k) == 1) count++;
+            }
+        }
+
+        if(count <= 0) return null;
+        
+        final LargeArray res = create(src.getType(), count);
+
+        for (int j = 0; j < nthreads; j++) {
+            final long firstIdx = j * k;
+            final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
+            futures[j] = pool.submit(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    for (long k = firstIdx; k < lastIdx; k++) {
+                        if (mask.getByte(k) == 1) {
+                            res.set(k, src.get(k));
+                        }
+                    }
+                }
+            });
+        }
+        try {
+            for (int j = 0; j < nthreads; j++) {
+                futures[j].get();
+            }
+        } catch (Exception ex) {
+            for (long j = 0; j < length; j++) {
+                if (mask.getByte(k) == 1) {
+                    res.set(k, src.get(k));
+                }
+            }
+        }
+
+        return res;
     }
 }
