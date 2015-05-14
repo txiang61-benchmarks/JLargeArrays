@@ -207,7 +207,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setByte(j, src.getByte(i));
@@ -270,7 +270,7 @@ public class Utilities
         }
 
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setBoolean(j, src[i++]);
@@ -332,7 +332,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setByte(j, src.getByte(i));
@@ -394,7 +394,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setByte(j, src[i++]);
@@ -456,7 +456,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
 
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setShort(j, src.getShort(i));
@@ -518,7 +518,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setShort(j, src[i++]);
@@ -579,7 +579,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setInt(j, src.getInt(i));
@@ -641,7 +641,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setInt(j, src[i++]);
@@ -702,7 +702,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setLong(j, src.getLong(i));
@@ -764,7 +764,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setLong(j, src[i++]);
@@ -825,7 +825,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setFloat(j, src.getFloat(i));
@@ -887,7 +887,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setFloat(j, src[i++]);
@@ -948,7 +948,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setDouble(j, src.getDouble(i));
@@ -1010,7 +1010,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.setDouble(j, src[i++]);
@@ -1071,7 +1071,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setComplexFloat(j, src.getComplexFloat(i));
@@ -1137,7 +1137,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             float[] elem = new float[2];
             for (long j = destPos; j < destPos + length; j++) {
@@ -1209,7 +1209,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.setComplexDouble(j, src.getComplexDouble(i));
@@ -1275,7 +1275,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             double[] elem = new double[2];
             for (long j = destPos; j < destPos + length; j++) {
@@ -1347,7 +1347,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.set(j, src.get(i));
@@ -1409,7 +1409,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.set(j, src[i++]);
@@ -1470,7 +1470,7 @@ public class Utilities
         if (dest.isConstant()) {
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long i = srcPos, j = destPos; i < srcPos + length; i++, j++) {
                 dest.set(j, src.get(i));
@@ -1532,7 +1532,7 @@ public class Utilities
             throw new IllegalArgumentException("Constant arrays cannot be modified.");
         }
         int i = srcPos;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             for (long j = destPos; j < destPos + length; j++) {
                 dest.set(j, src[i++]);
@@ -1663,7 +1663,7 @@ public class Utilities
         }
         long length = src.length;
         final LargeArray out = create(type, length, false);
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             switch (type) {
                 case LOGIC:
@@ -1906,7 +1906,7 @@ public class Utilities
         }
         long length = src.length;
         long count = 0;
-        int nthreads = Runtime.getRuntime().availableProcessors();
+        int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         long k = length / nthreads;
         ExecutorService pool = Executors.newCachedThreadPool();
         Future[] futures = new Future[nthreads];
@@ -1932,39 +1932,17 @@ public class Utilities
             }
         } catch (Exception ex) {
             for (long j = 0; j < length; j++) {
-                if (mask.getByte(k) == 1) count++;
+                if (mask.getByte(j) == 1) count++;
             }
         }
 
-        if(count <= 0) return null;
-        
-        final LargeArray res = create(src.getType(), count);
+        if (count <= 0) return null;
 
-        for (int j = 0; j < nthreads; j++) {
-            final long firstIdx = j * k;
-            final long lastIdx = (j == nthreads - 1) ? length : firstIdx + k;
-            futures[j] = pool.submit(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    for (long k = firstIdx; k < lastIdx; k++) {
-                        if (mask.getByte(k) == 1) {
-                            res.set(k, src.get(k));
-                        }
-                    }
-                }
-            });
-        }
-        try {
-            for (int j = 0; j < nthreads; j++) {
-                futures[j].get();
-            }
-        } catch (Exception ex) {
-            for (long j = 0; j < length; j++) {
-                if (mask.getByte(k) == 1) {
-                    res.set(k, src.get(k));
-                }
+        LargeArray res = create(src.getType(), count, false);
+        k = 0;
+        for (long j = 0; j < length; j++) {
+            if (mask.getByte(j) == 1) {
+                res.set(k++, src.get(j));
             }
         }
 

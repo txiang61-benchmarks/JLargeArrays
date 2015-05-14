@@ -894,8 +894,7 @@ public abstract class LargeArray implements
     protected void zeroNativeMemory(final long size)
     {
         if (ptr != 0) {
-            final int nthreads = Runtime.getRuntime()
-                .availableProcessors();
+            final int nthreads = (int)Math.min(size, Runtime.getRuntime().availableProcessors());
             if (nthreads <= 2 || size < 100000) {
                 Utilities.UNSAFE.setMemory(ptr, size * sizeof, (byte) 0);
             } else {
