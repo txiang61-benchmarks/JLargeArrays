@@ -940,7 +940,7 @@ public class LogicLargeArray extends LargeArray
     {
         LogicLargeArray out = new LogicLargeArray(length, false);
         for (long i = 0; i < length; i++) {
-            out.setByte(i, (byte) (~getByte(i)));
+            out.setByte(i, (byte)(1 - getByte(i)));
         }
         return out;
     }
