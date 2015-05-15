@@ -185,6 +185,58 @@ public class JLargeArraysTest extends TestCase
         }
     }
 
+    public void testLogicLargeArrayNot()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        LogicLargeArray a = new LogicLargeArray(10);
+        long idx = 5;
+        boolean val = true;
+        a.setBoolean(idx, val);
+        LogicLargeArray b = a.not();
+        for (int i = 0; i < a.length; i++) {
+            assertEquals(1 - a.getByte(i), b.getByte(i));
+        }
+    }
+
+    public void testLogicLargeArrayXor()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        LogicLargeArray a = new LogicLargeArray(10);
+        long idx = 5;
+        boolean val = true;
+        a.setBoolean(idx, val);
+        LogicLargeArray b = a.xor(a);
+        for (int i = 0; i < a.length; i++) {
+            assertEquals(a.getByte(i) ^ a.getByte(i), b.getByte(i));
+        }
+    }
+
+    public void testLogicLargeArrayOr()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        LogicLargeArray a = new LogicLargeArray(10);
+        long idx = 5;
+        boolean val = true;
+        a.setBoolean(idx, val);
+        LogicLargeArray b = a.or(a);
+        for (int i = 0; i < a.length; i++) {
+            assertEquals(a.getByte(i) | a.getByte(i), b.getByte(i));
+        }
+    }
+
+    public void testLogicLargeArrayAnd()
+    {
+        LargeArray.setMaxSizeOf32bitArray(1073741824);
+        LogicLargeArray a = new LogicLargeArray(10);
+        long idx = 5;
+        boolean val = true;
+        a.setBoolean(idx, val);
+        LogicLargeArray b = a.and(a);
+        for (int i = 0; i < a.length; i++) {
+            assertEquals(a.getByte(i) & a.getByte(i), b.getByte(i));
+        }
+    }
+
     public void testByteLargeArrayEqualsHashCode()
     {
         ByteLargeArray a = new ByteLargeArray(10);
