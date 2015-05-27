@@ -93,19 +93,19 @@ public class JLargeArraysTest extends TestCase
         LargeArray.setMaxSizeOf32bitArray(1073741824);
         LogicLargeArray a = new LogicLargeArray(10);
         long idx = 5;
-        boolean val = true;
-        a.setBoolean(idx, val);
-        assertEquals(val, a.getBoolean(idx));
+        byte val = 1;
+        a.set(idx, val);
+        assertEquals(val, a.getByte(idx));
         idx = 6;
         a.set(idx, val);
-        assertEquals(val, (boolean) a.get(idx));
+        assertEquals(val, (byte) a.get(idx));
         LargeArray.setMaxSizeOf32bitArray(1);
         a = new LogicLargeArray(10);
-        a.setBoolean(idx, val);
-        assertEquals(val, a.getBoolean(idx));
+        a.set(idx, val);
+        assertEquals(val, a.getByte(idx));
         idx = 6;
         a.set(idx, val);
-        assertEquals(val, (boolean) a.get(idx));
+        assertEquals(val, (byte) a.get(idx));
 
     }
 
@@ -114,7 +114,7 @@ public class JLargeArraysTest extends TestCase
         LargeArray.setMaxSizeOf32bitArray(1);
         LogicLargeArray a = new LogicLargeArray(10);
         long idx = 5;
-        Boolean val = true;
+        Byte val = 1;
         a.setToNative(idx, val);
         assertEquals(val, a.getFromNative(idx));
     }

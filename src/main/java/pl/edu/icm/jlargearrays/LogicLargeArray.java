@@ -106,13 +106,18 @@ public class LogicLargeArray extends LargeArray
         this.type = LargeArrayType.LOGIC;
         this.sizeof = 1;
         this.length = data.length;
+        for (int i = 0; i < data.length; i++) {
+            if(data[i] != 0 && data[i] != 1) {
+                throw new IllegalArgumentException("The array contans values different than 0 and 1.");
+            }
+        }
         this.data = data;
     }
 
     /**
      * Creates new instance of this class.
      *
-     * @param data data array, this reference is used internally.
+     * @param data data array, this reference is not used internally.
      */
     public LogicLargeArray(boolean[] data)
     {
@@ -159,15 +164,15 @@ public class LogicLargeArray extends LargeArray
     }
 
     @Override
-    public Boolean get(long i)
+    public Byte get(long i)
     {
-        return getBoolean(i);
+        return getByte(i);
     }
 
     @Override
-    public Boolean getFromNative(long i)
+    public Byte getFromNative(long i)
     {
-        return Utilities.UNSAFE.getByte(ptr + i) == 1;
+        return Utilities.UNSAFE.getByte(ptr + i);
     }
 
     @Override
@@ -759,7 +764,7 @@ public class LogicLargeArray extends LargeArray
     @Override
     public void setToNative(long i, Object value)
     {
-        Utilities.UNSAFE.putByte(ptr + i, ((Boolean) value) == true ? (byte) 1 : (byte) 0);
+        Utilities.UNSAFE.putByte(ptr + i, (Byte) value);
     }
 
     @Override
