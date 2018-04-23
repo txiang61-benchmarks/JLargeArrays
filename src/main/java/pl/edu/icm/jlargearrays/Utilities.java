@@ -32,6 +32,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import units.qual.*;
+
 /**
  *
  * Utilities.
@@ -1905,7 +1907,7 @@ public class Utilities
             throw new IllegalArgumentException("src.length != mask.length");
         }
         long length = src.length;
-        long count = 0;
+        @Dimensionless long count = 0;
         int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         long k = length / nthreads;
         ExecutorService pool = Executors.newCachedThreadPool();
@@ -1916,9 +1918,9 @@ public class Utilities
             futures[j] = pool.submit(new Callable()
             {
                 @Override
-                public Long call()
+                public @Dimensionless Long call()
                 {
-                    long count = 0;
+                    @Dimensionless long count = 0;
                     for (long k = firstIdx; k < lastIdx; k++) {
                         if (mask.getByte(k) == 1) count++;
                     }

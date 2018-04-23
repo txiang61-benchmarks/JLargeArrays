@@ -26,6 +26,8 @@
  * ***** END LICENSE BLOCK ***** */
 package pl.edu.icm.jlargearrays;
 
+import units.qual.*;
+
 /**
  * The base class for all large arrays. All implementations of this abstract
  * class can store up to 2<SUP>63</SUP> elements of primitive data types.
@@ -126,7 +128,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract Object get(long i);
+    public abstract @UnknownUnits Object get(long i);
 
     /**
      * Returns a value at index i. Array bounds are checked.
@@ -135,7 +137,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public Object get_safe(final long i)
+    public @UnknownUnits Object get_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -188,7 +190,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract byte getByte(long i);
+    public abstract @UnknownUnits byte getByte(long i);
 
     /**
      * Returns a byte value at index i. Array bounds are checked.
@@ -197,7 +199,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public byte getByte_safe(final long i)
+    public @UnknownUnits byte getByte_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -213,7 +215,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract short getShort(long i);
+    public abstract @UnknownUnits short getShort(long i);
 
     /**
      * Returns a short value at index i. Array bounds are checked.
@@ -222,7 +224,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public short getShort_safe(final long i)
+    public @UnknownUnits short getShort_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -238,7 +240,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract int getInt(long i);
+    public abstract @UnknownUnits int getInt(long i);
 
     /**
      * Returns an int value at index i. Array bounds are checked.
@@ -247,7 +249,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public int getInt_safe(final long i)
+    public @UnknownUnits int getInt_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -263,7 +265,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract long getLong(long i);
+    public abstract @UnknownUnits long getLong(long i);
 
     /**
      * Returns a long value at index i. Array bounds are checked.
@@ -272,7 +274,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public long getLong_safe(final long i)
+    public @UnknownUnits long getLong_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -288,7 +290,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract float getFloat(long i);
+    public abstract @UnknownUnits float getFloat(long i);
 
     /**
      * Returns a float value at index i. Array bounds are checked.
@@ -297,7 +299,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public float getFloat_safe(final long i)
+    public @UnknownUnits float getFloat_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -313,7 +315,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract double getDouble(long i);
+    public abstract @UnknownUnits double getDouble(long i);
 
     /**
      * Returns a double value at index i. Array bounds are checked.
@@ -322,7 +324,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public double getDouble_safe(final long i)
+    public @UnknownUnits double getDouble_safe(final long i)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -340,7 +342,7 @@ public abstract class LargeArray implements
      *
      * @return reference to the internal data array or null
      */
-    public abstract Object getData();
+    public abstract @UnknownUnits Object getData();
 
     /**
      * If the size of the array is smaller than LARGEST_32BIT_INDEX, then this
@@ -376,7 +378,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract byte[] getByteData();
+    public abstract @UnknownUnits byte[] getByteData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
@@ -393,7 +395,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract byte[] getByteData(byte[] a,
+    public abstract @UnknownUnits byte[] getByteData(byte[] a,
                                        long startPos,
                                        long endPos,
                                        long step);
@@ -404,7 +406,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract short[] getShortData();
+    public abstract @UnknownUnits short[] getShortData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
@@ -421,7 +423,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract short[] getShortData(short[] a,
+    public abstract @UnknownUnits short[] getShortData(short[] a,
                                          long startPos,
                                          long endPos,
                                          long step);
@@ -432,7 +434,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract int[] getIntData();
+    public abstract @UnknownUnits int[] getIntData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
@@ -449,7 +451,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract int[] getIntData(int[] a,
+    public abstract @UnknownUnits int[] getIntData(int[] a,
                                      long startPos,
                                      long endPos,
                                      long step);
@@ -460,7 +462,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract long[] getLongData();
+    public abstract @UnknownUnits long[] getLongData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
@@ -477,7 +479,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract long[] getLongData(long[] a,
+    public abstract @UnknownUnits long[] getLongData(long[] a,
                                        long startPos,
                                        long endPos,
                                        long step);
@@ -488,7 +490,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract float[] getFloatData();
+    public abstract @UnknownUnits float[] getFloatData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
@@ -505,7 +507,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract float[] getFloatData(float[] a,
+    public abstract @UnknownUnits float[] getFloatData(float[] a,
                                          long startPos,
                                          long endPos,
                                          long step);
@@ -516,7 +518,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract double[] getDoubleData();
+    public abstract @UnknownUnits double[] getDoubleData();
 
     /**
      * If (endPos - startPos) / step is smaller than LARGEST_32BIT_INDEX, then
@@ -533,7 +535,7 @@ public abstract class LargeArray implements
      *
      * @return an array containing the elements of this object or null
      */
-    public abstract double[] getDoubleData(double[] a,
+    public abstract @UnknownUnits double[] getDoubleData(double[] a,
                                            long startPos,
                                            long endPos,
                                            long step);
@@ -636,7 +638,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public abstract void setByte(long i, byte value);
+    public abstract void setByte(long i, @UnknownUnits byte value);
 
     /**
      * Sets a byte value at index i. Array bounds are checked.
@@ -644,7 +646,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public void setByte_safe(final long i, final byte value)
+    public void setByte_safe(final long i, final @UnknownUnits byte value)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -659,7 +661,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public abstract void setShort(long i, short value);
+    public abstract void setShort(long i, @UnknownUnits short value);
 
     /**
      * Sets a short value at index i. Array bounds are checked.
@@ -667,7 +669,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public void setShort_safe(final long i, final short value)
+    public void setShort_safe(final long i, final @UnknownUnits short value)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -682,7 +684,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public abstract void setInt(long i, int value);
+    public abstract void setInt(long i, @UnknownUnits int value);
 
     /**
      * Sets an int value at index i. Array bounds are checked.
@@ -690,7 +692,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public void setInt_safe(final long i, final int value)
+    public void setInt_safe(final long i, final @UnknownUnits int value)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -705,7 +707,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public abstract void setLong(long i, long value);
+    public abstract void setLong(long i, @UnknownUnits long value);
 
     /**
      * Sets a long value at index i. Array bounds are checked.
@@ -713,7 +715,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public void setLong_safe(final long i, final long value)
+    public void setLong_safe(final long i, final @UnknownUnits long value)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -728,7 +730,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public abstract void setFloat(long i, float value);
+    public abstract void setFloat(long i, @UnknownUnits float value);
 
     /**
      * Sets a float value at index i. Array bounds are checked.
@@ -736,7 +738,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public void setFloat_safe(final long i, final float value)
+    public void setFloat_safe(final long i, final @UnknownUnits float value)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));
@@ -751,7 +753,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public abstract void setDouble(long i, double value);
+    public abstract void setDouble(long i, @UnknownUnits double value);
 
     /**
      * Sets a double value at index i. Array bounds are checked.
@@ -759,7 +761,7 @@ public abstract class LargeArray implements
      * @param i     index
      * @param value value to set
      */
-    public void setDouble_safe(final long i, final double value)
+    public void setDouble_safe(final long i, final @UnknownUnits double value)
     {
         if (i < 0 || i >= length) {
             throw new ArrayIndexOutOfBoundsException(Long.toString(i));

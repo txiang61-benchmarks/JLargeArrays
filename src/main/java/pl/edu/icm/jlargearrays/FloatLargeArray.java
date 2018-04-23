@@ -28,6 +28,8 @@ package pl.edu.icm.jlargearrays;
 
 import sun.misc.Cleaner;
 
+import units.qual.*;
+
 /**
  *
  * An array of floats that can store up to 2<SUP>63</SUP> elements.
@@ -38,7 +40,7 @@ public class FloatLargeArray extends LargeArray
 {
 
     private static final long serialVersionUID = -8342458159338079576L;
-    private float[] data;
+    private @UnknownUnits float[] data;
 
     /**
      * Creates new instance of this class.
@@ -83,7 +85,7 @@ public class FloatLargeArray extends LargeArray
      * @param length        number of elements
      * @param constantValue value
      */
-    public FloatLargeArray(long length, float constantValue)
+    public FloatLargeArray(long length, @UnknownUnits float constantValue)
     {
         this.type = LargeArrayType.FLOAT;
         this.sizeof = 4;
@@ -100,7 +102,7 @@ public class FloatLargeArray extends LargeArray
      *
      * @param data data array, this reference is used internally.
      */
-    public FloatLargeArray(float[] data)
+    public FloatLargeArray(@UnknownUnits float[] data)
     {
         this.type = LargeArrayType.FLOAT;
         this.sizeof = 4;
@@ -142,7 +144,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public Float get(long i)
+    public @UnknownUnits Float get(long i)
     {
         return getFloat(i);
     }
@@ -168,7 +170,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public byte getByte(long i)
+    public @UnknownUnits byte getByte(long i)
     {
         if (ptr != 0) {
             return (byte) (Utilities.UNSAFE.getFloat(ptr + sizeof * i));
@@ -182,7 +184,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public short getShort(long i)
+    public @UnknownUnits short getShort(long i)
     {
         if (ptr != 0) {
             return (short) (Utilities.UNSAFE.getFloat(ptr + sizeof * i));
@@ -196,7 +198,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public int getInt(long i)
+    public @UnknownUnits int getInt(long i)
     {
         if (ptr != 0) {
             return (int) (Utilities.UNSAFE.getFloat(ptr + sizeof * i));
@@ -210,7 +212,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public long getLong(long i)
+    public @UnknownUnits long getLong(long i)
     {
         if (ptr != 0) {
             return (long) (Utilities.UNSAFE.getFloat(ptr + sizeof * i));
@@ -224,7 +226,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public float getFloat(long i)
+    public @UnknownUnits float getFloat(long i)
     {
         if (ptr != 0) {
             return (Utilities.UNSAFE.getFloat(ptr + sizeof * i));
@@ -238,7 +240,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public double getDouble(long i)
+    public @UnknownUnits double getDouble(long i)
     {
         if (ptr != 0) {
             return (double) Utilities.UNSAFE.getFloat(ptr + sizeof * i);
@@ -252,14 +254,14 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public float[] getData()
+    public @UnknownUnits float[] getData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                float[] out = new float[(int) length];
+                @UnknownUnits float[] out = new @UnknownUnits float[(int) length];
                 for (int i = 0; i < length; i++) {
                     out[i] = data[0];
                 }
@@ -341,21 +343,21 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public byte[] getByteData()
+    public @UnknownUnits byte[] getByteData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                byte[] out = new byte[(int) length];
+                @UnknownUnits byte[] out = new @UnknownUnits byte[(int) length];
                 byte elem = (byte) data[0];
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
                 return out;
             } else {
-                byte[] res = new byte[(int) length];
+                @UnknownUnits byte[] res = new @UnknownUnits byte[(int) length];
                 for (int i = 0; i < length; i++) {
                     res[i] = (byte) data[i];
 
@@ -366,7 +368,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public byte[] getByteData(byte[] a, long startPos, long endPos, long step)
+    public @UnknownUnits byte[] getByteData(byte[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -382,11 +384,11 @@ public class FloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            byte[] out;
+            @UnknownUnits byte[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new byte[(int) len];
+                out = new @UnknownUnits byte[(int) len];
             }
             int idx = 0;
             if (ptr != 0) {
@@ -409,21 +411,21 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public short[] getShortData()
+    public @UnknownUnits short[] getShortData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                short[] out = new short[(int) length];
+                @UnknownUnits short[] out = new @UnknownUnits short[(int) length];
                 short elem = (short) data[0];
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
                 return out;
             } else {
-                short[] res = new short[(int) length];
+                @UnknownUnits short[] res = new @UnknownUnits short[(int) length];
                 for (int i = 0; i < length; i++) {
                     res[i] = (short) data[i];
 
@@ -434,7 +436,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public short[] getShortData(short[] a, long startPos, long endPos, long step)
+    public @UnknownUnits short[] getShortData(short[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -450,11 +452,11 @@ public class FloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            short[] out;
+            @UnknownUnits short[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new short[(int) len];
+                out = new @UnknownUnits short[(int) len];
             }
             int idx = 0;
             if (ptr != 0) {
@@ -477,21 +479,21 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public int[] getIntData()
+    public @UnknownUnits int[] getIntData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                int[] out = new int[(int) length];
+                @UnknownUnits int[] out = new @UnknownUnits int[(int) length];
                 int elem = (int) data[0];
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
                 return out;
             } else {
-                int[] res = new int[(int) length];
+                @UnknownUnits int[] res = new @UnknownUnits int[(int) length];
                 for (int i = 0; i < length; i++) {
                     res[i] = (int) data[i];
 
@@ -502,7 +504,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public int[] getIntData(int[] a, long startPos, long endPos, long step)
+    public @UnknownUnits int[] getIntData(int[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -518,11 +520,11 @@ public class FloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            int[] out;
+            @UnknownUnits int[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new int[(int) len];
+                out = new @UnknownUnits int[(int) len];
             }
             int idx = 0;
             if (ptr != 0) {
@@ -546,21 +548,21 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public long[] getLongData()
+    public @UnknownUnits long[] getLongData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                long[] out = new long[(int) length];
+                @UnknownUnits long[] out = new @UnknownUnits long[(int) length];
                 long elem = (long) data[0];
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
                 return out;
             } else {
-                long[] res = new long[(int) length];
+                @UnknownUnits long[] res = new @UnknownUnits long[(int) length];
                 for (int i = 0; i < length; i++) {
                     res[i] = (long) data[i];
 
@@ -571,7 +573,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public long[] getLongData(long[] a, long startPos, long endPos, long step)
+    public @UnknownUnits long[] getLongData(long[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -587,11 +589,11 @@ public class FloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            long[] out;
+            @UnknownUnits long[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new long[(int) len];
+                out = new @UnknownUnits long[(int) len];
             }
             int idx = 0;
             if (ptr != 0) {
@@ -615,14 +617,14 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public float[] getFloatData()
+    public @UnknownUnits float[] getFloatData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                float[] out = new float[(int) length];
+                @UnknownUnits float[] out = new @UnknownUnits float[(int) length];
                 float elem = (float) data[0];
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
@@ -635,7 +637,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public float[] getFloatData(float[] a, long startPos, long endPos, long step)
+    public @UnknownUnits float[] getFloatData(float[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -651,11 +653,11 @@ public class FloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            float[] out;
+            @UnknownUnits float[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new float[(int) len];
+                out = new @UnknownUnits float[(int) len];
             }
             int idx = 0;
             if (ptr != 0) {
@@ -679,21 +681,21 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public double[] getDoubleData()
+    public @UnknownUnits double[] getDoubleData()
     {
         if (ptr != 0) {
             return null;
         } else {
             if (isConstant()) {
                 if (length > getMaxSizeOf32bitArray()) return null;
-                double[] out = new double[(int) length];
+                @UnknownUnits double[] out = new @UnknownUnits double[(int) length];
                 double elem = (double) data[0];
                 for (int i = 0; i < length; i++) {
                     out[i] = elem;
                 }
                 return out;
             } else {
-                double[] res = new double[(int) length];
+                @UnknownUnits double[] res = new @UnknownUnits double[(int) length];
                 for (int i = 0; i < length; i++) {
                     res[i] = (double) data[i];
 
@@ -704,7 +706,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public double[] getDoubleData(double[] a, long startPos, long endPos, long step)
+    public @UnknownUnits double[] getDoubleData(double[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -720,11 +722,11 @@ public class FloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            double[] out;
+            @UnknownUnits double[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new double[(int) len];
+                out = new @UnknownUnits double[(int) len];
             }
             int idx = 0;
             if (ptr != 0) {
@@ -766,7 +768,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public void setByte(long i, byte value)
+    public void setByte(long i, @UnknownUnits byte value)
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putFloat(ptr + sizeof * i, (float) value);
@@ -779,7 +781,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public void setShort(long i, short value)
+    public void setShort(long i, @UnknownUnits short value)
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putFloat(ptr + sizeof * i, (float) value);
@@ -792,7 +794,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public void setInt(long i, int value)
+    public void setInt(long i, @UnknownUnits int value)
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putFloat(ptr + sizeof * i, (float) value);
@@ -805,7 +807,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public void setLong(long i, long value)
+    public void setLong(long i, @UnknownUnits long value)
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putFloat(ptr + sizeof * i, (float) value);
@@ -818,7 +820,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public void setFloat(long i, float value)
+    public void setFloat(long i, @UnknownUnits float value)
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putFloat(ptr + sizeof * i, value);
@@ -831,7 +833,7 @@ public class FloatLargeArray extends LargeArray
     }
 
     @Override
-    public void setDouble(long i, double value)
+    public void setDouble(long i, @UnknownUnits double value)
     {
         if (ptr != 0) {
             Utilities.UNSAFE.putFloat(ptr + sizeof * i, (float) value);

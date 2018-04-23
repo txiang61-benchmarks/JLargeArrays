@@ -65,6 +65,8 @@ import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
 import static pl.edu.icm.jlargearrays.LargeArray.getMaxSizeOf32bitArray;
 import sun.misc.Cleaner;
 
+import units.qual.*;
+
 /**
  *
  * An array of complex numbers (double precision) that can store up to 2<SUP>63</SUP> elements.
@@ -113,7 +115,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param length        number of elements
      * @param constantValue value
      */
-    public ComplexFloatLargeArray(long length, float[] constantValue)
+    public ComplexFloatLargeArray(long length, @UnknownUnits float[] constantValue)
     {
         this.type = LargeArrayType.COMPLEX_FLOAT;
         this.sizeof = 4;
@@ -134,7 +136,7 @@ public class ComplexFloatLargeArray extends LargeArray
      *
      * @param data data array, this reference is not used internally.
      */
-    public ComplexFloatLargeArray(float[] data)
+    public ComplexFloatLargeArray(@UnknownUnits float[] data)
     {
         this(new FloatLargeArray(data));
     }
@@ -282,7 +284,7 @@ public class ComplexFloatLargeArray extends LargeArray
         for (long i = 0; i < length; i++) {
             double re = dataRe.getFloat(i);
             double im = dataIm.getFloat(i);
-            out.setFloat(i, (float) Math.atan2(im, re));
+            out.setFloat(i, (@rad float) Math.atan2(im, re));
         }
         return out;
     }
@@ -296,7 +298,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value at index i ({re, im}).
      */
     @Override
-    public float[] get(long i)
+    public @UnknownUnits float[] get(long i)
     {
         return getComplexFloat(i);
     }
@@ -339,7 +341,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value that corresponds to the real part at index i.
      */
     @Override
-    public byte getByte(long i)
+    public @UnknownUnits byte getByte(long i)
     {
         return dataRe.getByte(i);
     }
@@ -353,7 +355,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value that corresponds to the real part at index i.
      */
     @Override
-    public short getShort(long i)
+    public @UnknownUnits short getShort(long i)
     {
         return dataRe.getShort(i);
     }
@@ -367,7 +369,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value that corresponds to the real part at index i.
      */
     @Override
-    public int getInt(long i)
+    public @UnknownUnits int getInt(long i)
     {
         return dataRe.getInt(i);
     }
@@ -381,7 +383,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value that corresponds to the real part at index i.
      */
     @Override
-    public long getLong(long i)
+    public @UnknownUnits long getLong(long i)
     {
         return dataRe.getLong(i);
     }
@@ -395,7 +397,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value that corresponds to the real part at index i.
      */
     @Override
-    public float getFloat(long i)
+    public @UnknownUnits float getFloat(long i)
     {
         return dataRe.getFloat(i);
     }
@@ -409,7 +411,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return a value that corresponds to the real part at index i.
      */
     @Override
-    public double getDouble(long i)
+    public @UnknownUnits double getDouble(long i)
     {
         return dataRe.getDouble(i);
     }
@@ -422,7 +424,7 @@ public class ComplexFloatLargeArray extends LargeArray
      *
      * @return a value at index i ({re, im}).
      */
-    public float[] getComplexFloat(long i)
+    public @UnknownUnits float[] getComplexFloat(long i)
     {
         return new float[]{dataRe.getFloat(i), dataIm.getFloat(i)};
     }
@@ -435,7 +437,7 @@ public class ComplexFloatLargeArray extends LargeArray
      *
      * @return a value at index i ({re, im}).
      */
-    public double[] getComplexDouble(long i)
+    public @UnknownUnits double[] getComplexDouble(long i)
     {
         return new double[]{dataRe.getDouble(i), dataIm.getDouble(i)};
     }
@@ -447,7 +449,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the list or null
      */
     @Override
-    public float[] getData()
+    public @UnknownUnits float[] getData()
     {
         return getComplexData();
     }
@@ -492,7 +494,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part of this object or null
      */
     @Override
-    public byte[] getByteData()
+    public @UnknownUnits byte[] getByteData()
     {
         return dataRe.getByteData();
     }
@@ -513,7 +515,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part this object or null
      */
     @Override
-    public byte[] getByteData(byte[] a, long startPos, long endPos, long step)
+    public @UnknownUnits byte[] getByteData(byte[] a, long startPos, long endPos, long step)
     {
         return dataRe.getByteData(a, startPos, endPos, step);
     }
@@ -525,7 +527,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part of this object or null
      */
     @Override
-    public short[] getShortData()
+    public @UnknownUnits short[] getShortData()
     {
         return dataRe.getShortData();
     }
@@ -546,7 +548,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part this object or null
      */
     @Override
-    public short[] getShortData(short[] a, long startPos, long endPos, long step)
+    public @UnknownUnits short[] getShortData(short[] a, long startPos, long endPos, long step)
     {
         return dataRe.getShortData(a, startPos, endPos, step);
     }
@@ -558,7 +560,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part of this object or null
      */
     @Override
-    public int[] getIntData()
+    public @UnknownUnits int[] getIntData()
     {
         return dataRe.getIntData();
     }
@@ -579,7 +581,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part this object or null
      */
     @Override
-    public int[] getIntData(int[] a, long startPos, long endPos, long step)
+    public @UnknownUnits int[] getIntData(int[] a, long startPos, long endPos, long step)
     {
         return dataRe.getIntData(a, startPos, endPos, step);
     }
@@ -591,7 +593,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part of this object or null
      */
     @Override
-    public long[] getLongData()
+    public @UnknownUnits long[] getLongData()
     {
         return dataRe.getLongData();
     }
@@ -612,7 +614,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part this object or null
      */
     @Override
-    public long[] getLongData(long[] a, long startPos, long endPos, long step)
+    public @UnknownUnits long[] getLongData(long[] a, long startPos, long endPos, long step)
     {
         return dataRe.getLongData(a, startPos, endPos, step);
     }
@@ -624,7 +626,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part of this object or null
      */
     @Override
-    public float[] getFloatData()
+    public @UnknownUnits float[] getFloatData()
     {
         return dataRe.getFloatData();
     }
@@ -645,7 +647,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part this object or null
      */
     @Override
-    public float[] getFloatData(float[] a, long startPos, long endPos, long step)
+    public @UnknownUnits float[] getFloatData(float[] a, long startPos, long endPos, long step)
     {
         return dataRe.getFloatData(a, startPos, endPos, step);
     }
@@ -657,7 +659,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part of this object or null
      */
     @Override
-    public double[] getDoubleData()
+    public @UnknownUnits double[] getDoubleData()
     {
         return dataRe.getDoubleData();
     }
@@ -678,7 +680,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @return an array containing the elements of the real part this object or null
      */
     @Override
-    public double[] getDoubleData(double[] a, long startPos, long endPos, long step)
+    public @UnknownUnits double[] getDoubleData(double[] a, long startPos, long endPos, long step)
     {
         return dataRe.getDoubleData(a, startPos, endPos, step);
     }
@@ -689,12 +691,12 @@ public class ComplexFloatLargeArray extends LargeArray
      *
      * @return an array containing the elements of the list or null
      */
-    public float[] getComplexData()
+    public @UnknownUnits float[] getComplexData()
     {
         if (2 * length > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            float[] out = new float[(int) (2 * length)];
+            @UnknownUnits float[] out = new @UnknownUnits float[(int) (2 * length)];
             for (int i = 0; i < length; i++) {
                 out[2 * i] = dataRe.getFloat(i);
                 out[2 * i + 1] = dataIm.getFloat(i);
@@ -718,7 +720,7 @@ public class ComplexFloatLargeArray extends LargeArray
      *
      * @return an array containing the elements of the list or null
      */
-    public float[] getComplexData(float[] a, long startPos, long endPos, long step)
+    public @UnknownUnits float[] getComplexData(float[] a, long startPos, long endPos, long step)
     {
         if (startPos < 0 || startPos >= length) {
             throw new ArrayIndexOutOfBoundsException("startPos < 0 || startPos >= length");
@@ -734,11 +736,11 @@ public class ComplexFloatLargeArray extends LargeArray
         if (len > getMaxSizeOf32bitArray()) {
             return null;
         } else {
-            float[] out;
+            @UnknownUnits float[] out;
             if (a != null && a.length >= len) {
                 out = a;
             } else {
-                out = new float[(int) len];
+                out = new @UnknownUnits float[(int) len];
             }
             int idx = 0;
             for (long i = startPos; i < endPos; i += step) {
@@ -792,7 +794,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setByte(long i, byte value)
+    public void setByte(long i, @UnknownUnits byte value)
     {
         dataRe.setByte(i, value);
     }
@@ -805,7 +807,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setShort(long i, short value)
+    public void setShort(long i, @UnknownUnits short value)
     {
         dataRe.setShort(i, value);
     }
@@ -818,7 +820,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setInt(long i, int value)
+    public void setInt(long i, @UnknownUnits int value)
     {
         dataRe.setInt(i, value);
     }
@@ -831,7 +833,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setLong(long i, long value)
+    public void setLong(long i, @UnknownUnits long value)
     {
         dataRe.setLong(i, value);
     }
@@ -844,7 +846,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setFloat(long i, float value)
+    public void setFloat(long i, @UnknownUnits float value)
     {
         dataRe.setFloat(i, value);
     }
@@ -857,7 +859,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setDouble(long i, double value)
+    public void setDouble(long i, @UnknownUnits double value)
     {
         dataRe.setDouble(i, value);
     }
@@ -885,7 +887,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param i     index
      * @param value value to set
      */
-    public void setComplexFloat(long i, float[] value)
+    public void setComplexFloat(long i, @UnknownUnits float[] value)
     {
         dataRe.setFloat(i, value[0]);
         dataIm.setFloat(i, value[1]);
@@ -898,7 +900,7 @@ public class ComplexFloatLargeArray extends LargeArray
      * @param i     index
      * @param value value to set
      */
-    public void setComplexDouble(long i, double[] value)
+    public void setComplexDouble(long i, @UnknownUnits double[] value)
     {
         dataRe.setDouble(i, value[0]);
         dataIm.setDouble(i, value[1]);

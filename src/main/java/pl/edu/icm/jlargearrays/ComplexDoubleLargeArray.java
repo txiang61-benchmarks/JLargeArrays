@@ -25,6 +25,8 @@
  */
 package pl.edu.icm.jlargearrays;
 
+import units.qual.*;
+
 /* VisNow
  Copyright (C) 2006-2013 University of Warsaw, ICM
 
@@ -109,7 +111,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param length        number of elements
      * @param constantValue value
      */
-    public ComplexDoubleLargeArray(long length, double[] constantValue)
+    public ComplexDoubleLargeArray(long length, @UnknownUnits double[] constantValue)
     {
         this.type = LargeArrayType.COMPLEX_DOUBLE;
         this.sizeof = 8;
@@ -130,7 +132,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      *
      * @param data data array, this reference is not used internally.
      */
-    public ComplexDoubleLargeArray(double[] data)
+    public ComplexDoubleLargeArray(@UnknownUnits double[] data)
     {
         this(new DoubleLargeArray(data));
     }
@@ -788,7 +790,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setByte(long i, byte value)
+    public void setByte(long i, @UnknownUnits byte value)
     {
         dataRe.setByte(i, value);
     }
@@ -801,7 +803,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setShort(long i, short value)
+    public void setShort(long i, @UnknownUnits short value)
     {
         dataRe.setShort(i, value);
     }
@@ -814,7 +816,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setInt(long i, int value)
+    public void setInt(long i, @UnknownUnits int value)
     {
         dataRe.setInt(i, value);
     }
@@ -827,7 +829,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setLong(long i, long value)
+    public void setLong(long i, @UnknownUnits long value)
     {
         dataRe.setLong(i, value);
     }
@@ -840,7 +842,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setFloat(long i, float value)
+    public void setFloat(long i, @UnknownUnits float value)
     {
         dataRe.setFloat(i, value);
     }
@@ -853,7 +855,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param value value to set as a real part
      */
     @Override
-    public void setDouble(long i, double value)
+    public void setDouble(long i, @UnknownUnits double value)
     {
         dataRe.setDouble(i, value);
     }
@@ -881,7 +883,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param i     index
      * @param value value to set
      */
-    public void setComplexFloat(long i, float[] value)
+    public void setComplexFloat(long i, @UnknownUnits float[] value)
     {
         dataRe.setFloat(i, value[0]);
         dataIm.setFloat(i, value[1]);
@@ -894,7 +896,7 @@ public class ComplexDoubleLargeArray extends LargeArray
      * @param i     index
      * @param value value to set
      */
-    public void setComplexDouble(long i, double[] value)
+    public void setComplexDouble(long i, @UnknownUnits double[] value)
     {
         dataRe.setDouble(i, value[0]);
         dataIm.setDouble(i, value[1]);

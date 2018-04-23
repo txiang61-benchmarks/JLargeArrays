@@ -29,7 +29,7 @@ package pl.edu.icm.jlargearrays;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Random;
+import java.util.Random; import units.qual.*; import units.UnitsTools;
 
 /**
  * Benchmarks.
@@ -39,7 +39,7 @@ import java.util.Random;
 public class Benchmark
 {
 
-    public static void writeToFile(long[] sizes, int[] nthreads, double[][] results, String file)
+    public static void writeToFile(long[] sizes, int[] nthreads, @s double[][] results, String file)
     {
         BufferedWriter writer;
         try {
@@ -98,14 +98,14 @@ public class Benchmark
         }
     }
 
-    public static double[][] benchmarkJavaArraysByteSequential(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJavaArraysByteSequential(long[] sizes, int[] nthreads, int iters, String file)
     {
         for (int i = 0; i < sizes.length; i++) {
             if (sizes[i] > Integer.MAX_VALUE - 4) {
                 return null;
             }
         }
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking java arrays (bytes, sequentual)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -115,7 +115,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final byte[] a = new byte[(int) sizes[i]];
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -143,7 +143,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -151,14 +151,14 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJavaArraysDoubleSequential(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJavaArraysDoubleSequential(long[] sizes, int[] nthreads, int iters, String file)
     {
         for (int i = 0; i < sizes.length; i++) {
             if (sizes[i] > Integer.MAX_VALUE - 4) {
                 return null;
             }
         }
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking java arrays (doubles, sequentual)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -168,7 +168,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final double[] a = new double[(int) sizes[i]];
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -196,7 +196,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -204,7 +204,7 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJavaArraysByteRandom(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJavaArraysByteRandom(long[] sizes, int[] nthreads, int iters, String file)
     {
         for (int i = 0; i < sizes.length; i++) {
             if (sizes[i] > Integer.MAX_VALUE - 4) {
@@ -213,7 +213,7 @@ public class Benchmark
         }
 
         final int[] randIdx = new int[(int) sizes[sizes.length - 1]];
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         Random r = new Random(0);
         System.out.println("generating random indices.");
@@ -231,7 +231,7 @@ public class Benchmark
                 System.out.print("\tSize = " + sizes[i]);
                 final byte[] a = new byte[(int) sizes[i]];
                 final long size = sizes[i];
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -260,7 +260,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -268,7 +268,7 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJavaArraysDoubleRandom(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJavaArraysDoubleRandom(long[] sizes, int[] nthreads, int iters, String file)
     {
         for (int i = 0; i < sizes.length; i++) {
             if (sizes[i] > Integer.MAX_VALUE - 4) {
@@ -277,7 +277,7 @@ public class Benchmark
         }
 
         final int[] randIdx = new int[(int) sizes[sizes.length - 1]];
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         Random r = new Random(0);
         System.out.println("generating random indices.");
@@ -295,7 +295,7 @@ public class Benchmark
                 System.out.print("\tSize = " + sizes[i]);
                 final double[] a = new double[(int) sizes[i]];
                 final long size = sizes[i];
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -324,7 +324,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -332,9 +332,9 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysByteSequentual(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysByteSequentual(long[] sizes, int[] nthreads, int iters, String file)
     {
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking JLargeArrays (bytes, sequentual)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -344,7 +344,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final ByteLargeArray a = new ByteLargeArray(sizes[i]);
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -372,7 +372,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -380,10 +380,10 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysByteSequentualNative(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysByteSequentualNative(long[] sizes, int[] nthreads, int iters, String file)
     {
         LargeArray.setMaxSizeOf32bitArray(1);
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking JLargeArrays (bytes, sequentual, native)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -393,7 +393,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final ByteLargeArray a = new ByteLargeArray(sizes[i]);
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -421,7 +421,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -429,9 +429,9 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysByteSequentual_safe(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysByteSequentual_safe(long[] sizes, int[] nthreads, int iters, String file)
     {
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking JLargeArrays (bytes, sequentual, with bounds checking)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -441,7 +441,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final ByteLargeArray a = new ByteLargeArray(sizes[i]);
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -469,7 +469,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -477,9 +477,9 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysDoubleSequentual(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysDoubleSequentual(long[] sizes, int[] nthreads, int iters, String file)
     {
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking JLargeArrays (doubles, sequentual)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -489,7 +489,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final DoubleLargeArray a = new DoubleLargeArray(sizes[i]);
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -517,7 +517,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -525,10 +525,10 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysDoubleSequentualNative(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysDoubleSequentualNative(long[] sizes, int[] nthreads, int iters, String file)
     {
         LargeArray.setMaxSizeOf32bitArray(1);
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         System.out.println("Benchmarking JLargeArrays (doubles, sequentual, native)");
         for (int th = 0; th < nthreads.length; th++) {
@@ -538,7 +538,7 @@ public class Benchmark
             for (int i = 0; i < sizes.length; i++) {
                 System.out.print("\tSize = " + sizes[i]);
                 final DoubleLargeArray a = new DoubleLargeArray(sizes[i]);
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -566,7 +566,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -574,10 +574,10 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysByteRandom(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysByteRandom(long[] sizes, int[] nthreads, int iters, String file)
     {
         final int[] randIdx = new int[(int) sizes[sizes.length - 1]];
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         Random r = new Random(0);
         System.out.println("generating random indices.");
@@ -594,7 +594,7 @@ public class Benchmark
                 System.out.print("\tSize = " + sizes[i]);
                 final ByteLargeArray a = new ByteLargeArray(sizes[i]);
                 final int size = (int) sizes[i];
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -623,7 +623,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
@@ -631,10 +631,10 @@ public class Benchmark
         return results;
     }
 
-    public static double[][] benchmarkJLargeArraysDoubleRandom(long[] sizes, int[] nthreads, int iters, String file)
+    public static @s double[][] benchmarkJLargeArraysDoubleRandom(long[] sizes, int[] nthreads, int iters, String file)
     {
         final int[] randIdx = new int[(int) sizes[sizes.length - 1]];
-        double[][] results = new double[nthreads.length][sizes.length];
+        @s double[][] results = new @s double[nthreads.length][sizes.length];
         long k;
         Random r = new Random(0);
         System.out.println("generating random indices.");
@@ -651,7 +651,7 @@ public class Benchmark
                 System.out.print("\tSize = " + sizes[i]);
                 final DoubleLargeArray a = new DoubleLargeArray(sizes[i]);
                 final int size = (int) sizes[i];
-                double t = System.nanoTime();
+                @ns double t = System.nanoTime();
                 for (int it = 0; it < iters; it++) {
                     k = sizes[i] / nt;
                     for (int j = 0; j < nt; j++) {
@@ -680,7 +680,7 @@ public class Benchmark
                         ex.printStackTrace();
                     }
                 }
-                results[th][i] = (System.nanoTime() - t) / 1000000000.0 / (double) iters;
+                results[th][i] = (System.nanoTime() - t) / 1000000000.0 * UnitsTools.s / UnitsTools.ns / (double) iters;
                 System.out.println(" : " + String.format("%.7f sec", results[th][i]));
             }
         }
