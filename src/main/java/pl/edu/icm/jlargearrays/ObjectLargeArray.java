@@ -26,7 +26,7 @@
  * ***** END LICENSE BLOCK ***** */
 package pl.edu.icm.jlargearrays;
 
-import com.sun.xml.internal.ws.encoding.soap.SerializationException;
+// import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -471,7 +471,8 @@ public class ObjectLargeArray extends LargeArray
             oos.writeObject(obj);
 
         } catch (Exception ex) {
-            throw new SerializationException(ex);
+            // throw new SerializationException(ex);
+            return null;
         } finally {
             try {
                 if (oos != null) {
@@ -494,7 +495,8 @@ public class ObjectLargeArray extends LargeArray
             return obj;
 
         } catch (Exception ex) {
-            throw new SerializationException(ex);
+            // throw new SerializationException(ex);
+            return null;
         } finally {
             try {
                 if (ois != null) {
