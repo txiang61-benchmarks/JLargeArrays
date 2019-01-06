@@ -2,12 +2,12 @@
  * JLargeArrays
  * Copyright (C) 2013 onward University of Warsaw, ICM
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
@@ -1635,7 +1635,7 @@ public class Utilities
         }
         if (src.isConstant()) {
             switch (type) {
-                case LOGIC:
+                case LOGIC: // 0
                     return new LogicLargeArray(src.length(), src.getByte(0));
                 case BYTE:
                     return new ByteLargeArray(src.length(), src.getByte(0));
@@ -1645,7 +1645,7 @@ public class Utilities
                     return new IntLargeArray(src.length(), src.getInt(0));
                 case LONG:
                     return new LongLargeArray(src.length(), src.getLong(0));
-                case FLOAT:
+                case FLOAT: // 5
                     return new FloatLargeArray(src.length(), src.getFloat(0));
                 case DOUBLE:
                     return new DoubleLargeArray(src.length(), src.getDouble(0));
@@ -1653,9 +1653,11 @@ public class Utilities
                     return new ComplexFloatLargeArray(src.length(), ((ComplexFloatLargeArray) src).getComplexFloat(0));
                 case COMPLEX_DOUBLE:
                     return new ComplexDoubleLargeArray(src.length(), ((ComplexDoubleLargeArray) src).getComplexDouble(0));
-                case STRING:
+                case STRING: // 9
                     return new StringLargeArray(src.length(), src.get(0).toString());
                 case OBJECT:
+                    // TODO: unfortunately this still doesn't break the constraint chain
+                    // it makes the return of get() <: @Dimensionless
                     return new ObjectLargeArray(src.length(), src.get(0));
                 default:
                     throw new IllegalArgumentException("Invalid array type.");
@@ -1666,7 +1668,7 @@ public class Utilities
         int nthreads = (int) Math.min(length, Runtime.getRuntime().availableProcessors());
         if (nthreads < 2 || length < 100000) {
             switch (type) {
-                case LOGIC:
+                case LOGIC: // 0
                 case BYTE:
                     for (long i = 0; i < length; i++) {
                         out.setByte(i, src.getByte(i));
@@ -1724,7 +1726,7 @@ public class Utilities
                         out.set(i, src.get(i).toString());
                     }
                     break;
-                case OBJECT:
+                case OBJECT: // 10
                     for (long i = 0; i < length; i++) {
                         out.set(i, src.get(i));
                     }

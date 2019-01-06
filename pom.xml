@@ -9,7 +9,7 @@
 
     <description>Library of one-dimensional arrays that can store up to 2^63 elements.</description>
 
-    <url>https://github.com/IcmVis/JLargeArrays</url> 
+    <url>https://github.com/IcmVis/JLargeArrays</url>
 
     <licenses>
         <license>
@@ -66,8 +66,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgument>-XDignore.symbol.file</compilerArgument>
                     <debug>true</debug>
                 </configuration>
@@ -105,13 +105,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>units</groupId>
+            <artifactId>units</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../build/libs/units-inference.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -122,5 +129,5 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-  
+
 </project>

@@ -26,6 +26,8 @@
  * ***** END LICENSE BLOCK ***** */
 package pl.edu.icm.jlargearrays;
 
+import units.qual.*;
+
 /**
  * The base class for all large arrays. All implementations of this abstract
  * class can store up to 2<SUP>63</SUP> elements of primitive data types.
@@ -126,7 +128,7 @@ public abstract class LargeArray implements
      *
      * @return a value at index i.
      */
-    public abstract Object get(long i);
+    public abstract @Dimensionless Object get(long i);
 
     /**
      * Returns a value at index i. Array bounds are checked.
@@ -537,6 +539,11 @@ public abstract class LargeArray implements
                                            long startPos,
                                            long endPos,
                                            long step);
+
+    // // potential fix: we have flows of @rad into value below
+    // public void set(final long i, final Boolean value) {
+    // setBoolean(i, (Boolean) value);
+    // }
 
     /**
      * Sets a value at index i. Array bounds are not checked. Calling this

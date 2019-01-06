@@ -278,7 +278,7 @@ public class ComplexDoubleLargeArray extends LargeArray
         for (long i = 0; i < length; i++) {
             double re = dataRe.getDouble(i);
             double im = dataIm.getDouble(i);
-            out.setDouble(i, Math.atan2(im, re));
+            out.setDouble(i, (double) Math.atan2(im, re));      // add a fake cast to allow us to infer "per radians" as a unit to clear the error
         }
         return out;
     }
