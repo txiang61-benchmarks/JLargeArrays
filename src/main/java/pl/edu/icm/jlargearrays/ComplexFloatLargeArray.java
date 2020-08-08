@@ -63,7 +63,7 @@ package pl.edu.icm.jlargearrays;
  exception statement from your version. */
 import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
 import static pl.edu.icm.jlargearrays.LargeArray.getMaxSizeOf32bitArray;
-import sun.misc.Cleaner;
+
 
 /**
  *

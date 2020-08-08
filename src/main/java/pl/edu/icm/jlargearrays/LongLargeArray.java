@@ -26,7 +26,7 @@
  * ***** END LICENSE BLOCK ***** */
 package pl.edu.icm.jlargearrays;
 
-import sun.misc.Cleaner;
+
 
 /**
  *
@@ -71,7 +71,7 @@ public class LongLargeArray extends LargeArray
             if (zeroNativeMemory) {
                 zeroNativeMemory(length);
             }
-            Cleaner.create(this, new Deallocator(this.ptr, this.length, this.sizeof));
+            
             MemoryCounter.increaseCounter(this.length * this.sizeof);
         } else {
             data = new long[(int) length];

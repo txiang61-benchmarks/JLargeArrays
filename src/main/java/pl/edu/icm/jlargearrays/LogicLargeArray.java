@@ -27,7 +27,7 @@
 package pl.edu.icm.jlargearrays;
 
 import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
-import sun.misc.Cleaner;
+
 
 /**
  *
@@ -71,7 +71,7 @@ public class LogicLargeArray extends LargeArray
             if (zeroNativeMemory) {
                 zeroNativeMemory(length);
             }
-            Cleaner.create(this, new LargeArray.Deallocator(this.ptr, this.length, this.sizeof));
+            
             MemoryCounter.increaseCounter(this.length * this.sizeof);
         } else {
             data = new byte[(int) length];

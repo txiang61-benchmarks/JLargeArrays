@@ -28,7 +28,7 @@ package pl.edu.icm.jlargearrays;
 
 import java.io.UnsupportedEncodingException;
 import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
-import sun.misc.Cleaner;
+
 
 /**
  *
@@ -95,7 +95,7 @@ public class StringLargeArray extends LargeArray
             if (zeroNativeMemory) {
                 zeroNativeMemory(this.size);
             }
-            Cleaner.create(this, new Deallocator(this.ptr, this.size, this.sizeof));
+            
             MemoryCounter.increaseCounter(this.size * this.sizeof);
             stringLengths = new ShortLargeArray(length);
             byteArray = new byte[maxStringLength * CHARSET_SIZE];

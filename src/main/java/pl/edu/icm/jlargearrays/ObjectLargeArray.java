@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import static pl.edu.icm.jlargearrays.LargeArray.LARGEST_32BIT_INDEX;
-import sun.misc.Cleaner;
+
 
 /**
  *
@@ -100,7 +100,7 @@ public class ObjectLargeArray extends LargeArray
             if (zeroNativeMemory) {
                 zeroNativeMemory(this.size);
             }
-            Cleaner.create(this, new Deallocator(this.ptr, this.size, this.sizeof));
+            
             MemoryCounter.increaseCounter(this.size * this.sizeof);
             objectLengths = new ShortLargeArray(length);
             byteArray = new byte[maxObjectLength];
